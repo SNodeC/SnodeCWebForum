@@ -4,11 +4,11 @@
 # Bitch Ass Volker Project:
 
 ## Todo Functionality
-- [] Register yourself with Username and Password
-- [] Create new subtopic
-- [] Create thread in subtopic
-- [] Post topics to thread
-- [] Read posts of a thread
+- Register yourself with Username and Password
+- Create new subtopic
+- Create thread in subtopic
+- Post topics to thread
+- Read posts of a thread
 
 ---
 
