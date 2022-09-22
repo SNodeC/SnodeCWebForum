@@ -1,0 +1,453 @@
+/* ########################################### */
+/*                 Global                      */
+/* ########################################### */
+* {
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: Nunito-Regular;
+    src: url(../assets/fonts/Nunito-VariableFont_wght.otf);
+}
+
+@font-face {
+    font-family: Nunito-Bold;
+    src: url(../assets/fonts/Nunito-ExtraBold.otf);
+}
+
+@font-face {
+    font-family: BungeeSpice;
+    src: url(../assets/fonts/BungeeSpice-Regular.otf);
+}
+
+html {
+    font-size: 18px;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url("../assets/images/cat-space.gif");
+    background-repeat: repeat;
+    font-family: Nunito-Regular;
+    font-weight: bold;
+    color: #FEFEFE;
+}
+
+a {
+    color: #fb00ff;
+    font-family: Nunito-Bold;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+h1 {
+    margin-top: 0px;
+    margin-bottom: 50px;
+    text-align: center;
+    font-size: 4rem;
+    font-family: BungeeSpice;
+    letter-spacing: 0.15rem;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: -4px 4px #ef3550,
+        -8px 8px #f48fb1,
+        -12px 12px #7e57c2,
+        -16px 16px #2196f3,
+        -20px 20px #26c6da,
+        -24px 24px #43a047,
+        -28px 28px #eeff41,
+        -32px 32px #f9a825,
+        -36px 36px #ff5722;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+h2 {
+    font-family: BungeeSpice;
+    font-size: 24px;
+    font-weight: bolder;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.text {
+    font-family: Nunito-Regular;
+    font-size: 18px;
+    font-weight: bold;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.rainbow-box {
+    border: 5px solid transparent;
+    border-image: linear-gradient(to bottom right, #b827fc 0%, #2c90fc 25%, #b8fd33 50%, #fec837 75%, #fd1892 100%);
+    border-image-slice: 1;
+}
+
+.error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 60px;
+    text-align: center;
+    font-size: 8rem;
+    font-family: BungeeSpice;
+    letter-spacing: 0.8rem;
+    text-transform: uppercase;
+    color: #fff;
+    text-shadow: -4px 4px #ef3550,
+        -8px 8px #f48fb1,
+        -12px 12px #7e57c2,
+        -16px 16px #2196f3,
+        -20px 20px #26c6da,
+        -24px 24px #43a047,
+        -28px 28px #eeff41,
+        -32px 32px #f9a825,
+        -36px 36px #ff5722;
+
+}
+
+footer {
+    width: 100%;
+    bottom: 0%;
+    left: 0%;
+    position: fixed;
+}
+
+.t-a-c {
+    text-align: center;
+}
+
+.m-b-10 {
+    margin-bottom: 10px;
+}
+
+.m-b-20 {
+    margin-bottom: 20px;
+}
+
+.m-b-50 {
+    margin-bottom: 50px;
+}
+
+.m-b-100 {
+    margin-bottom: 100px;
+}
+
+.m-t-10 {
+    margin-top: 10px;
+}
+
+.m-t-20 {
+    margin-top: 20px;
+}
+
+.m-t-50 {
+    margin-top: 50px;
+}
+
+.m-t-100 {
+    margin-top: 100px;
+}
+
+/* ########################################### */
+/*           home.html                         */
+/* ########################################### */
+.container {
+    margin: 20px;
+    padding: 20px;
+}
+
+.subforum {
+    margin-top: 20px;
+    background: none;
+}
+
+
+.subforum-title {
+    background-color: #001f619a;
+
+    display: grid;
+    grid-template-columns: 60% 40%;
+}
+
+/* TODO:  if counting not possible delete 10% and change 20 to 30...*/
+.subforum-row {
+    display: grid;
+    grid-template-columns: 5% 65% 10% 20%;
+}
+
+.subforum-column {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #0436a07a;
+}
+
+.subforum-description * {
+    margin-block: 0;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.right {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+
+.left {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    margin-bottom: 80px;
+}
+
+.subforum-icon i {
+    font-size: 45px;
+}
+
+.subforum-devider {
+    display: none;
+}
+
+/*   Header Section    */
+
+header {
+    margin: 10px;
+}
+
+/* Nav Bar styles */
+
+.navbar {
+    display: flex;
+    width: 100%;
+}
+
+.brand {
+    font-size: 60px;
+    font-family: BungeeSpice-Regular;
+    align-items: left;
+    width: 90%;
+}
+
+/* forum info Styling */
+
+.forum-info {
+    padding: 20px;
+    background-color: #111314;
+}
+
+.chart {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Footer Styling */
+
+footer {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #52057b6c;
+    display: block;
+    text-align: center;
+    font-weight: bolder;
+    font-size: 20px;
+}
+
+/* ########################################### */
+/*            topic.html                       */
+/* ########################################### */
+
+/* posts table's head  */
+.table-head {
+    display: flex;
+}
+
+.table-head div {
+    padding: 10px;
+    margin: 2px;
+    background-color: #00549d5c;
+    font-weight: bold;
+}
+
+.table-head .subjects-header {
+    flex: 85%;
+}
+
+.table-head .add-new {
+    flex: 15%;
+}
+
+.table-head .subjects {
+    flex: 70%;
+}
+
+.table-head .replies {
+    flex: 15%;
+}
+
+.table-head .post-user {
+    flex: 15%;
+}
+
+/* posts table's body  */
+
+.table-row {
+    display: flex;
+}
+
+.table-row .subjects,
+.table-row .replies,
+.table-row .post-user {
+    padding: 15px;
+    background-color: #001f619a;
+}
+
+.table-row .status {
+    flex: 5%;
+    font-size: 30px;
+    text-align: center;
+}
+
+.table-row .subjects {
+    flex: 70%;
+}
+
+.table-row .replies {
+    flex: 10%;
+}
+
+.table-row .last-reply {
+    flex: 15%;
+}
+
+/* ########################################### */
+/*             post.html                       */
+/* ########################################### */
+
+.head {
+    display: flex;
+    padding: 5px;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.authors {
+    flex: 20%;
+}
+
+.content {
+    flex: 80%;
+}
+
+.body {
+    display: flex;
+    background-color: #2e00335a;
+    padding: 10px;
+    margin-top: 5px;
+}
+
+
+.username {
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Nunito-Bold;
+    color: #fb00ff;
+}
+
+.body .authors img {
+    max-width: 80px;
+    max-height: 80px;
+}
+
+/* ########################################### */
+/*                 input                       */
+/* ########################################### */
+
+.hidden {
+
+    display: none;
+}
+
+.unhidden {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 30px;
+}
+
+textarea {
+    resize: vertical;
+    border: none;
+    background-color: #001f619a;
+    font-family: Nunito-Regular;
+    font-size: 18px;
+    padding: 10px;
+    width: 100%;
+    color: white;
+}
+
+textarea::placeholder {
+    color: #fff;
+}
+
+.title {
+    font-family: Nunito-Bold;
+    font-size: 18px;
+    width: 100%;
+    color: white;
+}
+
+.submit {
+    font-family: Nunito-Bold;
+    font-size: 18px;
+    width: 100%;
+    border: none;
+    padding: 10px;
+    background-color: white;
+    box-shadow: -4px 4px #7e57c2,
+        -8px 8px #2196f3,
+        -12px 12px #43a047,
+        -16px 16px #eeff41,
+        -20px 20px #f9a825,
+        -24px 24px #ff5722;
+}
+
+/* ########################################### */
+/*               login/logout                  */
+/* ########################################### */
+
+.login {
+    display: block;
+    align-items: center;
+    justify-content: center;
+    margin: 30px;
+    width: 30%;
+}
+
+.user-login {
+    resize: vertical;
+    border: none;
+    background-color: #001f619a;
+    font-family: Nunito-Regular;
+    font-size: 18px;
+    padding: 10px;
+    width: 100%;
+    color: white;
+}
+
+.logout {
+    display: block;
+    text-align: right;
+}
+
+.logout-align {
+    width: 10%;
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    margin: 20px;
+}

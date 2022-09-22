@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post</title>
+    <link rel="stylesheet" href="../src/cmake-build-debug/css/style.css">
+
+</head>
+
+<body>
+    <header>
+        <!--NavBar Section-->
+        <div class="navbar">
+            <div class="brand"><a href="home.html"><h1>Unproblematic Internet Forum</h1></a></div>
+            <div class="logout-align">
+                <div class="logout"> 
+                    <span id="username"> User </span>
+                    <br>
+                    <a id="logout">Log out</a>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container m-b-100">
+        <!--Navigation-->
+        <!-- TODO: insert backlinks-->
+        <div class="navigate">
+            <span><a href="home.html">Home</a> >> <a href="topic.html">Topic Name</a> >> <a href="post.html">Post Name</a></span>
+        </div>
+
+        <!--Post-->
+        <div class="table-row rainbow-box">
+            <div class="subjects">
+                <!-- TODO: add in title dynamically-->
+                <h2>Title: Is this worth it?</h2> <br>
+
+                <!-- TODO: add in text dynamically-->
+                <div class="text">
+                    Post text, lorem ipsum whatnot and so forth with this fuckery.
+                </div>
+
+                <!-- TODO: add in User dynamically-->
+                <div class="text">
+                    by <span class="username">User</span>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h2><a id="toggle-comment">+ Add comment</a></h2>
+        </div>
+        
+        <!-- TODO: add comment functionality-->
+        <div id="hide-comment" class="hidden left">
+            <div class="rainbow-box">
+                <textarea class="content" name="comment-description" rows="4" cols="50" placeholder="Here comes the Text of your perfectly proper worded Comment."></textarea><br>
+                <input  id="submit-comment" class="submit" type="submit" value="Reply">
+            </div>
+        </div>
+
+        <div class="rainbow-box"> 
+
+            <!-- TODO: duplicate those lines for multiple comments-->
+            <!------------------------------------------------------------------>
+                <div class="body">
+                    <div class="authors">
+                        <div class="username">User</div>
+                        <img src="https://static.wikia.nocookie.net/nyancat/images/c/ce/GoldenNyan.gif" alt="">
+                    </div>
+                    
+                    <div class="content">
+                        Just a comment of the above random topic.
+                        <br>To see how it looks like.
+                        <br><br>
+                        Nothing more and nothing less.
+                    </div>
+                </div>
+            <!------------------------------------------------------------------>
+
+            <!-- Second comment, TODO: delete-->
+            <!------------------------------------------------------------------>
+            <div class="body">
+                <div class="authors">
+                    <div class="username">User 2</div>
+                    <img src="https://static.wikia.nocookie.net/nyancat/images/2/2f/AngelicNyan.gif" alt="">
+                </div>
+                
+                <div class="content">
+                    Just a comment of the above random topic.
+                    <br>To see how it looks like.
+                    <br><br>
+                    Nothing more and nothing less.
+                </div>
+            </div>
+            <!------------------------------------------------------------------>
+
+        </div>
+
+    </div>
+
+    <!-- Needed that the footer does not cover the last comment, dirty fix but at this point i dont care anymore tbh-->
+    <div style="margin-bottom:100px;"></div>
+
+    <footer>
+        <span>
+            &copy;  This is our snode.c project | All Rights Reserved to its respective owners and whatnot
+            <br>  Asteriou Philipp, Boess Leopold, Demelmayr Martin & Zuehlke Samuel
+        </span>
+    </footer>
+    <script src="../src/cmake-build-debug/js/main.js"></script>
+</body>
+</html>

@@ -5,8 +5,8 @@
 
 ## Todo Functionality
 - Register yourself with Username and Password
-- Create new subtopic
-- Create thread in subtopic
+- Create new topic
+- Create thread in topic
 - Post topics to thread
 - Read posts of a thread
 
@@ -21,7 +21,7 @@
         - Install `libmariadb-dev` using `apt install libmariadb-dev` as `root`
         - Install `mariadb-server` using `apt install mariadb-server` as `root`
 - Use cookies for session management
-- URL-Queries to select a specific subtopic and thread. (For reading and posting)
+- URL-Queries to select a specific topic and thread. (For reading and posting)
 - `app.post(...)` for posting to a thread
 - Database model that supports functionality
 

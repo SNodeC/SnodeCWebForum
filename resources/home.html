@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our nice Forum</title>
+
+    <link rel="stylesheet" href="../src/cmake-build-debug/css/style.css">
+    <link href='https://css.gg/heart.css' rel='stylesheet'>
+
+</head>
+
+<body>
+    <header>
+        <!--NavBar Section-->
+        <div class="navbar">
+            <div class="brand"><a href="home.html"><h1>Unproblematic Internet Forum</h1></a></div>
+            <div class="logout-align">
+                <div class="logout"> 
+                    <span id="username"> User </span>
+                    <br>
+                    <a id="logout">Log out</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div class="subforum rainbow-box">
+
+            <div class="subforum-title">
+                <div><h2>Topics</h2></div>
+                <div class="right"><a id="toggle-topic"><h2 id="toggle-text">+ Add new Topic</h2></a></div>
+            </div>
+
+            <!-- TODO: add comment functionality-->
+            <div id="hide_topic" class="hidden">
+                <div class="rainbow-box">
+                    <textarea class="title" name="topic-name" rows="1" cols="50" placeholder="Topic Name goes here."></textarea><br>
+                    <textarea class="content" name="topic-description" rows="4" cols="50" placeholder="Describe your Topic you want to add."></textarea><br>
+                    <input  id="submit-topic" class="submit" type="submit" value="Submit Topic">
+                </div>
+            </div>
+
+
+            <!-- TODO: duplicate those lines for multiple entries-->
+            <!------------------------------------------------------------------>
+            <div class="subforum-row">
+                <div class="subforum-icon subforum-column center">
+                    <i class="gg-heart center"></i>
+                </div>
+
+                <div class="subforum-description subforum-column">
+                    <!-- TODO: insert link to topic-->
+                    <h4><a href="topic.html">Title</a></h4>
+                    <p>Description: Um was es halt da jetzt so geht in dem.</p>
+                </div>
+
+                <!-- TODO: if counting not possible delete this div & change grid setup in style.css-->
+                <div class="subforum-stats subforum-column center">
+                    <span>24 Subtopics</span>
+                </div>
+
+                <!-- TODO: if last post not possible, delete or add in sth different, dont forget to change gris in style.css-->
+                <div class="subforum-info subforum-column center">
+                    Last post by User on DATUM
+                </div>
+            </div>
+
+            <hr class="subforum-devider">
+            <!------------------------------------------------------------------>
+
+
+            
+           
+        </div>
+    </div>
+
+
+    <footer>
+        <span>
+            &copy;  This is our snode.c project | All Rights Reserved to its respective owners and whatnot
+            <br>  Asteriou Philipp, Boess Leopold, Demelmayr Martin & Zuehlke Samuel
+        </span>
+    </footer>
+
+    <script src="../src/cmake-build-debug/js/main.js"></script>
+</body>
+</html>
