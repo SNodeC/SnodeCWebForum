@@ -20,7 +20,7 @@ file(GLOB_RECURSE HEADER_FILES CONFIGURE_DEPENDS
 
 
 
-add_executable(main main.cpp daos domain utils  #[[${HEADER_FILES} ${SOURCE_FILES}]]
+add_executable(main main.cpp daos domain utils service  #[[${HEADER_FILES} ${SOURCE_FILES}]]
         )
 
 add_custom_target(copy_assets ALL

@@ -4,15 +4,10 @@
 #include <functional>
 #include <vector>
 #include <string>
-
-#include "domain/Topic.h"
-#include "domain/Post.h"
-#include "domain/Comment.h"
-
-#include "daos/DaoInterfaces/CommentDao.h"
-#include "daos/DaoInterfaces/PostDao.h"
-#include "daos/DaoInterfaces/TopicDao.h"
-#include "daos/DaoInterfaces/UserDao.h"
+#include "../daos/DaoInterfaces/CommentDao.h"
+#include "../daos/DaoInterfaces/PostDao.h"
+#include "../daos/DaoInterfaces/TopicDao.h"
+#include "../daos/DaoInterfaces/UserDao.h"
 
 using std::string;
 using std::vector;

@@ -11,7 +11,7 @@
 
 class UserDaoImpl : public UserDao, protected DaoImpl {
 public:
-    void getById(unsigned long id,const std::function<void(User&)> &callback) override;
+    void getById(unsigned long id,const std::function<void(User&&)> &callback) override;
 
     void isUserNameTaken(std::string username,const std::function<void(bool)> &callback) override;
 

@@ -6,7 +6,7 @@
 #include "PostDaoImpl.h"
 
 
-void PostDaoImpl::create(std::string title, int userID, std::function<void(bool)> &callback) {
+void PostDaoImpl::create(std::string title, int userID,const std::function<void(bool)> &callback) {
 
     std::ostringstream sql;
     sql <<
@@ -44,7 +44,7 @@ void PostDaoImpl::getPost(unsigned long id, std::function<void(Post)> &callback)
 */
 
 void PostDaoImpl::getRecentPostsOfTopic(unsigned long id, int amount, int start,
-                                        std::function<void(std::vector<Post>)> &callback) {
+                                        const std::function<void(std::vector<Post>&&)> &callback) {
     std::ostringstream sql;
     sql <<
         "SELECT id,topicID, creatorID, title, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
@@ -73,7 +73,7 @@ void PostDaoImpl::getRecentPostsOfTopic(unsigned long id, int amount, int start,
                                         rows[4],
                                         rows[5]});
                        } else
-                           callback(returnVector);
+                           callback(std::move(returnVector));
 
 
                    },
@@ -84,7 +84,7 @@ void PostDaoImpl::getRecentPostsOfTopic(unsigned long id, int amount, int start,
 
 }
 
-void PostDaoImpl::getCreator(unsigned long id, std::function<void(User)> &callback) {
+void PostDaoImpl::getCreator(unsigned long id,const std::function<void(User&&)> &callback) {
 
     std::ostringstream sql;
     sql <<
@@ -114,7 +114,7 @@ void PostDaoImpl::getCreator(unsigned long id, std::function<void(User)> &callba
 
 }
 
-void PostDaoImpl::getTopic(unsigned long id, std::function<void(Topic)> &callback) {
+void PostDaoImpl::getTopic(unsigned long id,const std::function<void(Topic&&)> &callback) {
 
     std::ostringstream sql;
     sql <<
@@ -142,7 +142,7 @@ void PostDaoImpl::getTopic(unsigned long id, std::function<void(Topic)> &callbac
 
 }
 
-void PostDaoImpl::getById(unsigned long id, std::function<void(Post)> &callback) {
+void PostDaoImpl::getById(unsigned long id,const std::function<void(Post&&)> &callback) {
 
     std::ostringstream sql;
     sql <<
@@ -170,7 +170,7 @@ void PostDaoImpl::getById(unsigned long id, std::function<void(Post)> &callback)
 
 }
 
-void PostDaoImpl::getCommentCount(unsigned long id, std::function<void(int)> &callback) {
+void PostDaoImpl::getCommentCount(unsigned long id,const std::function<void(int)> &callback) {
     std::ostringstream sql;
     sql <<
         "SELECT COUNT(*)"

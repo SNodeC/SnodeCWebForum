@@ -6,7 +6,7 @@
 #include <sstream>
 #include <cstring>
 
-void UserDaoImpl::isUserNameTaken(std::string username, std::function<void(bool)> &callback) {
+void UserDaoImpl::isUserNameTaken(std::string username, const std::function<void(bool)> &callback) {
 
 
     std::ostringstream sql;
@@ -26,7 +26,7 @@ void UserDaoImpl::isUserNameTaken(std::string username, std::function<void(bool)
 }
 
 void UserDaoImpl::createUser(std::string username, std::string password, std::string salt,
-                             std::function<void(bool)> &callback) {
+                             const std::function<void(bool)> &callback) {
 
     std::ostringstream sql;
     sql <<
@@ -42,7 +42,7 @@ void UserDaoImpl::createUser(std::string username, std::string password, std::st
 }
 
 void UserDaoImpl::checkUserPassword(unsigned long id, std::string password, std::string salt,
-                                    std::function<void(bool)> &callback) {
+                                    const std::function<void(bool)> &callback) {
 
     std::ostringstream sql;
     sql <<
@@ -64,7 +64,7 @@ void UserDaoImpl::checkUserPassword(unsigned long id, std::string password, std:
 
 }
 
-void UserDaoImpl::getById(unsigned long id, std::function<void(User)> &callback) {
+void UserDaoImpl::getById(unsigned long id, const std::function<void(User &&)> &callback) {
 
     std::ostringstream sql;
     sql <<
@@ -77,13 +77,13 @@ void UserDaoImpl::getById(unsigned long id, std::function<void(User)> &callback)
                    [&](const MYSQL_ROW &rows) {
 
                        if (rows[0] == nullptr) {
-                           callback(
-                                   User{std::stoul(rows[0]),
-                                        rows[1],
-                                        rows[2],
-                                        rows[3],
-                                        rows[4],
-                                        rows[5]});
+                           callback(User{
+                                   std::stoul(rows[0]),
+                                   rows[1],
+                                   rows[2],
+                                   rows[3],
+                                   rows[4],
+                                   rows[5]});
                        }
 
                    },
