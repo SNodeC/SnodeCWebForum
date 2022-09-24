@@ -10,15 +10,15 @@
 #include "../../domain/Topic.h"
 #include "DaoImpl.h"
 
-class TopicDaoImpl : public TopicDao , DaoImpl {
-    void create(std::string title,int userID,std::function<void(bool)> &callback) override;
-
-    void getCreator(unsigned long id, std::function<void(User)> &callback) override;
-
-    void getRecentTopics(int amount, int start, std::function<void(std::vector<Topic>)> & callback) override;
-
+class TopicDaoImpl : public TopicDao, protected DaoImpl {
 public:
-    void getPostCount(int id, std::function<void(int)> &callback) override;
+    void create(std::string title, int userID, const std::function<void(bool)> &callback) override;
+
+    void getCreator(unsigned long id, const std::function<void(User&)> &callback) override;
+
+    void getRecentTopics(int amount, int start, const std::function<void(std::vector<Topic>&&)> & callback) override;
+
+    void getPostCount(int id, const std::function<void(int)> &callback) override;
 };
 
 
