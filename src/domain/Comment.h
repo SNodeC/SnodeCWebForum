@@ -13,12 +13,15 @@
 struct Comment {
 
     unsigned long id;
-
-    std::string topicText;
-    std::unique_ptr<User> poster;
-    std::unique_ptr<Post> post;
+    Post post;
+    User poster;
+    std::string content;
+    std::string creationDate;
 
 };
+
+
+
 
 
 #endif //GETANDPOSTSERVERTEMPLATE_TOPIC_H

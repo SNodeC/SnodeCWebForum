@@ -14,10 +14,12 @@
 struct Post {
 
     unsigned long id;
-
+    Topic topic;
+    User creator;
     std::string title;
-    std::unique_ptr<User> creator;
-    std::unique_ptr<Topic> topic;
+    std::string content;
+    std::string creationDate;
+
 
 };
 

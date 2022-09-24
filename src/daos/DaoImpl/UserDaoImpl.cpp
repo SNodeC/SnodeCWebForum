@@ -3,15 +3,67 @@
 //
 
 #include "UserDaoImpl.h"
+#include <sstream>
+#include <cstring>
 
-bool UserDaoImpl::isUserNameTaken(std::string username) {
-    return false;
+void UserDaoImpl::isUserNameTaken(std::string username, std::function<void(bool)> &callback) {
+
+
+    std::ostringstream sql;
+    sql <<
+        "SELECT username "
+        "FROM User "
+        "WHERE username = " << username << ";";
+
+
+    DBClient.query(sql.str(),
+                   [&](const MYSQL_ROW &rows) {
+                       callback(rows[0] != nullptr);
+                   },
+                   [&](const std::string &, int) {
+                       callback(false);
+                   });
+
+
 }
 
-bool UserDaoImpl::createUser(std::string username, std::string password, std::string salt) {
-    return false;
+void UserDaoImpl::createUser(std::string username, std::string password, std::string salt,
+                             std::function<void(bool)> &callback) {
+
+    std::ostringstream sql;
+    sql <<
+        "INSERT INTO User (username, password, salt) "
+        "VALUES (" << username << "," << password << "," << salt << ");";
+
+
+    DBClient.exec(sql.str(),
+                  [&]() { callback(true); },
+                  [&](const std::string &, int) { callback(false); });
+
+
 }
 
-bool UserDaoImpl::checkUserPassword(unsigned long id, std::string password, std::string salt) {
-    return false;
+void UserDaoImpl::checkUserPassword(unsigned long id, std::string password, std::string salt,
+                                    std::function<void(bool)> &callback) {
+
+    std::ostringstream sql;
+    sql <<
+        "SELECT password"
+        "FROM USER"
+        "WHERE id =" << id << ";";
+
+    DBClient.query(sql.str(),
+                   [&](const MYSQL_ROW &rows) {
+                       if (rows[0] == nullptr) {
+                           //TODO password magic
+                           callback(std::strcmp(password.c_str(), rows[0]));
+                       }
+                   },
+                   [&](const std::string &, int) {
+                       callback(false);
+                   });
+
+
 }
+
+

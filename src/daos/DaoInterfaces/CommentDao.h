@@ -9,11 +9,15 @@
 #include <ctime>
 #include "Dao.h"
 #include "../../domain/Comment.h"
+#include "../../utils/DateTime.h"
 
-class CommentDao: Dao<Comment> {
+class CommentDao: public Dao<Comment> {
 
-    virtual bool create(std::string content) = 0;
-    virtual std::list<Comment> getRecentTopicsOfThread(unsigned long id, int amount, std::time_t start, std::time_t end) = 0;
+    virtual void create(std::string content, int posterID, int postID, std::function<void(bool)> &callback) = 0;
+    virtual void getRecentCommentsOfPost(unsigned long id, int amount, int start, std::function<void(std::vector<Comment>)> &callback) = 0;
+    virtual void getCreator(unsigned long id, std::function<void(User)> &callback) = 0;
+
+
 
 
 };

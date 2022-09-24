@@ -8,13 +8,17 @@
 
 #include "Dao.h"
 #include "../../domain/Topic.h"
+#include "../../utils/DateTime.h"
 #include <ctime>
 
-class TopicDao : Dao<Topic> {
+class TopicDao : public Dao<Topic> {
 
-    virtual bool create(std::string title) = 0;
+    virtual void create(std::string title, int userID, std::function<void(bool)> &callback) = 0;
 
-    virtual std::list<Topic> getRecentSubtopics(int amount, std::time_t start, std::time_t end) = 0;
+    virtual void getCreator(unsigned long id, std::function<void(User)> &callback) = 0;
+
+    virtual void getRecentTopics(int amount, int start,
+                                 std::function<void(std::vector<Topic>)> &callback) = 0;
 
 
 };

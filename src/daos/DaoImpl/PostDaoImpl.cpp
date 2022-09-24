@@ -3,18 +3,135 @@
 //
 
 #include "PostDaoImpl.h"
+
 #include "../../domain/Topic.h"
+
 #include "../../domain/Post.h"
 
-bool PostDaoImpl::create(std::string title) {
-    return false;
+void PostDaoImpl::create(std::string title, int userID, std::function<void(bool)> &callback) {
+
+    std::ostringstream sql;
+    sql <<
+        "INSERT INTO Post (creatorID, title) "
+        "VALUES (" << userID << ",'" << title << "');";
+
+    DBClient.exec(sql.str(),
+                  [&]() { callback(true); },
+                  [&](const std::string &, int) { callback(false); });
+
+
 }
 
-Topic PostDaoImpl::getSubtopic(unsigned long id) {
-    return Topic();
+/*
+void PostDaoImpl::getPost(unsigned long id, std::function<void(Post)> &callback) {
+
+    std::ostringstream sql;
+    sql << "SELECT id ,topicID, creatorID, title, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
+           "FROM Post "
+           "WHERE id = " << id << ";";
+
+    DBClient.query(sql.str(), [&](const MYSQL_ROW &rows) {
+
+        if (rows[0] == nullptr) {
+            callback(Post{std::stoul(rows[0]), Topic{std::stoul(rows[1])}, User{std::stoul(rows[2])}, rows[3], rows[4],
+                          rows[5]});
+        }
+
+    }, [&](const std::string &, int) {
+        callback({});
+    });
+
+
+}
+*/
+
+void PostDaoImpl::getRecentPostsOfTopic(unsigned long id, int amount, int start,
+                                        std::function<void(std::vector<Post>)> &callback) {
+
+    std::ostringstream sql;
+    sql <<
+        "SELECT id,topicID, creatorID, title, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
+        "FROM Post "
+        "WHERE topicID = " << id <<
+        "ORDER BY creationDate DESC "
+        "LIMIT " << amount <<
+        "OFFSET " << start << ";";
+
+    std::vector<Post> returnVector;
+
+    DBClient.query(sql.str(), [&](const MYSQL_ROW &rows) {
+
+        if (rows[0] == nullptr) {
+            returnVector.push_back(
+                    Post{std::stoul(rows[0]),
+                         Topic{std::stoul(rows[1])},
+                         User{std::stoul(rows[2])},
+                         rows[3],
+                         rows[4],
+                         rows[5]});
+        } else
+            callback(returnVector);
+
+
+    }, [&](const std::string &, int) {
+        callback({});
+    });
+
+
 }
 
-std::list<Post>
-PostDaoImpl::getRecentThreadsOfSubtopic(unsigned long id, int amount, std::time_t start, std::time_t end) {
-    return std::list<Post>();
+void PostDaoImpl::getCreator(unsigned long id, std::function<void(User)> &callback) {
+
+    std::ostringstream sql;
+    sql <<
+        "SELECT u.id, u.username , u.password, u.salt, DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
+        "FROM User u left JOIN Post p on u.id = p.creatorID"
+        "WHERE id = " << id << ";";
+
+    DBClient.query(sql.str(), [&](const MYSQL_ROW &rows) {
+
+        if (rows[0] == nullptr) {
+            callback(User{
+                    std::stoul(rows[0]),
+                    rows[1],
+                    rows[2],
+                    rows[3],
+                    rows[4],
+                    rows[5]
+            });
+        }
+
+    }, [&](const std::string &, int) {
+        callback({});
+    });
+
+
+}
+
+void PostDaoImpl::getTopic(unsigned long id, std::function<void(Topic)> &callback) {
+
+    std::ostringstream sql;
+    sql <<
+        "SELECT t.id, t.creatorID , t.title, t.description, DATE_FORMAT(t.creationDate, '%d/%m/%Y') "
+        "FROM Topic t left JOIN Post p on u.id = p.creatorID"
+        "WHERE id = " << id << ";";
+
+    DBClient.query(sql.str(),
+                   [&](const MYSQL_ROW &rows) {
+                       if (rows[0] == nullptr) {
+                           callback(Topic{
+                                   std::stoul(rows[0]),
+                                   std::stoul(rows[1]),
+                                   rows[2],
+                                   rows[3],
+                                   rows[4],
+                                   rows[5]
+                           });
+                       }
+                   },
+                   [&](const std::string &, int) {
+                       callback({});
+                   });
+
+
 }

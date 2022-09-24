@@ -8,11 +8,14 @@
 
 #include "../DaoInterfaces/TopicDao.h"
 #include "../../domain/Topic.h"
+#include "../../utils/DateTime.h"
 
-class TopicDaoImpl : TopicDao {
-    bool create(std::string title) override;
+class TopicDaoImpl : public TopicDao {
+    void create(std::string title,int userID,std::function<void(bool)> &callback) override;
 
-    std::list<Topic> getRecentSubtopics(int amount, std::time_t start, std::time_t end) override;
+    void getCreator(unsigned long id, std::function<void(User)> &callback) override;
+
+    void getRecentTopics(int amount, int start, std::function<void(std::vector<Topic>)> & callback) override;
 };
 
 

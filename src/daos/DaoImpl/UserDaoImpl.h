@@ -8,12 +8,12 @@
 
 #include "../DaoInterfaces/UserDao.h"
 
-class UserDaoImpl: UserDao {
-    bool isUserNameTaken(std::string username) override;
+class UserDaoImpl: public UserDao{
+    void isUserNameTaken(std::string username,std::function<void(bool)> &callback) override;
 
-    bool createUser(std::string username, std::string password, std::string salt) override;
+    void createUser(std::string username, std::string password, std::string salt,std::function<void(bool)> &callback) override;
 
-    bool checkUserPassword(unsigned long id, std::string password, std::string salt) override;
+    void checkUserPassword(unsigned long id, std::string password, std::string salt,std::function<void(bool)> &callback) override;
 };
 
 

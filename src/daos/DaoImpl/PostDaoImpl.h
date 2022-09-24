@@ -9,14 +9,18 @@
 #include "../DaoInterfaces/PostDao.h"
 #include "../../domain/Topic.h"
 #include "../../domain/Post.h"
+#include "../../utils/DateTime.h"
 
-class PostDaoImpl : PostDao {
-    bool create(std::string title) override;
+class PostDaoImpl : public PostDao {
+    void create(std::string title,int userID,std::function<void(bool)> &callback) override;
 
-    Topic getSubtopic(unsigned long id) override;
+    //void getPost(unsigned long id, std::function<void(Post)> &callback) override;
 
-    std::list<Post>
-    getRecentThreadsOfSubtopic(unsigned long id, int amount, std::time_t start, std::time_t end) override;
+    void getRecentPostsOfTopic(unsigned long id, int amount, int start, std::function<void(std::vector<Post>)> &callback) override;
+
+    void getCreator(unsigned long id, std::function<void(User)> &callback) override;
+
+    void getTopic(unsigned long id, std::function<void(Topic)> &callback) override;
 };
 
 

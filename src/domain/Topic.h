@@ -13,8 +13,10 @@
 struct Topic {
 
     unsigned long id;
+    User creator;
     std::string title;
-    std::unique_ptr<User> creator;
+    std::string description;
+    std::string creationDate;
 
 };
 

@@ -7,12 +7,47 @@
 
 #include <list>
 #include <string>
+#include <database/mariadb/MariaDBConnectionDetails.h>
+#include <database/mariadb/MariaDBClient.h>
+#include <database/mariadb/MariaDBConnection.h>
+#include <database/mariadb/MariaDBClient.h>
+#include <database/mariadb/MariaDBCommand.h>
+#include <database/mariadb/MariaDBConnectionDetails.h>
+#include <database/mariadb/commands/sync/MariaDBUseResultCommand.h>
+#include <database/mariadb/MariaDBCommandSequence.h>
+#include <filesystem>
+#include <algorithm>
 
 
 template<typename T>
 class Dao {
 
-public:
+protected:
+    database::mariadb::MariaDBClient &DBClient;
+
+    explicit Dao(database::mariadb::MariaDBClient &client) : DBClient{client} {}
+
+/*
+
+    database::mariadb::MariaDBClient DatabaseInit() {
+
+
+        database::mariadb::MariaDBClient dbClient(DBConnectionDetails);
+
+
+        return dbClient;
+
+        std::function<void(const std::string &, unsigned int)> onError = [](const std::string &, unsigned int) {};
+
+        dbClient.exec("INSERT into Users ( username, password) VALUES ('Fidi','Passwd');", []() {},
+                      [](const std::string &, unsigned int) {});
+
+        dbClient.commit([]() {}, [](const std::string &, unsigned int) {});
+
+    }
+
+*/
+
 /*    T get(long id) {
 
         T t;
@@ -21,9 +56,9 @@ public:
 
     };
 
-    std::list<T> getAll() {
+    std::vector<T> getAll() {
 
-        std::list<T> resultList;
+        std::vector<T> resultList;
 
         return resultList;
     };
@@ -34,7 +69,7 @@ public:
 
     };
 
-    bool update(T t, std::list<std::string> params) {
+    bool update(T t, std::vector<std::string> params) {
 
         return true;
 

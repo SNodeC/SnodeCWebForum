@@ -14,6 +14,10 @@ struct User {
     std::string userName;
     std::string password;
     std::string salt;
+    std::string avatarURL;
+    std::string creationDate;
+
+
 };
 
 

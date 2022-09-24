@@ -9,12 +9,17 @@
 #include <ctime>
 #include "Dao.h"
 #include "../../domain/Post.h"
+#include "../../utils/DateTime.h"
 
-class PostDao : Dao<Post> {
+class PostDao : public Dao<Post> {
 
-    virtual bool create(std::string title) = 0;
-    virtual Topic getSubtopic(unsigned long id) = 0;
-    virtual std::list<Post> getRecentThreadsOfSubtopic(unsigned long id, int amount, std::time_t start, std::time_t end) = 0;
+    virtual void create(std::string title,int userID,std::function<void(bool)> &callback) = 0;
+    //virtual void getPost(unsigned long id, std::function<void(Post)> &callback) = 0;
+    virtual void getCreator(unsigned long id, std::function<void(User)> &callback) = 0;
+    virtual void getTopic(unsigned long id, std::function<void(Topic)> &callback) = 0;
+    virtual void getRecentPostsOfTopic(unsigned long id, int amount, int start, std::function<void(std::vector<Post>)> &callback) = 0;
+
+
 
 };
 
