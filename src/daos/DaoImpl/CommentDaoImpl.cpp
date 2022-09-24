@@ -28,9 +28,13 @@ void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int s
         "SELECT id, postID, posterID, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
         "FROM Comment "
         "WHERE postID = " << id <<
-        "ORDER BY creationDate DESC "
-        "LIMIT " << amount <<
-        "OFFSET " << start << ";";
+        "ORDER BY creationDate DESC ";
+
+    if (amount != -1) {
+        sql <<
+            "LIMIT " << amount <<
+            "OFFSET " << start << ";";
+    }
 
     std::vector<Comment> returnVector;
 
@@ -73,6 +77,34 @@ void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User)> &cal
                                    rows[3],
                                    rows[4],
                                    rows[5]});
+                       }
+                   },
+                   [&](const std::string &, int) {
+                       callback({});
+                   });
+
+
+}
+
+void CommentDaoImpl::getById(unsigned long id, std::function<void(Comment)> &callback) {
+
+    std::ostringstream sql;
+    sql <<
+        "SELECT id, postID, posterID, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
+        "FROM Comment "
+        "WHERE id = " << id << ";";
+
+
+    DBClient.query(sql.str(),
+                   [&](const MYSQL_ROW &rows) {
+
+                       if (rows[0] == nullptr) {
+                           callback(Comment{
+                                   std::stoul(rows[0]),
+                                   Post{std::stoul(rows[1])},
+                                   User{std::stoul(rows[2])},
+                                   rows[3],
+                                   rows[4]});
                        }
                    },
                    [&](const std::string &, int) {

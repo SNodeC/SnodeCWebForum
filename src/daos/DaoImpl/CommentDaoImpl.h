@@ -10,11 +10,16 @@
 #include "DaoImpl.h"
 
 class CommentDaoImpl: public CommentDao, DaoImpl{
+public:
     void create(std::string content, int posterID, int postID, std::function<void(bool)> &callback) override;
 
     void getRecentCommentsOfPost(unsigned long id, int amount, int start, std::function<void(std::vector<Comment>)> &callback) override;
 
     void getCreator(unsigned long id, std::function<void(User)> &callback) override;
+
+
+    void getById(unsigned long id, std::function<void(Comment)> &callback) override;
+
 };
 
 

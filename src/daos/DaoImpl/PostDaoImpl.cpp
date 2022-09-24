@@ -45,15 +45,19 @@ void PostDaoImpl::getPost(unsigned long id, std::function<void(Post)> &callback)
 
 void PostDaoImpl::getRecentPostsOfTopic(unsigned long id, int amount, int start,
                                         std::function<void(std::vector<Post>)> &callback) {
-
     std::ostringstream sql;
     sql <<
         "SELECT id,topicID, creatorID, title, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
         "FROM Post "
         "WHERE topicID = " << id <<
-        "ORDER BY creationDate DESC "
-        "LIMIT " << amount <<
-        "OFFSET " << start << ";";
+        "ORDER BY creationDate DESC ";
+
+    if (amount != -1) {
+        sql <<
+            "LIMIT " << amount <<
+            "OFFSET " << start << ";";
+    }
+
 
     std::vector<Post> returnVector;
 
@@ -136,4 +140,52 @@ void PostDaoImpl::getTopic(unsigned long id, std::function<void(Topic)> &callbac
                    });
 
 
+}
+
+void PostDaoImpl::getById(unsigned long id, std::function<void(Post)> &callback) {
+
+    std::ostringstream sql;
+    sql <<
+        "SELECT id, creatorID, title, description, DATE_FORMAT(creationDate, '%d/%m/%Y') "
+        "FROM Topic "
+        "WHERE id = " << id << ";";
+
+    DBClient.query(sql.str(),
+                   [&](const MYSQL_ROW &rows) {
+
+                       if (rows[0] == nullptr) {
+                           callback(Post{
+                                   std::stoul(rows[0]),
+                                   Topic{std::stoul(rows[1])},
+                                   User{std::stoul(rows[2])},
+                                   rows[3],
+                                   rows[4],
+                                   rows[5]});
+                       }
+                   },
+                   [&](const std::string &, int) {
+                       callback({});
+                   });
+
+
+}
+
+void PostDaoImpl::getCommentCount(unsigned long id, std::function<void(int)> &callback) {
+    std::ostringstream sql;
+    sql <<
+        "SELECT COUNT(*)"
+        "FROM Post p left JOIN Comment c on p.id = c.posterID"
+        "WHERE p.id = " << id << ";";
+
+
+    DBClient.query(sql.str(),
+                   [&](const MYSQL_ROW &rows) {
+                       std::vector<Topic> topics;
+                       if (rows[0] == nullptr) {
+                           callback(std::stoi(rows[0]));
+                       }
+                   },
+                   [&](const std::string &, int) {
+                       callback(-1);
+                   });
 }

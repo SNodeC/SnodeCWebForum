@@ -56,10 +56,13 @@ void TopicDaoImpl::getRecentTopics(int amount, int start,
     sql <<
         "SELECT id, creatorID, title, description, DATE_FORMAT(creationDate, '%d/%m/%Y') "
         "FROM Topic "
-        "ORDER BY creationDate DESC "
-        "LIMIT" << amount <<
-        "OFFSET" << start << ";";
+        "ORDER BY creationDate DESC ";
 
+    if (amount != -1) {
+        sql <<
+            "LIMIT " << amount <<
+            "OFFSET " << start << ";";
+    }
     std::vector<Topic> returnVector;
 
     DBClient.query(sql.str(),
@@ -84,7 +87,7 @@ void TopicDaoImpl::getRecentTopics(int amount, int start,
 
 }
 
-void TopicDaoImpl::getPostCount(int id, std::function<void(int)> &callback) {
+void TopicDaoImpl::getPostCount(unsigned long id, std::function<void(int)> &callback) {
 
     std::ostringstream sql;
     sql <<
@@ -102,6 +105,35 @@ void TopicDaoImpl::getPostCount(int id, std::function<void(int)> &callback) {
                    },
                    [&](const std::string &, int) {
                        callback(-1);
+                   });
+
+
+}
+
+void TopicDaoImpl::getById(unsigned long id, std::function<void(Topic)> &callback) {
+
+    std::ostringstream sql;
+    sql <<
+        "SELECT id, creatorID, title, description, DATE_FORMAT(creationDate, '%d/%m/%Y') "
+        "FROM Topic "
+        "WHERE id = " << id << ";";
+
+    DBClient.query(sql.str(),
+                   [&](const MYSQL_ROW &rows) {
+
+                       if (rows[0] == nullptr) {
+                           callback(Topic{
+                                   std::stoul(rows[0]),
+                                   std::stoul(rows[1]),
+                                   rows[2],
+                                   rows[3],
+                                   rows[4],
+                                   rows[5],
+                                   rows[6]});
+                       }
+                   },
+                   [&](const std::string &, int) {
+                       callback({});
                    });
 
 

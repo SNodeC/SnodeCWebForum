@@ -64,4 +64,34 @@ void UserDaoImpl::checkUserPassword(unsigned long id, std::string password, std:
 
 }
 
+void UserDaoImpl::getById(unsigned long id, std::function<void(User)> &callback) {
+
+    std::ostringstream sql;
+    sql <<
+        "SELECT id, username, password, salt, avatarURL, DATE_FORMAT(creationDate, '%d/%m/%Y') "
+        "FROM User "
+        "WHERE id = " << id << ";";
+
+
+    DBClient.query(sql.str(),
+                   [&](const MYSQL_ROW &rows) {
+
+                       if (rows[0] == nullptr) {
+                           callback(
+                                   User{std::stoul(rows[0]),
+                                        rows[1],
+                                        rows[2],
+                                        rows[3],
+                                        rows[4],
+                                        rows[5]});
+                       }
+
+                   },
+                   [&](const std::string &, int) {
+                       callback({});
+                   });
+
+
+}
+
 

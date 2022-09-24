@@ -15,7 +15,6 @@ protected:
     explicit DaoImpl(database::mariadb::MariaDBClient &client) : DBClient{client} {}
 
 
-
 };
 
 

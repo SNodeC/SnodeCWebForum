@@ -14,14 +14,11 @@ class TopicDao {
 
 public:
 
+    virtual void getById(unsigned long id, std::function<void(Topic)> &callback) = 0;
     virtual void create(std::string title, int userID, std::function<void(bool)> &callback) = 0;
-
     virtual void getCreator(unsigned long id, std::function<void(User)> &callback) = 0;
-
-    virtual void getRecentTopics(int amount, int start,
-                                 std::function<void(std::vector<Topic>)> &callback) = 0;
-
-    virtual void getPostCount(int id, std::function<void(int)> &callback) = 0;
+    virtual void getRecentTopics(int amount, int start,std::function<void(std::vector<Topic>)> &callback) = 0;
+    virtual void getPostCount(unsigned long id, std::function<void(int)> &callback) = 0;
 
 
 };
