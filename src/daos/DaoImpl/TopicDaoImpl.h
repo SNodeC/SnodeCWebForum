@@ -16,6 +16,9 @@ class TopicDaoImpl : public TopicDao , DaoImpl {
     void getCreator(unsigned long id, std::function<void(User)> &callback) override;
 
     void getRecentTopics(int amount, int start, std::function<void(std::vector<Topic>)> & callback) override;
+
+public:
+    void getPostCount(int id, std::function<void(int)> &callback) override;
 };
 
 

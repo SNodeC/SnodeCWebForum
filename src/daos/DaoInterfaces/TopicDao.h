@@ -21,6 +21,8 @@ public:
     virtual void getRecentTopics(int amount, int start,
                                  std::function<void(std::vector<Topic>)> &callback) = 0;
 
+    virtual void getPostCount(int id, std::function<void(int)> &callback) = 0;
+
 
 };
 

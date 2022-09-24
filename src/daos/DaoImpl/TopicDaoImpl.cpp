@@ -84,3 +84,26 @@ void TopicDaoImpl::getRecentTopics(int amount, int start,
 
 }
 
+void TopicDaoImpl::getPostCount(int id, std::function<void(int)> &callback) {
+
+    std::ostringstream sql;
+    sql <<
+        "SELECT COUNT(*)"
+        "FROM Post p left JOIN Topic t on p.topicID = t.id"
+        "WHERE t.id = " << id << ";";
+
+
+    DBClient.query(sql.str(),
+                   [&](const MYSQL_ROW &rows) {
+                       std::vector<Topic> topics;
+                       if (rows[0] == nullptr) {
+                           callback(std::stoi(rows[0]));
+                       }
+                   },
+                   [&](const std::string &, int) {
+                       callback(-1);
+                   });
+
+
+}
+
