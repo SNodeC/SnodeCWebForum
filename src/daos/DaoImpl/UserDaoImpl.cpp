@@ -23,8 +23,6 @@ void UserDaoImpl::isUserNameTaken(std::string username, std::function<void(bool)
                    [&](const std::string &, int) {
                        callback(false);
                    });
-
-
 }
 
 void UserDaoImpl::createUser(std::string username, std::string password, std::string salt,

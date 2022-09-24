@@ -6,12 +6,13 @@
 #define GETANDPOSTSERVERTEMPLATE_SUBTOPICDAO_H
 
 
-#include "Dao.h"
 #include "../../domain/Topic.h"
-#include "../../utils/DateTime.h"
 #include <ctime>
+#include <functional>
 
-class TopicDao : public Dao<Topic> {
+class TopicDao {
+
+public:
 
     virtual void create(std::string title, int userID, std::function<void(bool)> &callback) = 0;
 

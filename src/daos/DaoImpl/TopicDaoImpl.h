@@ -8,9 +8,9 @@
 
 #include "../DaoInterfaces/TopicDao.h"
 #include "../../domain/Topic.h"
-#include "../../utils/DateTime.h"
+#include "DaoImpl.h"
 
-class TopicDaoImpl : public TopicDao {
+class TopicDaoImpl : public TopicDao , DaoImpl {
     void create(std::string title,int userID,std::function<void(bool)> &callback) override;
 
     void getCreator(unsigned long id, std::function<void(User)> &callback) override;

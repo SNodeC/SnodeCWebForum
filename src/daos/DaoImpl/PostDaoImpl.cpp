@@ -2,11 +2,9 @@
 // Created by student on 9/21/22.
 //
 
+#include <sstream>
 #include "PostDaoImpl.h"
 
-#include "../../domain/Topic.h"
-
-#include "../../domain/Post.h"
 
 void PostDaoImpl::create(std::string title, int userID, std::function<void(bool)> &callback) {
 
@@ -59,23 +57,25 @@ void PostDaoImpl::getRecentPostsOfTopic(unsigned long id, int amount, int start,
 
     std::vector<Post> returnVector;
 
-    DBClient.query(sql.str(), [&](const MYSQL_ROW &rows) {
+    DBClient.query(sql.str(),
+                   [&](const MYSQL_ROW &rows) {
 
-        if (rows[0] == nullptr) {
-            returnVector.push_back(
-                    Post{std::stoul(rows[0]),
-                         Topic{std::stoul(rows[1])},
-                         User{std::stoul(rows[2])},
-                         rows[3],
-                         rows[4],
-                         rows[5]});
-        } else
-            callback(returnVector);
+                       if (rows[0] == nullptr) {
+                           returnVector.push_back(
+                                   Post{std::stoul(rows[0]),
+                                        Topic{std::stoul(rows[1])},
+                                        User{std::stoul(rows[2])},
+                                        rows[3],
+                                        rows[4],
+                                        rows[5]});
+                       } else
+                           callback(returnVector);
 
 
-    }, [&](const std::string &, int) {
-        callback({});
-    });
+                   },
+                   [&](const std::string &, int) {
+                       callback({});
+                   });
 
 
 }
@@ -88,22 +88,24 @@ void PostDaoImpl::getCreator(unsigned long id, std::function<void(User)> &callba
         "FROM User u left JOIN Post p on u.id = p.creatorID"
         "WHERE id = " << id << ";";
 
-    DBClient.query(sql.str(), [&](const MYSQL_ROW &rows) {
+    DBClient.query(sql.str(),
+                   [&](const MYSQL_ROW &rows) {
 
-        if (rows[0] == nullptr) {
-            callback(User{
-                    std::stoul(rows[0]),
-                    rows[1],
-                    rows[2],
-                    rows[3],
-                    rows[4],
-                    rows[5]
-            });
-        }
+                       if (rows[0] == nullptr) {
+                           callback(User{
+                                   std::stoul(rows[0]),
+                                   rows[1],
+                                   rows[2],
+                                   rows[3],
+                                   rows[4],
+                                   rows[5]
+                           });
+                       }
 
-    }, [&](const std::string &, int) {
-        callback({});
-    });
+                   },
+                   [&](const std::string &, int) {
+                       callback({});
+                   });
 
 
 }

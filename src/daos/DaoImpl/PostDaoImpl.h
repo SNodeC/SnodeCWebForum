@@ -9,9 +9,9 @@
 #include "../DaoInterfaces/PostDao.h"
 #include "../../domain/Topic.h"
 #include "../../domain/Post.h"
-#include "../../utils/DateTime.h"
+#include "DaoImpl.h"
 
-class PostDaoImpl : public PostDao {
+class PostDaoImpl : public PostDao, DaoImpl {
     void create(std::string title,int userID,std::function<void(bool)> &callback) override;
 
     //void getPost(unsigned long id, std::function<void(Post)> &callback) override;

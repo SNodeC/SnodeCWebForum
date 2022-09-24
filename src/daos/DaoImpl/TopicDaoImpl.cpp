@@ -2,9 +2,8 @@
 // Created by student on 9/21/22.
 //
 
+#include <sstream>
 #include "TopicDaoImpl.h"
-#include "../../domain/Topic.h"
-#include "../../utils/DateTime.h"
 
 void TopicDaoImpl::create(std::string title, int userID, std::function<void(bool)> &callback) {
 

@@ -7,8 +7,9 @@
 
 
 #include "../DaoInterfaces/UserDao.h"
+#include "DaoImpl.h"
 
-class UserDaoImpl: public UserDao{
+class UserDaoImpl: public UserDao, DaoImpl{
     void isUserNameTaken(std::string username,std::function<void(bool)> &callback) override;
 
     void createUser(std::string username, std::string password, std::string salt,std::function<void(bool)> &callback) override;

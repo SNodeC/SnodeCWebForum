@@ -6,10 +6,10 @@
 #define GETANDPOSTSERVERTEMPLATE_USERSDAO_H
 
 #include <string>
-#include "Dao.h"
+#include <functional>
 #include "../../domain/User.h"
 
-class UserDao : public Dao<User>{
+class UserDao {
 
 public:
 

@@ -7,11 +7,12 @@
 
 
 #include <ctime>
-#include "Dao.h"
+#include <functional>
 #include "../../domain/Post.h"
-#include "../../utils/DateTime.h"
 
-class PostDao : public Dao<Post> {
+class PostDao {
+
+public:
 
     virtual void create(std::string title,int userID,std::function<void(bool)> &callback) = 0;
     //virtual void getPost(unsigned long id, std::function<void(Post)> &callback) = 0;

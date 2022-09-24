@@ -2,6 +2,7 @@
 // Created by student on 9/21/22.
 //
 
+#include <sstream>
 #include "CommentDaoImpl.h"
 
 void CommentDaoImpl::create(std::string content, int posterID, int postID, std::function<void(bool)> &callback) {
