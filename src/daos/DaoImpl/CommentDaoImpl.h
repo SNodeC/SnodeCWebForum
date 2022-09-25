@@ -11,7 +11,7 @@
 
 class CommentDaoImpl: public CommentDao, protected DaoImpl{
 public:
-    void create(std::string content, int posterID, int postID,std::function<void(bool)> callback) override;
+    void create(std::string content, int creatorID, int postID,std::function<void(bool)> callback) override;
 
     void getRecentCommentsOfPost(unsigned long id, int amount, int start,std::function<void(std::vector<Comment>&&)> callback) override;
 

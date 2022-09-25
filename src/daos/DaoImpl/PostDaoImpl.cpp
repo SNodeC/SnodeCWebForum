@@ -174,7 +174,7 @@ void PostDaoImpl::getCommentCount(unsigned long id, std::function<void(int)> cal
     std::ostringstream sql;
     sql <<
         "SELECT COUNT(*)"
-        "FROM Post p left JOIN Comment c on p.id = c.posterID"
+        "FROM Post p left JOIN Comment c on p.id = c.creatorID"
         "WHERE p.id = " << id << ";";
 
 

@@ -1,9 +1,11 @@
 #include "HTMLResponseCreationService.h"
+#include "../daos/DaoInterfaces/CommentDao.h"
+#include "../daos/DaoInterfaces/PostDao.h"
+#include "../daos/DaoInterfaces/TopicDao.h"
+#include "../daos/DaoInterfaces/UserDao.h"
 
 #include <memory>
 #include <sstream>
-
-#include "../util.hpp"
 
 using std::ostringstream;
 using std::function;

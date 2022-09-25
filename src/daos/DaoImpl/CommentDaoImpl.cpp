@@ -5,12 +5,12 @@
 #include <sstream>
 #include "CommentDaoImpl.h"
 
-void CommentDaoImpl::create(std::string content, int posterID, int postID, std::function<void(bool)> callback) {
+void CommentDaoImpl::create(std::string content, int creatorID, int postID, std::function<void(bool)> callback) {
 
     std::ostringstream sql;
     sql <<
-        "INSERT INTO Comment (posterID, postID, commentText) "
-        "VALUES (" << posterID << ",'" << postID << "'" << content << "');";
+        "INSERT INTO Comment (creatorID, postID, commentText) "
+        "VALUES (" << creatorID << ",'" << postID << "'" << content << "');";
 
 
     DBClient.exec(sql.str(),
@@ -24,7 +24,7 @@ void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int s
 
     std::ostringstream sql;
     sql <<
-        "SELECT id, postID, posterID, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
+        "SELECT id, postID, creatorID, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
         "FROM Comment "
         "WHERE postID = " << id <<
         "ORDER BY creationDate DESC ";
@@ -63,7 +63,7 @@ void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> c
     std::ostringstream sql;
     sql <<
         "SELECT u.id, u.username , u.password, u.salt, DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
-        "FROM User u left JOIN Comment c on u.id = c.posterID"
+        "FROM User u left JOIN Comment c on u.id = c.creatorID"
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),
@@ -89,7 +89,7 @@ void CommentDaoImpl::getById(unsigned long id, std::function<void(Comment &&)> c
 
     std::ostringstream sql;
     sql <<
-        "SELECT id, postID, posterID, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
+        "SELECT id, postID, creatorID, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
         "FROM Comment "
         "WHERE id = " << id << ";";
 

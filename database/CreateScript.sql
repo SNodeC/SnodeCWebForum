@@ -39,12 +39,12 @@ CREATE OR REPLACE TABLE Comment
 (
     id           INT UNSIGNED AUTO_INCREMENT,
     postID       INT UNSIGNED,
-    posterID     INT UNSIGNED,
+    creatorID     INT UNSIGNED,
     content      VARCHAR(500) not null,
     creationDate datetime default NOW(),
     PRIMARY KEY (id),
     FOREIGN KEY (postID) REFERENCES Post (ID),
-    FOREIGN KEY (posterID) REFERENCES User (ID)
+    FOREIGN KEY (creatorID) REFERENCES User (ID)
 );
 
 

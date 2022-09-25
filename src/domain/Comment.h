@@ -14,7 +14,7 @@ struct Comment {
 
     unsigned long id;
     Post post;
-    User poster;
+    User creator;
     std::string content;
     std::string creationDate;
 
