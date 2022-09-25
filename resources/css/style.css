@@ -21,12 +21,47 @@
 }
 
 html {
+    height: 100%;
     font-size: 18px;
     background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url("../assets/images/cat-space.gif");
     background-repeat: repeat;
     font-family: Nunito-Regular;
     font-weight: bold;
     color: #FEFEFE;
+    overflow: hidden;
+}
+
+html, body {
+    overflow: auto;
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    height: 100%;
+    width: 100%;
+}
+
+header {
+    /* margin: 10px; */
+}
+
+#content {
+    min-width: 650px;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+footer {
+    width: 100%;
+    top: 100vh;
+    position: sticky;
+    margin-top: 20px;
+    padding: 20px 40px;
+    background: linear-gradient(180deg, #00000000 0%, #52057b 10%);
+    /*#52057b6c*/
+    /* display: block; */
+    text-align: center;
+    font-weight: bolder;
+    font-size: 20px;
 }
 
 a {
@@ -41,7 +76,7 @@ h1 {
     margin-top: 0px;
     margin-bottom: 50px;
     text-align: center;
-    font-size: 4rem;
+    font-size: max(min(8vw, 4rem), 3.2rem);
     font-family: BungeeSpice;
     letter-spacing: 0.15rem;
     text-transform: uppercase;
@@ -106,15 +141,31 @@ h2 {
 
 }
 
-footer {
-    width: 100%;
-    bottom: 0%;
-    left: 0%;
-    position: fixed;
-}
-
 .t-a-c {
     text-align: center;
+}
+
+.t-ov-el {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.t-ovw-any {
+    overflow-wrap: anywhere;
+}
+
+.t-center {
+    text-align: center;
+}
+
+.p-0 {
+    padding: 0;
+}
+
+.m-0 {
+    margin: 0;
 }
 
 .m-b-10 {
@@ -149,6 +200,10 @@ footer {
     margin-top: 100px;
 }
 
+.flex-70 {
+    flex: 70%;
+}
+
 /* ########################################### */
 /*           home.html                         */
 /* ########################################### */
@@ -162,10 +217,10 @@ footer {
     background: none;
 }
 
-
 .subforum-title {
     background-color: #001f619a;
-
+    border-style: hidden hidden solid hidden;
+    border-color: #0931869a;
     display: grid;
     grid-template-columns: 60% 40%;
 }
@@ -173,13 +228,15 @@ footer {
 /* TODO:  if counting not possible delete 10% and change 20 to 30...*/
 .subforum-row {
     display: grid;
-    grid-template-columns: 5% 65% 10% 20%;
+    grid-template-columns: 5% auto 10% 30%;
 }
 
 .subforum-column {
     padding: 10px;
-    margin-top: 10px;
     background-color: #0436a07a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .subforum-description * {
@@ -209,28 +266,31 @@ footer {
     font-size: 45px;
 }
 
-.subforum-devider {
-    display: none;
+.subforum-info {
+    text-align: center;
 }
 
-/*   Header Section    */
-
-header {
-    margin: 10px;
+.subforum-description, .post-title {
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
 }
 
 /* Nav Bar styles */
 
 .navbar {
     display: flex;
+    flex-direction: column;
     width: 100%;
 }
 
 .brand {
-    font-size: 60px;
-    font-family: BungeeSpice-Regular;
-    align-items: left;
-    width: 90%;
+    white-space: nowrap;
+}
+
+.brand h1 {
+    margin-bottom: 20px;
 }
 
 /* forum info Styling */
@@ -245,17 +305,6 @@ header {
     font-weight: bold;
 }
 
-/* Footer Styling */
-
-footer {
-    margin-top: 20px;
-    padding: 20px;
-    background-color: #52057b6c;
-    display: block;
-    text-align: center;
-    font-weight: bolder;
-    font-size: 20px;
-}
 
 /* ########################################### */
 /*            topic.html                       */
@@ -267,17 +316,24 @@ footer {
 }
 
 .table-head div {
-    padding: 10px;
-    margin: 2px;
+    padding: 0 10px;
+    margin: 0px;
     background-color: #00549d5c;
     font-weight: bold;
 }
 
 .table-head .subjects-header {
+    font-size: 24px;
+    font-family: Nunito-Bold;
+    border-style: hidden hidden solid hidden;
+    border-color: #00549d28;
+    height: 75.83333px;
     flex: 85%;
 }
 
 .table-head .add-new {
+    border-style: hidden hidden solid hidden;
+    border-color: #00549d28;
     flex: 15%;
 }
 
@@ -304,17 +360,35 @@ footer {
 .table-row .post-user {
     padding: 15px;
     background-color: #001f619a;
+    max-width: 100%;
 }
 
 .table-row .status {
     flex: 5%;
     font-size: 30px;
     text-align: center;
+    
 }
 
 .table-row .subjects {
     flex: 70%;
+    flex-shrink: 0;
+    flex-grow: 0;
+    flex-direction: column;
 }
+
+.table-row .subject-post {
+    flex: 100%;
+    flex-shrink: 0;
+    flex-grow: 0;
+    flex-direction: column;
+    background-color: #001f619a;
+}
+
+.table-row .subject-post .desc-post {
+    margin-bottom: 20px;
+}
+
 
 .table-row .replies {
     flex: 10%;
@@ -322,6 +396,40 @@ footer {
 
 .table-row .last-reply {
     flex: 15%;
+}
+
+.topic-hr {
+    margin: 0px;
+    height: 4px;
+    background: linear-gradient(0deg, #0436a07a 0%, #0435a09a 45%, #0435a09a 55%, #0436a07a 100%);
+    border: none;
+}
+
+.post-hr {
+    margin: 0px;
+    height: 4px;
+    background: linear-gradient(0deg, #001f619a 0%, #001f61c0 45%, #001f61c0 55%, #001f619a 100%);
+    border: none;
+}
+
+.comment-hr {
+    margin: 0px;
+    height: 4px;
+    background: linear-gradient(0deg, #2e00335a 0%, #43024b80 45%, #43024b80 55%, #2e00335a 100%);
+    border: none;
+}
+
+.subjects-header,
+.subjects,
+.post-user,
+.replies {
+    display: flex;
+    align-items: left;
+    /* align vertical */
+}
+
+.subjects h2 {
+    margin-bottom: 0px;
 }
 
 /* ########################################### */
@@ -336,31 +444,36 @@ footer {
 }
 
 .authors {
-    flex: 20%;
+    overflow: auto;
+    flex-basis: 30%;
+    flex-grow: 0;
+    flex-shrink: 0;
 }
 
 .content {
-    flex: 80%;
+    flex: 70%;
+    overflow-wrap: anywhere;
 }
 
 .body {
     display: flex;
     background-color: #2e00335a;
     padding: 10px;
-    margin-top: 5px;
 }
-
 
 .username {
     font-size: 20px;
     font-weight: bold;
     font-family: Nunito-Bold;
     color: #fb00ff;
+    max-width: 100%;
 }
 
 .body .authors img {
     max-width: 80px;
     max-height: 80px;
+    border-radius: 40px;
+    margin-top: 10px;
 }
 
 /* ########################################### */
@@ -445,9 +558,8 @@ textarea::placeholder {
 }
 
 .logout-align {
-    width: 10%;
     display: flex;
     justify-content: right;
     align-items: center;
-    margin: 20px;
+    margin: 10px 40px 10px auto;
 }

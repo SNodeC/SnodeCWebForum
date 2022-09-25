@@ -5,6 +5,10 @@
 #include <vector>
 #include <string>
 
+#include "../domain/Topic.h"
+#include "../domain/Post.h"
+#include "../domain/Comment.h"
+
 #include "../daos/DaoInterfaces/CommentDao.h"
 #include "../daos/DaoInterfaces/PostDao.h"
 #include "../daos/DaoInterfaces/TopicDao.h"
@@ -31,7 +35,6 @@ namespace service
         CommentDao& _commentDao;
         PostDao& _postDao;
         TopicDao& _topicDao;
-        UserDao& _userDao;
 
     public:
         HTMLResponseCreationService() = delete;
@@ -40,7 +43,7 @@ namespace service
         HTMLResponseCreationService& operator=(const HTMLResponseCreationService&) = delete;
         HTMLResponseCreationService& operator=(HTMLResponseCreationService&&) = delete;
 
-        HTMLResponseCreationService(CommentDao&, PostDao&, TopicDao&, UserDao&);
+        HTMLResponseCreationService(CommentDao&, PostDao&, TopicDao&);
 
         static string createHomeResponse(const vector<Topic>& topics, const vector<int>& postCounts,
                                          const vector<Post>& latestPostsIncCreator, const string& userName);

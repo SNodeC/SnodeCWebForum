@@ -1,8 +1,4 @@
 #include "HTMLResponseCreationService.h"
-#include "../daos/DaoInterfaces/CommentDao.h"
-#include "../daos/DaoInterfaces/PostDao.h"
-#include "../daos/DaoInterfaces/TopicDao.h"
-#include "../daos/DaoInterfaces/UserDao.h"
 
 #include <memory>
 #include <sstream>
@@ -41,8 +37,8 @@ namespace service
 #pragma region Constructors
 
     HTMLResponseCreationService::HTMLResponseCreationService(CommentDao& commentDao, PostDao& postDao,
-                                                             TopicDao& topicDao, UserDao& userDao):
-    _commentDao{commentDao}, _postDao{postDao}, _topicDao{topicDao}, _userDao{userDao} {}
+                                                             TopicDao& topicDao):
+    _commentDao{commentDao}, _postDao{postDao}, _topicDao{topicDao} {}
 
 #pragma endregion
 
@@ -192,7 +188,7 @@ namespace service
             "    <div class='rainbow-box'>\n"
             "        <span class='error'>404</span>\n"
             "        <h2 class='center'>Page not found</h2>\n"
-            "        <p class='center'>We looked all over but I thinkt the page you are looking for does not exist, \n"
+            "        <p class='center'>We looked all over but I think the page you are looking for does not exist, \n"
             "        <br> nor ever wil to be frank. Who knows honestly? We certainly dont. Maybe you?</p>\n"
             "    </div>\n"};
         static const string title{"404 not found"};
@@ -212,7 +208,9 @@ namespace service
             "        </div>\n"
             "        <div class='posts-table rainbow-box' >\n"
             "            <div class='table-head'>\n"
-            "                <div class='subjects-header'>Posts</div>\n"
+            "                <div class='subjects-header'>"
+            "                    <h2>Posts</h2>"
+            "                </div>\n"
         };
 
         static const string resultEnd{
@@ -309,7 +307,7 @@ namespace service
             "        <div class='rainbow-box'>\n"
             "            <div class='table-row'>\n"
             "                <div class='subject-post'>\n"
-            "                    <h2>" << post.title << "</h2> <br>"
+            "                    <h2>" << post.title << "</h2>"
             "                    <div class='text t-ov-el'>\n"
             "                        by <span class='username'>" << creator.userName << "</span>\n"
             "                    </div>\n"
@@ -318,7 +316,7 @@ namespace service
             "            <hr class='post-hr'>\n"
             "            <div class='table-row'>\n"
             "                <div class='subject-post'>\n"
-            "                    <div class='text'>\n"
+            "                    <div class='text desc-post'>\n"
                                      << post.content << "\n"
             "                    </div>\n"
             "                </div>\n"
@@ -337,7 +335,7 @@ namespace service
             contentBuffer <<
                 "            <div class='body'>\n"
                 "                <div class='authors'>\n"
-                "                    <div class='username'>" << commentCreator.userName << "</div>\n"
+                "                    <div class='username t-ov-el'>" << commentCreator.userName << "</div>\n"
                 "                    <img src='" << commentCreator.avatarURL << "' alt='user avatar'>\n"
                 "                </div>\n"
                 "                <div class='content'>\n"
