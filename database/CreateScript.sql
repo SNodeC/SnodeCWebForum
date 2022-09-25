@@ -5,7 +5,7 @@ CREATE OR REPLACE TABLE User
     id        INT UNSIGNED AUTO_INCREMENT,
     username  VARCHAR(30) not null,
     password  VARCHAR(50) not null,
-    salt      VARCHAR(20) not null,
+    salt      VARCHAR(16) not null,
     avatarURL VARCHAR(50) not null,
     creationDate  datetime default NOW(),
     PRIMARY KEY (id)
