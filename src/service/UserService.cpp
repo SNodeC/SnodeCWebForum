@@ -1,15 +1,14 @@
-//
-// Created by User on 25.09.2022.
-//
+#include <random>
 
 #include "UserService.h"
-
 
 typedef service::UserService cls;
 
 namespace service
 {
 #pragma region Constants
+
+    const size_t SALT_LEN = 16;
 
 #pragma endregion
 
@@ -20,6 +19,19 @@ namespace service
 #pragma endregion
 
 #pragma region Static Methods
+
+ustring UserService::createRandomSalt(size_t length) {
+    static std::random_device device;
+    static std::mt19937 rng(device());
+    static std::uniform_int_distribution<std::mt19937::result_type> distribution(0, 255);
+
+    ustring result;
+    for (size_t i = 0; i < length; ++i) {
+        result += static_cast<unsigned char>(distribution(rng));
+    }
+
+    return result;
+}
 
 #pragma endregion
 

@@ -9,11 +9,14 @@
 using std::string;
 using std::function;
 
+typedef std::basic_string<unsigned char> ustring;
+
 namespace service
 {
     class UserService
     {
     private:
+        static ustring createRandomSalt(size_t length);
         UserDao& _userDao;
     public:
         UserService() = delete;
