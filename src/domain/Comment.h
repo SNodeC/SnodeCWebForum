@@ -21,7 +21,4 @@ struct Comment {
 };
 
 
-
-
-
 #endif //GETANDPOSTSERVERTEMPLATE_TOPIC_H

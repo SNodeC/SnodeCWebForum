@@ -17,7 +17,6 @@ struct User {
     std::string avatarURL;
     std::string creationDate;
 
-
 };
 
 

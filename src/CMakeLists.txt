@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(
         snodec COMPONENTS http-server-express db-mariadb core-socket-stream-legacy net-in-stream-legacy
 )
+find_package(OpenSSL REQUIRED)
+
 
 #[[
 file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
@@ -19,8 +21,7 @@ file(GLOB_RECURSE HEADER_FILES CONFIGURE_DEPENDS
 ]]
 
 
-
-add_executable(main main.cpp daos domain utils service  #[[${HEADER_FILES} ${SOURCE_FILES}]]
+add_executable(main main.cpp utils/Utils.cpp utils/Utils.h daos domain service  #[[${HEADER_FILES} ${SOURCE_FILES}]]
         )
 
 add_custom_target(copy_assets ALL
@@ -48,5 +49,5 @@ add_dependencies(main copy_assets)
 add_dependencies(main copy_js)
 add_dependencies(main copy_css)
 
-target_link_libraries(main PRIVATE snodec::http-server-express snodec::db-mariadb snodec::core-socket-stream-legacy snodec::net-in-stream-legacy
+target_link_libraries(main PRIVATE snodec::http-server-express snodec::db-mariadb snodec::core-socket-stream-legacy snodec::net-in-stream-legacy OpenSSL::SSL
         )

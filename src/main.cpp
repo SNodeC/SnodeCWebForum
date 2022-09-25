@@ -9,6 +9,7 @@
 #include <database/mariadb/MariaDBConnectionDetails.h>
 #include <database/mariadb/commands/sync/MariaDBUseResultCommand.h>
 #include <database/mariadb/MariaDBCommandSequence.h>
+#include "utils/Utils.h"
 
 
 using namespace std;
@@ -42,7 +43,6 @@ int main(int argc, char *argv[]) {
     DBConnection.commandStart(currentTime);
 */
 
-
     const database::mariadb::MariaDBConnectionDetails DBConnectionDetails{
             "localhost",
             "fidi",
@@ -74,7 +74,6 @@ int main(int argc, char *argv[]) {
     express::WebApp::init(argc, argv);
 
     express::legacy::in::WebApp legacyApp("getPost");
-
     legacyApp.get("/home", []APPLICATION(req, res) {
         res.send("<!DOCTYPE html>\n"
                  "<html lang=\"en\">\n"

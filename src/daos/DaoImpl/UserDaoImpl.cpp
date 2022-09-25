@@ -6,7 +6,7 @@
 #include <sstream>
 #include <cstring>
 
-void UserDaoImpl::isUserNameTaken(std::string username, const std::function<void(bool)> &callback) {
+void UserDaoImpl::isUserNameTaken(std::string username, std::function<void(bool)> callback) {
 
 
     std::ostringstream sql;
@@ -26,7 +26,7 @@ void UserDaoImpl::isUserNameTaken(std::string username, const std::function<void
 }
 
 void UserDaoImpl::createUser(std::string username, std::string password, std::string salt,
-                             const std::function<void(bool)> &callback) {
+                             std::function<void(bool)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -41,8 +41,8 @@ void UserDaoImpl::createUser(std::string username, std::string password, std::st
 
 }
 
-void UserDaoImpl::checkUserPassword(unsigned long id, std::string password, std::string salt,
-                                    const std::function<void(bool)> &callback) {
+void UserDaoImpl::checkUserPassword(unsigned long id, std::string password,
+                                    std::function<void(bool)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -53,7 +53,6 @@ void UserDaoImpl::checkUserPassword(unsigned long id, std::string password, std:
     DBClient.query(sql.str(),
                    [&](const MYSQL_ROW &rows) {
                        if (rows[0] == nullptr) {
-                           //TODO password magic
                            callback(std::strcmp(password.c_str(), rows[0]));
                        }
                    },
@@ -64,7 +63,7 @@ void UserDaoImpl::checkUserPassword(unsigned long id, std::string password, std:
 
 }
 
-void UserDaoImpl::getById(unsigned long id, const std::function<void(User &&)> &callback) {
+void UserDaoImpl::getById(unsigned long id, std::function<void(User &&)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -91,6 +90,27 @@ void UserDaoImpl::getById(unsigned long id, const std::function<void(User &&)> &
                        callback({});
                    });
 
+
+}
+
+void UserDaoImpl::getSalt(unsigned long id, std::function<void(std::string)> callback) {
+
+    std::ostringstream sql;
+    sql <<
+        "SELECT salt "
+        "FROM User "
+        "WHERE id = " << id << ";";
+
+
+    DBClient.query(sql.str(),
+                   [&](const MYSQL_ROW &rows) {
+                       if (rows[0] == nullptr) {
+                           callback(rows[0]);
+                       }
+                   },
+                   [&](const std::string &, int) {
+                       callback({});
+                   });
 
 }
 

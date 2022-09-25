@@ -5,7 +5,7 @@
 #include <sstream>
 #include "CommentDaoImpl.h"
 
-void CommentDaoImpl::create(std::string content, int posterID, int postID, const std::function<void(bool)> &callback) {
+void CommentDaoImpl::create(std::string content, int posterID, int postID, std::function<void(bool)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -20,7 +20,7 @@ void CommentDaoImpl::create(std::string content, int posterID, int postID, const
 }
 
 void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int start,
-                                             const std::function<void(std::vector<Comment> &&)> &callback) {
+                                             std::function<void(std::vector<Comment> &&)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -58,7 +58,7 @@ void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int s
 
 }
 
-void CommentDaoImpl::getCreator(unsigned long id, const std::function<void(User &&)> &callback) {
+void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -85,7 +85,7 @@ void CommentDaoImpl::getCreator(unsigned long id, const std::function<void(User 
 
 }
 
-void CommentDaoImpl::getById(unsigned long id, const std::function<void(Comment &&)> &callback) {
+void CommentDaoImpl::getById(unsigned long id, std::function<void(Comment &&)> callback) {
 
     std::ostringstream sql;
     sql <<

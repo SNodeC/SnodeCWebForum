@@ -5,7 +5,7 @@
 #include <sstream>
 #include "TopicDaoImpl.h"
 
-void TopicDaoImpl::create(std::string title, int userID, const std::function<void(bool)> &callback) {
+void TopicDaoImpl::create(std::string title, int userID, std::function<void(bool)> callback) {
 
 
     std::ostringstream sql;
@@ -21,7 +21,7 @@ void TopicDaoImpl::create(std::string title, int userID, const std::function<voi
 
 }
 
-void TopicDaoImpl::getCreator(unsigned long id, const std::function<void(User &&)> &callback) {
+void TopicDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -50,7 +50,7 @@ void TopicDaoImpl::getCreator(unsigned long id, const std::function<void(User &&
 }
 
 void TopicDaoImpl::getRecentTopics(int amount, int start,
-                                   const std::function<void(std::vector<Topic> &&)> &callback) {
+                                   std::function<void(std::vector<Topic> &&)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -87,7 +87,7 @@ void TopicDaoImpl::getRecentTopics(int amount, int start,
 
 }
 
-void TopicDaoImpl::getPostCount(unsigned long id, const std::function<void(int)> &callback) {
+void TopicDaoImpl::getPostCount(unsigned long id, std::function<void(int)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -110,7 +110,7 @@ void TopicDaoImpl::getPostCount(unsigned long id, const std::function<void(int)>
 
 }
 
-void TopicDaoImpl::getById(unsigned long id, const std::function<void(Topic &&)> &callback) {
+void TopicDaoImpl::getById(unsigned long id, std::function<void(Topic &&)> callback) {
 
     std::ostringstream sql;
     sql <<
