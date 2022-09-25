@@ -4,10 +4,15 @@
 #include <functional>
 #include <vector>
 #include <string>
-#include "../daos/DaoInterfaces/CommentDao.h"
-#include "../daos/DaoInterfaces/PostDao.h"
-#include "../daos/DaoInterfaces/TopicDao.h"
-#include "../daos/DaoInterfaces/UserDao.h"
+
+#include "domain/Topic.h"
+#include "domain/Post.h"
+#include "domain/Comment.h"
+
+#include "daos/DaoInterfaces/CommentDao.h"
+#include "daos/DaoInterfaces/PostDao.h"
+#include "daos/DaoInterfaces/TopicDao.h"
+#include "daos/DaoInterfaces/UserDao.h"
 
 using std::string;
 using std::vector;
@@ -62,7 +67,6 @@ namespace service
         void createTopicOverviewResponseFromDao(unsigned long topicId, const string& userName, const resCallback&);
         void createPostOverviewResponseFromDao(unsigned long postId, const string& userName, const resCallback&);
     };
-
 }
 
 #endif //RESPONSESERVICETEST_HTMLRESPONSECREATIONSERVICE_H
