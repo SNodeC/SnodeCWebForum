@@ -11,12 +11,17 @@
 #include "../../utils/Utils.h"
 
 class UserDaoImpl : public UserDao, protected DaoImpl {
+
 public:
-    void getById(unsigned long id,std::function<void(User&&)> callback) override;
 
-    void isUserNameTaken(std::string username,std::function<void(bool)> callback) override;
+    explicit UserDaoImpl(database::mariadb::MariaDBClient &client) : DaoImpl{client} {}
 
-    void createUser(std::string username, std::string password, std::string salt, std::function<void(bool)> callback) override;
+    void getById(unsigned long id, std::function<void(User &&)> callback) override;
+
+    void isUserNameTaken(std::string username, std::function<void(bool)> callback) override;
+
+    void createUser(std::string username, std::string password, std::string salt, std::string avatarURL,
+                    std::function<void(bool)> callback) override;
 
     void checkUserPassword(unsigned long id, std::string password, std::function<void(bool)> callback) override;
 

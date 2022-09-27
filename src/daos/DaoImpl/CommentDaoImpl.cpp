@@ -10,7 +10,7 @@ void CommentDaoImpl::create(std::string content, int creatorID, int postID, std:
     std::ostringstream sql;
     sql <<
         "INSERT INTO Comment (creatorID, postID, commentText) "
-        "VALUES (" << creatorID << ",'" << postID << "'" << content << "');";
+        "VALUES (" << creatorID << "," << postID << ",'" << content << "');";
 
 
     DBClient.exec(sql.str(),

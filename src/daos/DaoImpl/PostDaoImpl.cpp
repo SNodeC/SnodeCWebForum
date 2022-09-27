@@ -20,29 +20,6 @@ void PostDaoImpl::create(std::string title, int userID, std::function<void(bool)
 
 }
 
-/*
-void PostDaoImpl::getPost(unsigned long id, std::function<void(Post)> callback) {
-
-    std::ostringstream sql;
-    sql << "SELECT id ,topicID, creatorID, title, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
-           "FROM Post "
-           "WHERE id = " << id << ";";
-
-    DBClient.query(sql.str(), [&](const MYSQL_ROW &rows) {
-
-        if (rows[0] == nullptr) {
-            callback(Post{std::stoul(rows[0]), Topic{std::stoul(rows[1])}, User{std::stoul(rows[2])}, rows[3], rows[4],
-                          rows[5]});
-        }
-
-    }, [&](const std::string &, int) {
-        callback({});
-    });
-
-
-}
-*/
-
 void PostDaoImpl::getRecentPostsOfTopic(unsigned long id, int amount, int start,
                                         std::function<void(std::vector<Post> &&)> callback) {
     std::ostringstream sql;

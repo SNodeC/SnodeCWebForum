@@ -6,7 +6,7 @@ CREATE OR REPLACE TABLE User
     username  VARCHAR(30) not null,
     password  VARCHAR(50) not null,
     salt      VARCHAR(16) not null,
-    avatarURL VARCHAR(50) not null,
+    avatarURL VARCHAR(150),
     creationDate  datetime default NOW(),
     PRIMARY KEY (id)
 );

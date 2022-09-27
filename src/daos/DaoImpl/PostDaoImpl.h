@@ -1,4 +1,4 @@
-//
+//public
 // Created by student on 9/21/22.
 //
 
@@ -12,6 +12,10 @@
 #include "DaoImpl.h"
 
 class PostDaoImpl : public PostDao, protected DaoImpl {
+
+public:
+    explicit PostDaoImpl(database::mariadb::MariaDBClient &client) : DaoImpl{client} {}
+
     void create(std::string title, int userID, std::function<void(bool)> callback) override;
 
     void getRecentPostsOfTopic(unsigned long id, int amount, int start,

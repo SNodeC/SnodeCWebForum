@@ -9,7 +9,11 @@
 #include <database/mariadb/MariaDBConnectionDetails.h>
 #include <database/mariadb/commands/sync/MariaDBUseResultCommand.h>
 #include <database/mariadb/MariaDBCommandSequence.h>
-#include "utils/Utils.h"
+#include "daos/DaoImpl/UserDaoImpl.h"
+#include "daos/DaoInterfaces/UserDao.h"
+#include "daos/DaoImpl/CommentDaoImpl.h"
+#include "daos/DaoImpl/PostDaoImpl.h"
+#include "daos/DaoImpl/TopicDaoImpl.h"
 
 
 using namespace std;
@@ -55,6 +59,18 @@ int main(int argc, char *argv[]) {
 
     database::mariadb::MariaDBClient DBClient(DBConnectionDetails);
 
+    UserDaoImpl userDao(DBClient);
+    function<void(bool)> callback = [](bool b) { std::cout << b << std::endl; };
+    userDao.createUser("allNewFidi", "nicePassword", "asdfcasdfasdf","URL", callback);
+
+/*
+
+    CommentDaoImpl commentDao(DBClient);
+    PostDaoImpl postDao(DBClient);
+    TopicDaoImpl topicDao(DBClient);
+
+*/
+
 /*    std::string sql = "Select * from User;";
 
     database::mariadb::MariaDBCommandSequence &sequence = DBClient.query(sql, [&](const MYSQL_ROW &rows) {
@@ -71,10 +87,13 @@ int main(int argc, char *argv[]) {
     });
 
 */
+
+
     express::WebApp::init(argc, argv);
 
     express::legacy::in::WebApp legacyApp("getPost");
     legacyApp.get("/home", []APPLICATION(req, res) {
+
         res.send("<!DOCTYPE html>\n"
                  "<html lang=\"en\">\n"
                  "<head>\n"
@@ -169,14 +188,6 @@ int main(int argc, char *argv[]) {
         );
 
     });
-
-
-
-    //  legacyApp.get("/css", sendFile);
-    //  legacyApp.get("/js", sendFile);
-    //  legacyApp.get("/assets/fonts", sendFile);
-    //  legacyApp.get("/assets/images", sendFile);
-
 
     legacyApp.get("/:dir(js|css|assets)/:suffix", sendFile);
 

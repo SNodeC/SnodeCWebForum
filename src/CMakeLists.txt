@@ -10,18 +10,42 @@ find_package(
 )
 find_package(OpenSSL REQUIRED)
 
+add_executable(main main.cpp
 
-#[[
-file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
-        ${CMAKE_SOURCE_DIR} "*.cpp")
+        utils
+        utils/Utils.cpp
+        utils/Utils.h
+        daos
 
-file(GLOB_RECURSE HEADER_FILES CONFIGURE_DEPENDS
-        ${CMAKE_SOURCE_DIR} "*.h"
-        ${CMAKE_SOURCE_DIR} "*.hpp")
-]]
+        daos/DaoInterfaces/CommentDao.h
+        daos/DaoInterfaces/PostDao.h
+        daos/DaoInterfaces/UserDao.h
+        daos/DaoInterfaces/TopicDao.h
 
+        daos/DaoImpl/UserDaoImpl.h
+        daos/DaoImpl/UserDaoImpl.cpp
+        daos/DaoImpl/CommentDaoImpl.cpp
+        daos/DaoImpl/CommentDaoImpl.h
+        daos/DaoImpl/DaoImpl.h
+        daos/DaoImpl/PostDaoImpl.cpp
+        daos/DaoImpl/PostDaoImpl.h
+        daos/DaoImpl/TopicDaoImpl.cpp
+        daos/DaoImpl/TopicDaoImpl.h
+        daos/DaoImpl/UserDaoImpl.cpp
+        daos/DaoImpl/UserDaoImpl.h
 
-add_executable(main main.cpp utils/Utils.cpp utils/Utils.h daos domain service  #[[${HEADER_FILES} ${SOURCE_FILES}]]
+        domain
+        domain/User.h
+        domain/Comment.h
+        domain/Post.h
+        domain/Topic.h
+
+        service
+        service/UserService.h
+        service/HTMLResponseCreationService.h
+        service/UserService.cpp
+        service/HTMLResponseCreationService.cpp
+
         )
 
 add_custom_target(copy_assets ALL

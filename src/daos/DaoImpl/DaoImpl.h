@@ -11,10 +11,8 @@
 class DaoImpl {
 protected:
     database::mariadb::MariaDBClient &DBClient;
-
+public:
     explicit DaoImpl(database::mariadb::MariaDBClient &client) : DBClient{client} {}
-
-
 };
 
 

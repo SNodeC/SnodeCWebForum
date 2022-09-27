@@ -3,8 +3,7 @@
 
 #include <functional>
 #include <string>
-
-#include "daos/DaoInterfaces/UserDao.h"
+#include "../daos/DaoInterfaces/UserDao.h"
 
 using std::string;
 using std::function;

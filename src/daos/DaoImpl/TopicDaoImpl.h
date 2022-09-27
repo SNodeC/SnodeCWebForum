@@ -12,6 +12,9 @@
 
 class TopicDaoImpl : public TopicDao, protected DaoImpl {
 public:
+
+    explicit TopicDaoImpl(database::mariadb::MariaDBClient &client) : DaoImpl{client} {}
+
     void create(std::string title, int userID, std::function<void(bool)> callback) override;
 
     void getCreator(unsigned long id, std::function<void(User &&)> callback) override;
