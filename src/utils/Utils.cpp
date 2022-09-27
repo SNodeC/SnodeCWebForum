@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include <openssl/evp.h>
+#include <openssl/rand.h>
 #include "Utils.h"
 
 std::string Utils::GetFieldByName(unsigned char *bodyData, std::string fieldName) {
@@ -17,6 +18,12 @@ std::string Utils::GetFieldByName(unsigned char *bodyData, std::string fieldName
     return result;
 
 
+}
+
+ustring Utils::createRandomSalt(size_t length) {
+    unsigned char salt[length];
+    RAND_bytes(salt, length);
+    return ustring{salt, length};
 }
 
 std::string Utils::hashPassword(const std::string &password, const ustring &salt, int iterations, int hashLength) {
@@ -44,4 +51,20 @@ std::string Utils::hashPassword(const std::string &password, const ustring &salt
     } else {
         return {};
     }
+}
+
+std::string Utils::escapeForHTML(std::string& data) {
+    std::string result;
+    result.reserve(data.size());
+    for(size_t pos = 0; pos != data.size(); ++pos) {
+        switch(data[pos]) {
+            case '&':  result.append("&amp;");  break;
+            case '\"': result.append("&quot;"); break;
+            case '\'': result.append("&#39;");  break;
+            case '<':  result.append("&lt;");   break;
+            case '>':  result.append("&gt;");   break;
+            default:   result.append(&data[pos], 1); break;
+        }
+    }
+    return result;
 }
