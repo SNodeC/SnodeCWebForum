@@ -64,7 +64,7 @@ namespace service {
 
     bool cls::checkPasswordFormat(const std::string& password) {
         bool result = true;
-        result &= password.length() >= USERNAME_MIN_LENGTH;
+        result &= password.length() >= PASSWORD_MIN_LENGTH;
         return result;
     }
 
