@@ -537,7 +537,7 @@ namespace service
                 (vector<Post>&& recentPost) {
                     // get the creator for the latest post
                     if (recentPost.empty()) { // no recent post found
-                        latestPostsIncCreatorPtr->push_back({});
+                        (*latestPostsIncCreatorPtr)[i] = {};
                         ++(*postsCountPtr);
                         if (!(*firedPtr) && (*countsCountPtr) >= (*topicCountPtr) && (*postsCountPtr) >= (*topicCountPtr)) {
                             *firedPtr = true;
@@ -548,7 +548,7 @@ namespace service
                         (*userCallbacksPtr)[i] = [i, recentPostPtr, postsCountPtr, firedPtr, countsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
                                 (User&& creator) {
                             (*recentPostPtr).creator = creator;
-                            latestPostsIncCreatorPtr->push_back(*recentPostPtr);
+                            (*latestPostsIncCreatorPtr)[i] = *recentPostPtr;
                             ++(*postsCountPtr);
                             if (!(*firedPtr) && (*countsCountPtr) >= (*topicCountPtr) && (*postsCountPtr) >= (*topicCountPtr)) {
                                 *firedPtr = true;
@@ -561,6 +561,7 @@ namespace service
                 this->_postDao.getRecentPostsOfTopic(curTopicId, 1, 0, (*postCallbacksPtr)[i]);
             }
         };
+
         this->_topicDao.getRecentTopics(-1, 0, callback);
     }
 
