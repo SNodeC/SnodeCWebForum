@@ -497,6 +497,10 @@ namespace service
     void cls::createHomeResponseFromDao(const string& userName, const resCallback& rCallback) {
 
         function<void(vector<Topic> &&)> callback = [this, rCallback, userName](vector<Topic> && topics) {
+            if (topics.empty()) {
+                rCallback(createHomeResponse(topics, {}, {}, userName));
+            }
+
             shared_ptr<string> userNamePtr = make_shared<string>(userName);
             shared_ptr<vector<Topic>> topicsPtr = make_shared<vector<Topic>>(std::move(topics));
             shared_ptr<size_t> topicCountPtr = make_shared<size_t>(topicsPtr->size());
