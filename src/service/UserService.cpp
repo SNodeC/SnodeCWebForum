@@ -66,6 +66,11 @@ namespace service {
         return result;
     }
 
+    string cls::getUserCreateErrorMessage(int errorCode) {
+        // TODO: finish this
+        return "";
+    }
+
 #pragma endregion
 
 #pragma region Instance Methods
@@ -119,6 +124,11 @@ namespace service {
     }
 
     void cls::checkUserSession(const string& username, const string& sessionToken, function<void(bool)> callback) {
+        if (username.empty()) {
+            callback(false);
+            return;
+        }
+
         shared_ptr<string> sessionTokenPtr = make_shared<string>(sessionToken);
 
         function<void(string&&)> sessionTokenCallback = [sessionTokenPtr, callback](string&& sessionToken) {
