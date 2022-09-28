@@ -53,7 +53,7 @@ std::string Utils::hashPassword(const std::string &password, const ustring &salt
     }
 }
 
-std::string Utils::escapeForHTML(std::string& data) {
+std::string Utils::escapeForHTML(const std::string& data) {
     std::string result;
     result.reserve(data.size());
     for(size_t pos = 0; pos != data.size(); ++pos) {
