@@ -68,9 +68,9 @@ namespace service
                                                     const vector<string>& warnings = EMPTY_VECTOR,
                                                     const vector<string>& infos = EMPTY_VECTOR);
 
-        void createHomeResponseFromDao(const string& userName, const resCallback&);
-        void createTopicOverviewResponseFromDao(unsigned long topicId, const string& userName, const resCallback&);
-        void createPostOverviewResponseFromDao(unsigned long postId, const string& userName, const resCallback&);
+        void createHomeResponseFromDao(const string& userName, resCallback);
+        void createTopicOverviewResponseFromDao(unsigned long topicId, const string& userName, resCallback);
+        void createPostOverviewResponseFromDao(unsigned long postId, const string& userName, resCallback);
     };
 }
 
