@@ -45,7 +45,7 @@ window.onload = () => {
     }
 
     /* Toggle visibility for Adding Comment */
-    if (toggle_comment !== null && toggle_comment !== null) {
+    if (toggle_comment !== null) {
         const toggle_func = () => {
             comment.classList.toggle("unhidden");
             toggleTextFunc(toggle_comment);

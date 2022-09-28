@@ -37,7 +37,7 @@ namespace service {
         UserService& operator=(const UserService&) = delete;
         UserService& operator=(UserService&&) = delete;
 
-        UserService(UserDao& userDao);
+        explicit UserService(UserDao& userDao);
 
         void createUser(const string& username, const string& password, function<void(int)> callback);
         void checkUserNameTaken(const string& username, function<void(bool)> callback);
