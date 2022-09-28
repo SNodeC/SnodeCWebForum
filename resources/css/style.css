@@ -270,7 +270,6 @@ h2 {
     grid-template-columns: 60% 40%;
 }
 
-/* TODO:  if counting not possible delete 10% and change 20 to 30...*/
 .subforum-row {
     display: grid;
     grid-template-columns: 50px auto 10% 30%;

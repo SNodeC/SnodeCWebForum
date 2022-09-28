@@ -16,8 +16,8 @@ class PostDao {
 public:
     virtual void getById(unsigned long id, std::function<void(Post&&)> callback) = 0;
 
-    virtual void create(const std::string& title, const std::string& content, int userID,
-                        std::function<void(bool)> callback) = 0;
+    virtual void create(const std::string& title, const std::string& content, unsigned long userID,
+                        unsigned long topicID, std::function<void(bool)> callback) = 0;
 
     virtual void getCreator(unsigned long id, std::function<void(User&&)> callback) = 0;
 

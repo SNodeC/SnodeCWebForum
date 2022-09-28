@@ -35,9 +35,9 @@ public:
 
     void getSaltByUsername(const std::string& username, std::function<void(ustring&&)> callback) override;
 
-    virtual void setSessionTokenById(unsigned long id, const std::string& sessionToken, std::function<void(bool)> callback) override;
+    void setSessionTokenById(unsigned long id, const std::string& sessionToken, std::function<void(bool)> callback) override;
 
-    virtual void setSessionTokenByUsername(const std::string& username, const std::string& sessionToken, std::function<void(bool)> callback) override;
+    void setSessionTokenByUsername(const std::string& username, const std::string& sessionToken, std::function<void(bool)> callback) override;
 };
 
 #endif //GETANDPOSTSERVERTEMPLATE_USERSDAOIMPL_H

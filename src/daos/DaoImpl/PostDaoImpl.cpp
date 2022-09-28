@@ -6,7 +6,8 @@
 #include "PostDaoImpl.h"
 
 
-void PostDaoImpl::create(const std::string& title, const std::string& content, int userID, std::function<void(bool)> callback) {
+void PostDaoImpl::create(const std::string& title, const std::string& content, unsigned long userID,
+                         unsigned long topicId, std::function<void(bool)> callback) {
 
     // TODO: FIX THIS SHIT
     std::ostringstream sql;
