@@ -2,8 +2,6 @@
 
 #include <memory>
 
-#include "../utils/Utils.h"
-
 using std::shared_ptr;
 using std::make_shared;
 
@@ -64,7 +62,7 @@ namespace service {
 
     bool cls::checkPasswordFormat(const std::string& password) {
         bool result = true;
-        result &= password.length() >= USERNAME_MIN_LENGTH;
+        result &= password.length() >= PASSWORD_MIN_LENGTH;
         return result;
     }
 

@@ -464,7 +464,7 @@ h2 {
 .post-user,
 .replies {
     display: flex;
-    align-items: left;
+    align-items: unset;
     /* align vertical */
 }
 

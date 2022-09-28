@@ -18,8 +18,8 @@ namespace service {
         shared_ptr<string> titlePtr = make_shared<string>(title);
         shared_ptr<string> contentPtr = make_shared<string>(content);
 
-        function<void(unsigned long)> userIdCallback = [this, titlePtr, contentPtr, callback](unsigned long userId){
-            _postDao.create(*titlePtr, *contentPtr, userId, callback);
+        function<void(unsigned long)> userIdCallback = [this, titlePtr, contentPtr, topicId, callback](unsigned long userId){
+            _postDao.create(*titlePtr, *contentPtr, userId, topicId, callback);
         };
         _userDao.getIdByUsername(username, userIdCallback);
     }
