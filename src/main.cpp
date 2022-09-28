@@ -12,6 +12,7 @@
 #include "daos/DaoImpl/UserDaoImpl.h"
 #include "daos/DaoInterfaces/UserDao.h"
 #include "service/HTMLResponseCreationService.h"
+#include "service/UserService.h"
 #include "daos/DaoImpl/CommentDaoImpl.h"
 #include "daos/DaoImpl/PostDaoImpl.h"
 #include "daos/DaoImpl/TopicDaoImpl.h"
@@ -51,19 +52,21 @@ int main(int argc, char *argv[]) {
 
 
     service::HTMLResponseCreationService htmlResponseCreationService(commentDao, postDao, topicDao);
+    service::UserService userService(userDao);
 
 
     express::WebApp::init(argc, argv);
 
     express::legacy::in::WebApp legacyApp("getPost");
 
-    legacyApp.get("/", []APPLICATION(req, res) {
+    legacyApp.get("/", [&]APPLICATION(req, res) {
 
-        cout << req.cookie(USERNAMECOOKIE) << endl;
+        string username = req.cookie(USERNAMECOOKIE);
+        string sessionTkn = req.cookie(SESSIONTOKEN);
+        function<void(bool)> callback = [](bool b) { cout << b << endl; };
+        userService.checkUserSession(username, sessionTkn, callback);
 
-
-
-
+        res.send("<>");
     });
 
 
