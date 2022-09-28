@@ -16,7 +16,7 @@
 
 using std::string;
 using std::vector;
-typedef std::function<void(string)> resCallback;
+typedef std::function<void(string&&)> resCallback;
 
 namespace service
 {

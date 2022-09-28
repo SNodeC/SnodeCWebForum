@@ -124,7 +124,7 @@ namespace service {
     }
 
     void cls::checkUserSession(const string& username, const string& sessionToken, function<void(bool)> callback) {
-        if (username.empty()) {
+        if (username.empty() || sessionToken.empty()) {
             callback(false);
             return;
         }
