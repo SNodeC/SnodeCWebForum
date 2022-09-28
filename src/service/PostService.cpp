@@ -23,4 +23,11 @@ namespace service {
         };
         _userDao.getIdByUsername(username, userIdCallback);
     }
+
+    void PostService::checkPostId(unsigned long postId, function<void(bool)> callback) {
+        function<void(Post&&)> postCallback = [callback, postId](Post&& post) {
+            callback(post.id != postId);
+        };
+        _postDao.getById(postId, postCallback);
+    }
 } // service
