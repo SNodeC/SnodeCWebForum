@@ -54,15 +54,15 @@ int main(int argc, char *argv[]) {
     service::HTMLResponseCreationService htmlResponseCreationService(commentDao, postDao, topicDao);
     service::UserService userService(userDao);
 
-    topicDao.getRecentTopics(-1, 0, [](std::vector<Topic> topics) {
+    topicDao.getPostCount(1, [](int count) {
 
-        cout << "testprint" << endl;
+        cout << count << endl;
 
-        for (auto t: topics) {
+/*        for (auto t: topics) {
 
             cout << t.title << endl;
 
-        }
+        }*/
 
     });
 

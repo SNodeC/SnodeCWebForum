@@ -41,7 +41,7 @@ void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int s
 
     DBClient.query(sql.str(),
                    [callback, commentsPtr](const MYSQL_ROW &rows) {
-                       if (rows[0] == nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            commentsPtr->push_back(Comment{
                                    std::stoul(rows[0]),
                                    Post{std::stoul(rows[1])},
@@ -70,7 +70,7 @@ void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> c
 
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
-                       if (rows[0] == nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(User{
                                    std::stoul(rows[0]),
                                    rows[1],
@@ -102,7 +102,7 @@ void CommentDaoImpl::getById(unsigned long id, std::function<void(Comment &&)> c
             sql.str(),
             [callback](const MYSQL_ROW &rows) {
 
-                if (rows[0] == nullptr) {
+                if (rows != nullptr && rows[0] != nullptr) {
                     callback(Comment{
                             std::stoul(rows[0]),
                             Post{std::stoul(rows[1])},

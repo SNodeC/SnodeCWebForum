@@ -21,7 +21,7 @@ void UserDaoImpl::getById(unsigned long id, std::function<void(User &&)> callbac
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
 
-                       if (rows[0] == nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(User{
                                    std::stoul(rows[0]),
                                    rows[1],
@@ -53,7 +53,7 @@ void UserDaoImpl::getByUsername(const std::string &username, std::function<void(
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
 
-                       if (rows[0] == nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(User{
                                    std::stoul(rows[0]),
                                    rows[1],
@@ -84,7 +84,7 @@ void UserDaoImpl::isUserNameTaken(const std::string &username, std::function<voi
 
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
-                       callback(rows[0] != nullptr);
+                       callback(rows != nullptr && rows[0] != nullptr);
                    },
                    [callback](const std::string &, int) {
                        callback(false);
@@ -120,7 +120,7 @@ void UserDaoImpl::getPasswordHashById(unsigned long id, std::function<void(std::
 
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
-                       if (rows[0] != nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(rows[0]);
                        } else {
                            callback({});
@@ -140,7 +140,7 @@ void UserDaoImpl::getPasswordHashByUsername(const std::string &username, std::fu
 
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
-                       if (rows[0] != nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(rows[0]);
                        } else {
                            callback({});
@@ -160,7 +160,7 @@ void UserDaoImpl::getIdByUsername(const std::string &username, std::function<voi
 
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
-                       if (rows[0] != nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(std::stoul(rows[0]));
                        } else {
                            callback(-1);
@@ -181,7 +181,7 @@ void UserDaoImpl::getSaltById(unsigned long id, std::function<void(ustring &&)> 
 
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
-                       if (rows[0] != nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(reinterpret_cast<const unsigned char *>(rows[0]));
                        } else {
                            callback({});
@@ -203,7 +203,7 @@ void UserDaoImpl::getSaltByUsername(const std::string &username, std::function<v
 
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
-                       if (rows[0] != nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(reinterpret_cast<const unsigned char *>(rows[0]));
                        } else {
                            callback({});
@@ -258,7 +258,7 @@ void UserDaoImpl::getSessionTokenById(unsigned long id, std::function<void(std::
     DBClient.query(
             sql.str(),
             [callback](const MYSQL_ROW &rows) {
-                if (rows[0] != nullptr) {
+                if (rows != nullptr && rows[0] != nullptr) {
                     callback(rows[0]);
                 } else {
                     callback({});
@@ -267,8 +267,6 @@ void UserDaoImpl::getSessionTokenById(unsigned long id, std::function<void(std::
             [callback](const std::string &, int) {
                 callback({});
             });
-
-
 }
 
 void UserDaoImpl::getSessionTokenByUsername(const std::string &username, std::function<void(std::string &&)> callback) {
@@ -282,7 +280,7 @@ void UserDaoImpl::getSessionTokenByUsername(const std::string &username, std::fu
     DBClient.query(
             sql.str(),
             [callback](const MYSQL_ROW &rows) {
-                if (rows[0] != nullptr) {
+                if (rows != nullptr && rows[0] != nullptr) {
                     callback(rows[0]);
                 } else {
                     callback({});

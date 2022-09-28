@@ -43,7 +43,7 @@ void PostDaoImpl::getRecentPostsOfTopic(unsigned long id, int amount, int start,
     DBClient.query(sql.str(),
                    [callback, postsPtr](const MYSQL_ROW &rows) {
 
-                       if (rows[0] == nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            postsPtr->push_back(
                                    Post{std::stoul(rows[0]),
                                         Topic{std::stoul(rows[1])},
@@ -64,21 +64,22 @@ void PostDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> call
 
     std::ostringstream sql;
     sql <<
-        "SELECT u.id, u.username , u.password, u.salt, DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
+        "SELECT u.id, u.username , u.passwordHash, u.salt, u.avatarURL, u.sessionToken , DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
         "FROM User u left JOIN Post p on u.id = p.creatorID"
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
 
-                       if (rows[0] == nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(User{
                                    std::stoul(rows[0]),
                                    rows[1],
                                    rows[2],
                                    rows[3],
                                    rows[4],
-                                   rows[5]
+                                   rows[5],
+                                   rows[6]
                            });
                        } else {
                            callback({});
@@ -102,14 +103,13 @@ void PostDaoImpl::getTopic(unsigned long id, std::function<void(Topic &&)> callb
 
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
-                       if (rows[0] == nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(Topic{
                                    std::stoul(rows[0]),
-                                   std::stoul(rows[1]),
+                                   User{std::stoul(rows[1])},
                                    rows[2],
                                    rows[3],
-                                   rows[4],
-                                   rows[5]
+                                   rows[4]
                            });
                        } else {
                            callback({});
@@ -133,7 +133,7 @@ void PostDaoImpl::getById(unsigned long id, std::function<void(Post &&)> callbac
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
 
-                       if (rows[0] == nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(Post{
                                    std::stoul(rows[0]),
                                    Topic{std::stoul(rows[1])},
@@ -162,7 +162,7 @@ void PostDaoImpl::getCommentCount(unsigned long id, std::function<void(int)> cal
 
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
-                       if (rows[0] == nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(std::stoi(rows[0]));
                        } else {
                            callback(-1);

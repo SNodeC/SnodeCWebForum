@@ -5,7 +5,8 @@
 #include <sstream>
 #include "TopicDaoImpl.h"
 
-void TopicDaoImpl::create(const std::string& title, const std::string& description, unsigned long userID, std::function<void(bool)> callback) {
+void TopicDaoImpl::create(const std::string &title, const std::string &description, unsigned long userID,
+                          std::function<void(bool)> callback) {
 
     // TODO: FIX THIS SHIT
     std::ostringstream sql;
@@ -25,20 +26,22 @@ void TopicDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> cal
 
     std::ostringstream sql;
     sql <<
-        "SELECT u.id, u.username , u.password, u.salt, DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
+        "SELECT u.id, u.username , u.passwordHash, u.salt, u.avatarURL, u.sessionToken , DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
         "FROM User u left JOIN Topic T on u.id = T.creatorID"
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
-                       if (rows[0] == nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(User{
                                    std::stoul(rows[0]),
                                    rows[1],
                                    rows[2],
                                    rows[3],
                                    rows[4],
-                                   rows[5]});
+                                   rows[5],
+                                   rows[6]
+                           });
                        } else {
                            callback({});
                        }
@@ -52,7 +55,7 @@ void TopicDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> cal
 }
 
 void TopicDaoImpl::getRecentTopics(int amount, int start,
-                                   std::function<void(std::vector<Topic>&&)> callback) {
+                                   std::function<void(std::vector<Topic> &&)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -94,14 +97,14 @@ void TopicDaoImpl::getPostCount(unsigned long id, std::function<void(int)> callb
 
     std::ostringstream sql;
     sql <<
-        "SELECT COUNT(*)"
+        "SELECT COUNT(*) "
         "FROM Post p left JOIN Topic t on p.topicID = t.id"
         "WHERE t.id = " << id << ";";
 
 
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
-                       if (rows[0] == nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(std::stoi(rows[0]));
                        } else {
                            callback(-1);
@@ -125,7 +128,7 @@ void TopicDaoImpl::getById(unsigned long id, std::function<void(Topic &&)> callb
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
 
-                       if (rows[0] == nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(Topic{
                                    std::stoul(rows[0]),
                                    std::stoul(rows[1]),
