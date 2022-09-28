@@ -33,7 +33,7 @@ namespace service {
         void createPost(const string& title, const string& content, const string& username, unsigned long topicId,
                         function<void(int)> callback);
 
-        void checkPostId(unsigned long postId, function<void(bool)> callback);
+        void checkPostId(unsigned long postId, unsigned long topicId, function<void(bool)> callback);
     };
 
 } // service
