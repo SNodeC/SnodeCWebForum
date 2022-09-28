@@ -14,7 +14,7 @@ public:
 
     explicit CommentDaoImpl(database::mariadb::MariaDBClient &client) : DaoImpl{client} {}
 
-    void create(const std::string& content, int creatorID, int postID,std::function<void(bool)> callback) override;
+    void create(const std::string& content, unsigned long creatorID, unsigned long postID, std::function<void(bool)> callback) override;
 
     void getRecentCommentsOfPost(unsigned long id, int amount, int start,
                                  std::function<void(std::vector<Comment>&&)> callback) override;

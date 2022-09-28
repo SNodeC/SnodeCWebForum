@@ -5,9 +5,9 @@
 #include <sstream>
 #include "TopicDaoImpl.h"
 
-void TopicDaoImpl::create(const std::string& title, int userID, std::function<void(bool)> callback) {
+void TopicDaoImpl::create(const std::string& title, const std::string& description, int userID, std::function<void(bool)> callback) {
 
-
+    // TODO: FIX THIS SHIT
     std::ostringstream sql;
     sql <<
         "INSERT INTO Topic (creatorID, title) "

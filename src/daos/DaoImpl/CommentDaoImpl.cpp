@@ -5,7 +5,7 @@
 #include <sstream>
 #include "CommentDaoImpl.h"
 
-void CommentDaoImpl::create(const std::string& content, int creatorID, int postID, std::function<void(bool)> callback) {
+void CommentDaoImpl::create(const std::string& content, unsigned long creatorID, unsigned long postID, std::function<void(bool)> callback) {
 
     std::ostringstream sql;
     sql <<

@@ -30,7 +30,8 @@ namespace service {
 
         TopicService(TopicDao& topicDao, UserDao& userDao);
 
-        void createTopic(const string& title, const string& username, function<void(int)> callback);
+        void createTopic(const string& title, const string& description, const string& username, 
+                         function<void(int)> callback);
     };
 
 } // service

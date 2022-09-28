@@ -14,7 +14,8 @@
 class TopicDao {
 
 public:
-    virtual void create(const std::string& title, int userID, std::function<void(bool)> callback) = 0;
+    virtual void create(const std::string& title, const std::string& description, int userID,
+                        std::function<void(bool)> callback) = 0;
 
     virtual void getCreator(unsigned long id, std::function<void(User&&)> callback) = 0;
 

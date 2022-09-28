@@ -16,7 +16,7 @@ class PostDaoImpl : public PostDao, protected DaoImpl {
 public:
     explicit PostDaoImpl(database::mariadb::MariaDBClient& client) : DaoImpl{client} {}
 
-    void create(const std::string& title, int userID, std::function<void(bool)> callback) override;
+    void create(const std::string& title, const std::string& content, int userID, std::function<void(bool)> callback) override;
 
     void getRecentPostsOfTopic(unsigned long id, int amount, int start,
                                std::function<void(std::vector<Post>&&)> callback) override;
