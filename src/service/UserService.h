@@ -37,6 +37,8 @@ namespace service {
         UserService& operator=(const UserService&) = delete;
         UserService& operator=(UserService&&) = delete;
 
+        static string getUserCreateErrorMessage(int errorCode);
+
         explicit UserService(UserDao& userDao);
 
         void createUser(const string& username, const string& password, function<void(int)> callback);
