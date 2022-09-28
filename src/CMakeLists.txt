@@ -41,7 +41,7 @@ add_executable(main main.cpp
         service/UserService.cpp
         service/HTMLResponseCreationService.cpp
 
-        )
+        service/TopicService.cpp service/TopicService.h service/PostService.cpp service/PostService.h service/CommentService.cpp service/CommentService.h)
 
 add_custom_target(copy_assets ALL
         COMMAND ${CMAKE_COMMAND} -E copy_directory
