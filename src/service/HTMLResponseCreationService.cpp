@@ -282,6 +282,10 @@ namespace service
             "        </div>\n"
         };
 
+        static const string addNoCommentForm{
+                "        <div class='min-h-1 m-b-20'></div>\n"
+        };
+
         static const string commentsHead{
             "        <div class='rainbow-box'>\n"
         };
