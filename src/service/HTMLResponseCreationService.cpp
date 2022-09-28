@@ -51,9 +51,9 @@ namespace service
                   "    <meta charset='UTF-8'>\n"
                   "    <meta name='viewport' content='width=device-width, initial-scale=1.0'>\n"
                   "    <title>" << title << "</title>\n"
-                  "    <link rel='stylesheet' href='./css/style.css'>\n"
+                  "    <link rel='stylesheet' href='/css/style.css'>\n"
                   "    <link rel='stylesheet' href='https://css.gg/heart.css'>\n"
-                  "    <script type='text/javascript' src='./js/main.js'></script>\n"
+                  "    <script type='text/javascript' src='/js/main.js'></script>\n"
                   "</head>\n";
         return buffer.str();
     }
@@ -63,7 +63,7 @@ namespace service
             "    <header>\n"
             "        <div class='navbar'>\n"
             "            <div class='brand'>\n"
-            "                <a href='./'>\n"
+            "                <a href='/'>\n"
             "                    <h1>" + string(FORUM_NAME) + "</h1>"
             "                </a>"
             "            </div>\n"
@@ -162,7 +162,7 @@ namespace service
                 "                </div>\n"
                 "                <div class='subforum-description subforum-column'>\n"
                 "                    <h4 class='t-ov-el'><a href='/topic/" << topic.id << "'>" << topic.title << "</a></h4>\n"
-                "                    <p class='t-ov-el' >" << topic.description << "</p>\n"
+                "                    <p class='t-ov-el'>" << topic.description << "</p>\n"
                 "                </div>\n"
                 "                <div class='subforum-stats subforum-column center'>\n";
             if (postCounts[i] < MAX_POST_COUNT) {
@@ -186,8 +186,8 @@ namespace service
 
     string cls::createNotFoundResponse(const string& userName) {
         static const string content{
-            "    <div class='rainbow-box'>\n"
-            "        <span class='error'>404</span>\n"
+            "    <div id='content' class='content'>\n"
+            "        <h1>404</h1>"
             "        <h2 class='center'>Page not found</h2>\n"
             "        <p class='center'>We looked all over but I think the page you are looking for does not exist, \n"
             "        <br> nor ever wil to be frank. Who knows honestly? We certainly dont. Maybe you?</p>\n"
@@ -241,7 +241,7 @@ namespace service
 
         ostringstream contentBuffer{};
         contentBuffer << resultHead
-                      <<  "                <a href='\\'>Home</a> >> <a href='" << topicHref << "'>" << topic.title << "</a>\n"
+                      <<  "                <a href='/'>Home</a> >> <a href='" << topicHref << "'>" << topic.title << "</a>\n"
                       << resultMid
                       << (userName.empty() ? addNoTopicForm : addTopicForm);
 
@@ -300,7 +300,7 @@ namespace service
             "    <div id='content' class='container m-b-100'>\n"
             "        <div class='navigate'>\n"
             "            <span>\n"
-            "                <a href='\\'>Home</a> >> "
+            "                <a href='/'>Home</a> >> "
             "                <a href='/topic/" << topic.id << "'>" << topic.title << "</a> >> "
             "                <a href='/topic/" << topic.id << "/" << post.id << "'>" << post.title << "</a>\n"
             "            </span>\n"
@@ -308,7 +308,7 @@ namespace service
             "        <div class='rainbow-box'>\n"
             "            <div class='table-row'>\n"
             "                <div class='subject-post'>\n"
-            "                    <h2>" << post.title << "</h2>"
+            "                    <h2>" << post.title << "</h2>\n"
             "                    <div class='text t-ov-el'>\n"
             "                        by <span class='username'>" << creator.userName << "</span>\n"
             "                    </div>\n"
@@ -369,10 +369,10 @@ namespace service
             "            </div>\n"
             "            <input  class='submit' type='submit' value='Login' id='signup'>\n"
             "            <div class='m-t-40 t-a-c'>\n"
-            "                No account? <a href='./register'>Register here!</a>\n"
+            "                No account? <a href='/register'>Register here!</a>\n"
             "            </div>"
             "            <div class='m-t-10 t-a-c w-100p'> "
-            "                &lt;&lt; <a href=\"javascript:history.back()\">Back</a>\n"
+            "                &lt;&lt; <a href='javascript:history.back()'>Back</a>\n"
             "            </div>"
             "        </div>\n"
             "    </div>\n"
@@ -440,7 +440,7 @@ namespace service
             "            </div>\n"
             "            <input  class='submit' type='submit' value='Register' id='signup'>\n"
             "            <div class='m-t-40 t-a-c w-100p'> "
-            "                &lt;&lt; <a href=\"javascript:history.back()\">Back</a>\n"
+            "                &lt;&lt; <a href='javascript:history.back()'>Back</a>\n"
             "            </div>"
             "        </div>\n"
             "    </div>\n"
