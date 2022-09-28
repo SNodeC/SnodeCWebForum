@@ -330,6 +330,8 @@ namespace service
 
         if (!userName.empty()) {
             contentBuffer << addCommentForm;
+        } else {
+            contentBuffer << addNoCommentForm;
         }
 
         contentBuffer << commentsHead;
