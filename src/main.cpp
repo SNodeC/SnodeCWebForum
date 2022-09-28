@@ -15,6 +15,9 @@
 #include "daos/DaoImpl/CommentDaoImpl.h"
 #include "daos/DaoImpl/PostDaoImpl.h"
 #include "daos/DaoImpl/TopicDaoImpl.h"
+#include "service/TopicService.h"
+#include "service/PostService.h"
+#include "service/CommentService.h"
 
 
 using namespace std;
@@ -53,6 +56,9 @@ int main(int argc, char *argv[]) {
 
     service::HTMLResponseCreationService htmlResponseCreationService(commentDao, postDao, topicDao);
     service::UserService userService(userDao);
+    service::TopicService topicService(topicDao, userDao);
+    service::PostService postService(postDao, userDao);
+    service::CommentService commentService(commentDao, userDao);
 
     express::WebApp::init(argc, argv);
     express::legacy::in::WebApp legacyApp("getPost");
@@ -60,29 +66,42 @@ int main(int argc, char *argv[]) {
     legacyApp.get("/t/:topic([1-9]+))", [&]APPLICATION(req, res) {
 
         unsigned long topicID = std::stoul(req.params["topic"]);
+        std::shared_ptr<string> userNamePtr = std::make_shared<string>(req.cookie(USERNAMECOOKIE));
 
-        string username = req.cookie(USERNAMECOOKIE);
         string sessionTkn = req.cookie(SESSIONTOKEN);
 
-        userService.checkUserSession(username, sessionTkn, [&](bool b) {
-            htmlResponseCreationService.createTopicOverviewResponseFromDao(topicID, b ? username : "",
-                                                                           [&](string s) { res.send(s); });
+        userService.checkUserSession(*userNamePtr, sessionTkn, [topicID, &topicService,userNamePtr, &htmlResponseCreationService, &res](bool b) {
+            topicService.checkTopicId(topicID, [topicID, userNamePtr, &htmlResponseCreationService, &res](bool b) {
+                if (b) {
+                    htmlResponseCreationService.createTopicOverviewResponseFromDao(topicID, b ? *userNamePtr : "",
+                                                                                   [&](string s) { res.send(s); });
+                } else {
+                    res.status(404).send(
+                            service::HTMLResponseCreationService::createNotFoundResponse(b ? *userNamePtr : ""));
+                }
+            });
         });
-
     });
 
     legacyApp.get("/t/:topic([1-9]+)/:post([1-9]+)", [&]APPLICATION(req, res) {
 
+        unsigned long topicID = std::stoul(req.params["topic"]);
         unsigned long postID = std::stoul(req.params["post"]);
+        std::shared_ptr<string> userNamePtr = std::make_shared<string>(req.cookie(USERNAMECOOKIE));
 
-        string username = req.cookie(USERNAMECOOKIE);
         string sessionTkn = req.cookie(SESSIONTOKEN);
 
-        userService.checkUserSession(username, sessionTkn, [&](bool b) {
-            htmlResponseCreationService.createPostOverviewResponseFromDao(postID, b ? username : "",
-                                                                           [&](string s) { res.send(s); });
+        userService.checkUserSession(*userNamePtr, sessionTkn, [topicID, postID, &postService,userNamePtr, &htmlResponseCreationService, &res](bool b) {
+            postService.checkPostId(postID, topicID , [postID, userNamePtr, &htmlResponseCreationService, &res](bool b) {
+                if (b) {
+                    htmlResponseCreationService.createPostOverviewResponseFromDao(postID, b ? *userNamePtr : "",
+                                                                                   [&](string s) { res.send(s); });
+                } else {
+                    res.status(404).send(
+                            service::HTMLResponseCreationService::createNotFoundResponse(b ? *userNamePtr : ""));
+                }
+            });
         });
-
     });
 
 

@@ -27,7 +27,7 @@ void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int s
     sql <<
         "SELECT id, postID, creatorID, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
         "FROM Comment "
-        "WHERE postID = " << id <<
+        "WHERE postID = " << id << " "
         "ORDER BY creationDate DESC ";
 
     if (amount != -1) {
@@ -67,9 +67,9 @@ void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> c
 
     std::ostringstream sql;
     sql <<
-        "SELECT u.id, u.username , u.password, u.salt, DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
+        "SELECT u.id, u.username, u.passwordHash, u.salt, u.avatarURL, u.sessionToken , DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
         "FROM User u left JOIN Comment c on u.id = c.creatorID "
-        "WHERE id = " << id << ";";
+        "WHERE c.id = " << id << ";";
 
     DBClient.query(sql.str(),
                    [callback, counterPtr](const MYSQL_ROW &rows) {

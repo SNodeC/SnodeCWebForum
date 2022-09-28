@@ -154,7 +154,5 @@ void TopicDaoImpl::getById(unsigned long id, std::function<void(Topic &&)> callb
                    [callback](const std::string &, int) {
                        callback({});
                    });
-
-
 }
 
