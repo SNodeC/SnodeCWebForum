@@ -3,7 +3,6 @@
 //
 
 #include <sstream>
-#include <iostream>
 #include "PostDaoImpl.h"
 
 
@@ -29,12 +28,12 @@ void PostDaoImpl::getRecentPostsOfTopic(unsigned long id, int amount, int start,
         "SELECT id,topicID, creatorID, title, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
         "FROM Post "
         "WHERE topicID = " << id << " "
-        "ORDER BY creationDate DESC ";
+                                    "ORDER BY creationDate DESC ";
 
     if (amount != -1) {
         sql <<
             "LIMIT " << amount << " "
-            "OFFSET " << start;
+                                  "OFFSET " << start;
     }
     sql << ";";
 
@@ -51,6 +50,7 @@ void PostDaoImpl::getRecentPostsOfTopic(unsigned long id, int amount, int start,
                                         rows[3],
                                         rows[4],
                                         rows[5]});
+
                        } else {
                            callback(std::move(*postsPtr));
                        }
@@ -62,6 +62,9 @@ void PostDaoImpl::getRecentPostsOfTopic(unsigned long id, int amount, int start,
 
 void PostDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> callback) {
 
+    std::shared_ptr<size_t> counterPtr = std::make_shared<size_t>(0);
+
+
     std::ostringstream sql;
     sql <<
         "SELECT u.id, u.username , u.passwordHash, u.salt, u.avatarURL, u.sessionToken , DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
@@ -69,7 +72,7 @@ void PostDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> call
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),
-                   [callback](const MYSQL_ROW &rows) {
+                   [callback, counterPtr](const MYSQL_ROW &rows) {
 
                        if (rows != nullptr && rows[0] != nullptr) {
                            callback(User{
@@ -81,7 +84,9 @@ void PostDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> call
                                    rows[5],
                                    rows[6]
                            });
-                       } else {
+                           ++(*counterPtr);
+
+                       } else if (*counterPtr == 0) {
                            callback({});
                        }
 
@@ -94,6 +99,7 @@ void PostDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> call
 }
 
 void PostDaoImpl::getTopic(unsigned long id, std::function<void(Topic &&)> callback) {
+    std::shared_ptr<size_t> counterPtr = std::make_shared<size_t>(0);
 
     std::ostringstream sql;
     sql <<
@@ -102,7 +108,7 @@ void PostDaoImpl::getTopic(unsigned long id, std::function<void(Topic &&)> callb
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),
-                   [callback](const MYSQL_ROW &rows) {
+                   [callback, counterPtr](const MYSQL_ROW &rows) {
                        if (rows != nullptr && rows[0] != nullptr) {
                            callback(Topic{
                                    std::stoul(rows[0]),
@@ -111,7 +117,9 @@ void PostDaoImpl::getTopic(unsigned long id, std::function<void(Topic &&)> callb
                                    rows[3],
                                    rows[4]
                            });
-                       } else {
+                           ++(*counterPtr);
+
+                       } else if (*counterPtr == 0) {
                            callback({});
                        }
                    },
@@ -123,6 +131,7 @@ void PostDaoImpl::getTopic(unsigned long id, std::function<void(Topic &&)> callb
 }
 
 void PostDaoImpl::getById(unsigned long id, std::function<void(Post &&)> callback) {
+    std::shared_ptr<size_t> counterPtr = std::make_shared<size_t>(0);
 
     std::ostringstream sql;
     sql <<
@@ -131,7 +140,7 @@ void PostDaoImpl::getById(unsigned long id, std::function<void(Post &&)> callbac
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),
-                   [callback](const MYSQL_ROW &rows) {
+                   [callback, counterPtr](const MYSQL_ROW &rows) {
 
                        if (rows != nullptr && rows[0] != nullptr) {
                            callback(Post{
@@ -141,7 +150,9 @@ void PostDaoImpl::getById(unsigned long id, std::function<void(Post &&)> callbac
                                    rows[3],
                                    rows[4],
                                    rows[5]});
-                       } else {
+                           ++(*counterPtr);
+
+                       } else if (*counterPtr == 0) {
                            callback({});
                        }
                    },
@@ -153,6 +164,9 @@ void PostDaoImpl::getById(unsigned long id, std::function<void(Post &&)> callbac
 }
 
 void PostDaoImpl::getCommentCount(unsigned long id, std::function<void(int)> callback) {
+
+    std::shared_ptr<size_t> counterPtr = std::make_shared<size_t>(0);
+
     std::ostringstream sql;
     sql <<
         "SELECT COUNT(*) "
@@ -161,12 +175,14 @@ void PostDaoImpl::getCommentCount(unsigned long id, std::function<void(int)> cal
 
 
     DBClient.query(sql.str(),
-                   [callback](const MYSQL_ROW &rows) {
+                   [callback, counterPtr](const MYSQL_ROW &rows) {
                        if (rows != nullptr && rows[0] != nullptr) {
-                           std::cout << rows[0] << std::endl;
 
                            callback(std::stoi(rows[0]));
-                       } else {
+                           ++(*counterPtr);
+
+                       } else if (*counterPtr == 0) {
+
                            callback(-1);
                        }
                    },

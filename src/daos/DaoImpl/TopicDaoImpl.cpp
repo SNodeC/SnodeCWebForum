@@ -3,7 +3,6 @@
 //
 
 #include <sstream>
-#include <iostream>
 #include "TopicDaoImpl.h"
 
 void TopicDaoImpl::create(const std::string &title, const std::string &description, unsigned long userID,
@@ -23,6 +22,7 @@ void TopicDaoImpl::create(const std::string &title, const std::string &descripti
 }
 
 void TopicDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> callback) {
+    std::shared_ptr<size_t> counterPtr = std::make_shared<size_t>(0);
 
     std::ostringstream sql;
     sql <<
@@ -31,7 +31,7 @@ void TopicDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> cal
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),
-                   [callback](const MYSQL_ROW &rows) {
+                   [callback, counterPtr](const MYSQL_ROW &rows) {
                        if (rows != nullptr && rows[0] != nullptr) {
                            callback(User{
                                    std::stoul(rows[0]),
@@ -42,7 +42,9 @@ void TopicDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> cal
                                    rows[5],
                                    rows[6]
                            });
-                       } else {
+                           ++(*counterPtr);
+
+                       } else if (*counterPtr == 0) {
                            callback({});
                        }
 
@@ -66,7 +68,7 @@ void TopicDaoImpl::getRecentTopics(int amount, int start,
     if (amount != -1) {
         sql <<
             "LIMIT " << amount << " "
-            "OFFSET " << start;
+                                  "OFFSET" << start;
     }
 
     sql << ";";
@@ -94,6 +96,7 @@ void TopicDaoImpl::getRecentTopics(int amount, int start,
 }
 
 void TopicDaoImpl::getPostCount(unsigned long id, std::function<void(int)> callback) {
+    std::shared_ptr<size_t> counterPtr = std::make_shared<size_t>(0);
 
     std::ostringstream sql;
     sql <<
@@ -103,12 +106,14 @@ void TopicDaoImpl::getPostCount(unsigned long id, std::function<void(int)> callb
 
 
     DBClient.query(sql.str(),
-                   [callback](const MYSQL_ROW &rows) {
+                   [callback, counterPtr](const MYSQL_ROW &rows) {
                        if (rows != nullptr && rows[0] != nullptr) {
-                           std::cout << rows[0] << std::endl;
+                           int i = std::stoi(rows[0]);
 
-                           callback(std::stoi(rows[0]));
-                       } else {
+                           callback(i);
+                           ++(*counterPtr);
+
+                       } else if (*counterPtr == 0) {
                            callback(-1);
                        }
                    },
@@ -120,6 +125,9 @@ void TopicDaoImpl::getPostCount(unsigned long id, std::function<void(int)> callb
 }
 
 void TopicDaoImpl::getById(unsigned long id, std::function<void(Topic &&)> callback) {
+    std::shared_ptr<size_t> counterPtr = std::make_shared<size_t>(0);
+
+    std::shared_ptr<size_t> creatorCountPtr = std::make_shared<size_t>(0);
 
     std::ostringstream sql;
     sql <<
@@ -128,18 +136,18 @@ void TopicDaoImpl::getById(unsigned long id, std::function<void(Topic &&)> callb
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),
-                   [callback](const MYSQL_ROW &rows) {
+                   [callback, counterPtr](const MYSQL_ROW &rows) {
 
                        if (rows != nullptr && rows[0] != nullptr) {
                            callback(Topic{
                                    std::stoul(rows[0]),
-                                   std::stoul(rows[1]),
+                                   User{std::stoul(rows[1])},
                                    rows[2],
                                    rows[3],
-                                   rows[4],
-                                   rows[5],
-                                   rows[6]});
-                       } else {
+                                   rows[4]
+                           });
+                           ++(*counterPtr);
+                       } else if (*counterPtr == 0) {
                            callback({});
                        }
                    },

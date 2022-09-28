@@ -49,6 +49,7 @@ void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int s
                                    rows[3],
                                    rows[4]
                            });
+
                        } else {
                            callback(std::move(*commentsPtr));
                        }
@@ -62,6 +63,8 @@ void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int s
 
 void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> callback) {
 
+    std::shared_ptr<size_t> counterPtr = std::make_shared<size_t>(0);
+
     std::ostringstream sql;
     sql <<
         "SELECT u.id, u.username , u.password, u.salt, DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
@@ -69,7 +72,7 @@ void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> c
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),
-                   [callback](const MYSQL_ROW &rows) {
+                   [callback, counterPtr](const MYSQL_ROW &rows) {
                        if (rows != nullptr && rows[0] != nullptr) {
                            callback(User{
                                    std::stoul(rows[0]),
@@ -78,7 +81,8 @@ void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> c
                                    rows[3],
                                    rows[4],
                                    rows[5]});
-                       } else {
+                           ++(*counterPtr);
+                       } else if (*counterPtr == 0) {
                            callback({});
                        }
                    },
@@ -91,6 +95,8 @@ void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> c
 
 void CommentDaoImpl::getById(unsigned long id, std::function<void(Comment &&)> callback) {
 
+    std::shared_ptr<size_t> counterPtr = std::make_shared<size_t>(0);
+
     std::ostringstream sql;
     sql <<
         "SELECT id, postID, creatorID, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
@@ -100,7 +106,7 @@ void CommentDaoImpl::getById(unsigned long id, std::function<void(Comment &&)> c
 
     DBClient.query(
             sql.str(),
-            [callback](const MYSQL_ROW &rows) {
+            [callback, counterPtr](const MYSQL_ROW &rows) {
 
                 if (rows != nullptr && rows[0] != nullptr) {
                     callback(Comment{
@@ -109,7 +115,8 @@ void CommentDaoImpl::getById(unsigned long id, std::function<void(Comment &&)> c
                             User{std::stoul(rows[2])},
                             rows[3],
                             rows[4]});
-                } else {
+                    ++(*counterPtr);
+                } else if (*counterPtr == 0) {
                     callback({});
                 }
             },
