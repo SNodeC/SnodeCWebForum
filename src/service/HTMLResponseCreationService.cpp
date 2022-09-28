@@ -236,7 +236,7 @@ namespace service
         };
 
         ostringstream topicHrefBuffer{};
-        topicHrefBuffer << "/topic/" << topic.id;
+        topicHrefBuffer << "/t/" << topic.id;
         const string topicHref = topicHrefBuffer.str();
 
         ostringstream contentBuffer{};
