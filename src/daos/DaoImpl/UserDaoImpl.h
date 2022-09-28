@@ -18,14 +18,26 @@ public:
 
     void getById(unsigned long id, std::function<void(User &&)> callback) override;
 
-    void isUserNameTaken(const std::string username, std::function<void(bool)> callback) override;
+    void getByUsername(const std::string& username, std::function<void(User &&)> callback) override;
 
-    void createUser(const std::string& username, const std::string& password, const std::string& salt,
+    void isUserNameTaken(const std::string& username, std::function<void(bool)> callback) override;
+
+    void createUser(const std::string& username, const std::string& passwordHash, const ustring& salt,
                     const std::string& avatarURL, std::function<void(bool)> callback) override;
 
-    void checkUserPassword(unsigned long id, const std::string& password, std::function<void(bool)> callback) override;
+    void getPasswordHashById(unsigned long id, std::function<void(std::string&&)> callback) override;
 
-    void getSalt(unsigned long id, std::function<void(std::string&&)> callback) override;
+    void getPasswordHashByUsername(const std::string& username, std::function<void(std::string&&)> callback) override;
+
+    void getIdByUsername(const std::string& username, std::function<void(unsigned long)> callback) override;
+
+    void getSaltById(unsigned long id, std::function<void(ustring&&)> callback) override;
+
+    void getSaltByUsername(const std::string& username, std::function<void(ustring&&)> callback) override;
+
+    virtual void setSessionTokenById(unsigned long id, const std::string& sessionToken, std::function<void(bool)> callback) override;
+
+    virtual void setSessionTokenByUsername(const std::string& username, const std::string& sessionToken, std::function<void(bool)> callback) override;
 };
 
 #endif //GETANDPOSTSERVERTEMPLATE_USERSDAOIMPL_H

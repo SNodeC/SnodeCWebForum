@@ -39,6 +39,8 @@ void TopicDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> cal
                                    rows[3],
                                    rows[4],
                                    rows[5]});
+                       } else {
+                           callback({});
                        }
 
                    },
@@ -50,7 +52,7 @@ void TopicDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> cal
 }
 
 void TopicDaoImpl::getRecentTopics(int amount, int start,
-                                   std::function<void(std::vector<Topic> &&)> callback) {
+                                   std::function<void(std::vector<Topic>&&)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -76,7 +78,7 @@ void TopicDaoImpl::getRecentTopics(int amount, int start,
                                    rows[4]
                            });
                        } else {
-                           callback(*returnVector);
+                           callback(std::move(*topicsPtr));
                        }
                    },
                    [callback](const std::string &, int) {
@@ -99,6 +101,8 @@ void TopicDaoImpl::getPostCount(unsigned long id, std::function<void(int)> callb
                    [callback](const MYSQL_ROW &rows) {
                        if (rows[0] == nullptr) {
                            callback(std::stoi(rows[0]));
+                       } else {
+                           callback(-1);
                        }
                    },
                    [callback](const std::string &, int) {
@@ -128,6 +132,8 @@ void TopicDaoImpl::getById(unsigned long id, std::function<void(Topic &&)> callb
                                    rows[4],
                                    rows[5],
                                    rows[6]});
+                       } else {
+                           callback({});
                        }
                    },
                    [callback](const std::string &, int) {

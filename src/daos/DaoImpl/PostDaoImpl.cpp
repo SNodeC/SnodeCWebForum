@@ -49,7 +49,7 @@ void PostDaoImpl::getRecentPostsOfTopic(unsigned long id, int amount, int start,
                                         rows[4],
                                         rows[5]});
                        } else {
-                           callback(*postsPtr);
+                           callback(std::move(*postsPtr));
                        }
                    },
                    [callback](const std::string &, int) {
@@ -79,6 +79,8 @@ void PostDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> call
                                    rows[4],
                                    rows[5]
                            });
+                       } else {
+                           callback({});
                        }
 
                    },
@@ -108,6 +110,8 @@ void PostDaoImpl::getTopic(unsigned long id, std::function<void(Topic &&)> callb
                                    rows[4],
                                    rows[5]
                            });
+                       } else {
+                           callback({});
                        }
                    },
                    [callback](const std::string &, int) {
@@ -136,6 +140,8 @@ void PostDaoImpl::getById(unsigned long id, std::function<void(Post &&)> callbac
                                    rows[3],
                                    rows[4],
                                    rows[5]});
+                       } else {
+                           callback({});
                        }
                    },
                    [callback](const std::string &, int) {
@@ -157,6 +163,8 @@ void PostDaoImpl::getCommentCount(unsigned long id, std::function<void(int)> cal
                    [callback](const MYSQL_ROW &rows) {
                        if (rows[0] == nullptr) {
                            callback(std::stoi(rows[0]));
+                       } else {
+                           callback(-1);
                        }
                    },
                    [callback](const std::string &, int) {

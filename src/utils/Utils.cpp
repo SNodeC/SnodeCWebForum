@@ -28,7 +28,6 @@ std::string Utils::hashPassword(const std::string &password, const ustring &salt
 
     std::ostringstream resultStream;
 
-
     const char *passPtr = password.c_str();
     const unsigned char *saltPtr = salt.c_str();
     unsigned char result[hashLength];

@@ -48,7 +48,7 @@ void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int s
                                    rows[4]
                            });
                        } else {
-                           callback(*commentsPtr);
+                           callback(std::move(*commentsPtr));
                        }
                    },
                    [callback](const std::string &, int) {
@@ -76,6 +76,8 @@ void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> c
                                    rows[3],
                                    rows[4],
                                    rows[5]});
+                       } else {
+                           callback({});
                        }
                    },
                    [callback](const std::string &, int) {
@@ -104,6 +106,8 @@ void CommentDaoImpl::getById(unsigned long id, std::function<void(Comment &&)> c
                                    User{std::stoul(rows[2])},
                                    rows[3],
                                    rows[4]});
+                       } else {
+                           callback({});
                        }
                    },
                    [callback](const std::string &, int) {

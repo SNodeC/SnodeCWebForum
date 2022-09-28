@@ -11,7 +11,7 @@ typedef std::basic_string<unsigned char> ustring;
 
 class Utils {
 public:
-    static std::string GetFieldByName(unsigned char *bodyData, std::string fieldName);
+    static std::string GetFieldByName(unsigned char *bodyData, const std::string& fieldName);
 
     static ustring createRandomSalt(size_t length);
 

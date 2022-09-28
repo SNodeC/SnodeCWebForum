@@ -2,12 +2,13 @@
 
 CREATE OR REPLACE TABLE User
 (
-    id        INT UNSIGNED AUTO_INCREMENT,
-    username  VARCHAR(30) not null unique,
-    password  VARCHAR(50) not null,
-    salt      VARCHAR(16) not null,
-    avatarURL VARCHAR(150),
-    creationDate  datetime default NOW(),
+    id            INT UNSIGNED AUTO_INCREMENT,
+    username      VARCHAR(30)  not null unique,
+    passwordHash  VARCHAR(16)  not null,
+    salt          VARCHAR(16)  not null,
+    avatarURL     VARCHAR(150) not null,
+    sessionToken  VARCHAR(256) not null default '',
+    creationDate  datetime not null default NOW(),
     PRIMARY KEY (id)
 );
 

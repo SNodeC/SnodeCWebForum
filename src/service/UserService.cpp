@@ -1,8 +1,11 @@
-#include <random>
-
-#include "utils/Utils.h"
 #include "UserService.h"
 
+#include <memory>
+
+#include "../utils/Utils.h"
+
+using std::shared_ptr;
+using std::make_shared;
 
 typedef service::UserService cls;
 
@@ -13,6 +16,7 @@ namespace service {
     const size_t SALT_LEN = 16;
     const size_t HASH_LEN = 16;
     const size_t HASH_ITERATIONS = 4096;
+    const size_t SESSION_TOKEN_LEN = 256;
 
     const size_t USERNAME_MIN_LENGTH = 3;
     const size_t PASSWORD_MIN_LENGTH = 8;
@@ -26,6 +30,19 @@ namespace service {
 #pragma endregion
 
 #pragma region Static Methods
+
+    std::string cls::hashPassword(const string& password, const ustring& salt) {
+        return Utils::hashPassword(password, salt, HASH_ITERATIONS, HASH_LEN);
+    }
+
+    ustring cls::createNewSalt() {
+        return Utils::createRandomSalt(SALT_LEN);
+    }
+
+    std::string cls::createNewSessionToken() {
+        ustring sessionTokenU = Utils::createRandomSalt(SESSION_TOKEN_LEN);
+        return {reinterpret_cast<const char*>(sessionTokenU.c_str()), SESSION_TOKEN_LEN};
+    }
 
     std::string cls::createAvatarURL(const std::string& username) {
         static const string avatarAPI{
@@ -71,8 +88,8 @@ namespace service {
         }
 
         string avatarURL = createAvatarURL(username);
-        ustring salt = Utils::createRandomSalt(SALT_LEN);
-        string hash = Utils::hashPassword(password, salt, HASH_ITERATIONS, HASH_LEN);
+        ustring salt = createNewSalt();
+        string hash = hashPassword(password, salt);
 
         function<void(bool)> createCallback = [callback](bool success) {
             callback(success ? UserCreationResult::SUCCESS : UserCreationResult::INTERNAL_ERROR);
@@ -81,16 +98,42 @@ namespace service {
         _userDao.createUser(username, hash, salt, avatarURL, createCallback);
     }
 
+    void cls::checkUserNameTaken(const string& username, function<void(bool)> callback) {
+        _userDao.isUserNameTaken(username, callback);
+    }
+
     void cls::checkUserPassword(const string& username, const string& password, function<void(bool)> callback) {
+        shared_ptr<string> usernamePtr = make_shared<string>(username);
+        shared_ptr<string> passwordPtr = make_shared<string>(password);
 
+        function<void(ustring&&)> saltCallback = [this, usernamePtr, passwordPtr, callback](ustring&& salt) {
+            string curHash = hashPassword(*passwordPtr, salt);
+            shared_ptr<string> curHashPtr = make_shared<string>(std::move(curHash));
+
+            function<void(string)> hashCallback = [curHashPtr, callback](string&& hash) {
+                callback((*curHashPtr) == hash);
+            };
+
+            _userDao.getPasswordHashByUsername(*usernamePtr, hashCallback);
+        };
+
+        _userDao.getSaltByUsername(username, saltCallback);
     }
 
-    void cls::checkUserSession(const string& username, const string& sessionCookie, function<void(bool)> callback) {
+    void cls::checkUserSession(const string& username, const string& sessionToken, function<void(bool)> callback) {
+        shared_ptr<string> sessionTokenPtr = make_shared<string>(sessionToken);
 
+        function<void(string&&)> sessionTokenCallback = [sessionTokenPtr, callback](string&& sessionToken) {
+            callback(*sessionTokenPtr == sessionToken);
+        };
+
+        _userDao.getSessionTokenByUsername(username, sessionTokenCallback);
     }
 
-    void cls::createNewUserSession(const string& username, function<void(string&&)> callback) {
-
+    void cls::createNewUserSession(const string& username, function<void(bool)> callback) {
+        shared_ptr<string> usernamePtr = make_shared<string>(username);
+        string newSessionToken = createNewSessionToken();
+        _userDao.setSessionTokenByUsername(username, newSessionToken, callback);
     }
 
 #pragma endregion

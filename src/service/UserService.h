@@ -4,7 +4,7 @@
 #include <functional>
 #include <string>
 
-#include "daos/DaoInterfaces/UserDao.h"
+#include "../daos/DaoInterfaces/UserDao.h"
 
 using std::string;
 using std::function;
@@ -21,9 +21,12 @@ namespace service {
             INTERNAL_ERROR = 0b100
         };
 
+        static std::string hashPassword(const string& password, const ustring& salt);
+        static ustring createNewSalt();
+        static std::string createNewSessionToken();
         static std::string createAvatarURL(const std::string& username);
-        static bool checkUserNameFormat(const std::string& username);
-        static bool checkPasswordFormat(const std::string& password);
+        static bool checkUserNameFormat(const string& username);
+        static bool checkPasswordFormat(const string& password);
 
         UserDao& _userDao;
 
@@ -37,9 +40,10 @@ namespace service {
         UserService(UserDao& userDao);
 
         void createUser(const string& username, const string& password, function<void(int)> callback);
+        void checkUserNameTaken(const string& username, function<void(bool)> callback);
         void checkUserPassword(const string& username, const string& password, function<void(bool)> callback);
-        void checkUserSession(const string& username, const string& sessionCookie, function<void(bool)> callback);
-        void createNewUserSession(const string& username, function<void(string&&)> callback);
+        void checkUserSession(const string& username, const string& sessionToken, function<void(bool)> callback);
+        void createNewUserSession(const string& username, function<void(bool)> callback);
     };
 } // service
 
