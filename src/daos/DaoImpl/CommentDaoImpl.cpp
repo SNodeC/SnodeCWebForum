@@ -5,7 +5,8 @@
 #include <sstream>
 #include "CommentDaoImpl.h"
 
-void CommentDaoImpl::create(const std::string& content, unsigned long creatorID, unsigned long postID, std::function<void(bool)> callback) {
+void CommentDaoImpl::create(const std::string &content, unsigned long creatorID, unsigned long postID,
+                            std::function<void(bool)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -32,8 +33,9 @@ void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int s
     if (amount != -1) {
         sql <<
             "LIMIT " << amount <<
-            "OFFSET " << start << ";";
+            "OFFSET " << start;
     }
+    sql << ";";
 
     std::shared_ptr<std::vector<Comment>> commentsPtr = std::make_shared<std::vector<Comment>>();
 
@@ -96,21 +98,22 @@ void CommentDaoImpl::getById(unsigned long id, std::function<void(Comment &&)> c
         "WHERE id = " << id << ";";
 
 
-    DBClient.query(sql.str(),
-                   [callback](const MYSQL_ROW &rows) {
+    DBClient.query(
+            sql.str(),
+            [callback](const MYSQL_ROW &rows) {
 
-                       if (rows[0] == nullptr) {
-                           callback(Comment{
-                                   std::stoul(rows[0]),
-                                   Post{std::stoul(rows[1])},
-                                   User{std::stoul(rows[2])},
-                                   rows[3],
-                                   rows[4]});
-                       } else {
-                           callback({});
-                       }
-                   },
-                   [callback](const std::string &, int) {
-                       callback({});
-                   });
+                if (rows[0] == nullptr) {
+                    callback(Comment{
+                            std::stoul(rows[0]),
+                            Post{std::stoul(rows[1])},
+                            User{std::stoul(rows[2])},
+                            rows[3],
+                            rows[4]});
+                } else {
+                    callback({});
+                }
+            },
+            [callback](const std::string &, int) {
+                callback({});
+            });
 }

@@ -63,13 +63,15 @@ void TopicDaoImpl::getRecentTopics(int amount, int start,
     if (amount != -1) {
         sql <<
             "LIMIT " << amount <<
-            "OFFSET " << start << ";";
+            "OFFSET " << start;
     }
+
+    sql << ";";
     std::shared_ptr<std::vector<Topic>> topicsPtr = std::make_unique<std::vector<Topic>>();
 
     DBClient.query(sql.str(),
                    [callback, topicsPtr](const MYSQL_ROW &rows) {
-                       if (rows[0] == nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            topicsPtr->push_back(Topic{
                                    std::stoul(rows[0]),
                                    User{std::stoul(rows[1])},

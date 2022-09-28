@@ -1,4 +1,4 @@
-INSERT INTO User (username, password, salt, avatarURL)
+INSERT INTO User (username, passwordHash, salt, avatarURL)
 VALUES ('Fidi', 'hashstuff', 'pepper', 'urlbuarl'),
        ('Cleo', 'hashstuff', 'pepper', 'urlbuarl'),
        ('Matin', 'hashstuff', 'pepper', 'urlbuarl'),

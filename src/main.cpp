@@ -54,6 +54,18 @@ int main(int argc, char *argv[]) {
     service::HTMLResponseCreationService htmlResponseCreationService(commentDao, postDao, topicDao);
     service::UserService userService(userDao);
 
+    topicDao.getRecentTopics(-1, 0, [](std::vector<Topic> topics) {
+
+        cout << "testprint" << endl;
+
+        for (auto t: topics) {
+
+            cout << t.title << endl;
+
+        }
+
+    });
+
 
     express::WebApp::init(argc, argv);
 
@@ -63,10 +75,9 @@ int main(int argc, char *argv[]) {
 
         string username = req.cookie(USERNAMECOOKIE);
         string sessionTkn = req.cookie(SESSIONTOKEN);
-        function<void(bool)> callback = [](bool b) { cout << b << endl; };
-        userService.checkUserSession(username, sessionTkn, callback);
-
-        res.send("<>");
+        userService.checkUserSession(username, sessionTkn, [&](bool b) {
+            htmlResponseCreationService.createHomeResponseFromDao(b ? username : "", [&](string s) { res.send(s); });
+        });
     });
 
 

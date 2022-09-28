@@ -6,7 +6,7 @@
 #include "PostDaoImpl.h"
 
 
-void PostDaoImpl::create(const std::string& title, const std::string& content, unsigned long userID,
+void PostDaoImpl::create(const std::string &title, const std::string &content, unsigned long userID,
                          unsigned long topicId, std::function<void(bool)> callback) {
 
     // TODO: FIX THIS SHIT
@@ -34,8 +34,9 @@ void PostDaoImpl::getRecentPostsOfTopic(unsigned long id, int amount, int start,
     if (amount != -1) {
         sql <<
             "LIMIT " << amount <<
-            "OFFSET " << start << ";";
+            "OFFSET " << start;
     }
+    sql << ";";
 
     std::shared_ptr<std::vector<Post>> postsPtr = std::make_shared<std::vector<Post>>();
 
