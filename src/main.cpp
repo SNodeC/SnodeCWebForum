@@ -10,7 +10,6 @@
 #include <database/mariadb/commands/sync/MariaDBUseResultCommand.h>
 #include <database/mariadb/MariaDBCommandSequence.h>
 #include "daos/DaoImpl/UserDaoImpl.h"
-#include "daos/DaoInterfaces/UserDao.h"
 #include "service/HTMLResponseCreationService.h"
 #include "service/UserService.h"
 #include "daos/DaoImpl/CommentDaoImpl.h"
@@ -58,17 +57,31 @@ int main(int argc, char *argv[]) {
     express::WebApp::init(argc, argv);
     express::legacy::in::WebApp legacyApp("getPost");
 
-    legacyApp.get("/t/:topic([1-9]+))", []APPLICATION(req, res) {
+    legacyApp.get("/t/:topic([1-9]+))", [&]APPLICATION(req, res) {
 
-        std::cout << req.params["topic"] << " " << req.params["post"] << std::endl;
+        unsigned long topicID = std::stoul(req.params["topic"]);
 
+        string username = req.cookie(USERNAMECOOKIE);
+        string sessionTkn = req.cookie(SESSIONTOKEN);
+
+        userService.checkUserSession(username, sessionTkn, [&](bool b) {
+            htmlResponseCreationService.createTopicOverviewResponseFromDao(topicID, b ? username : "",
+                                                                           [&](string s) { res.send(s); });
+        });
 
     });
 
-    legacyApp.get("/t/:topic([1-9]+)/:post([1-9]+)", []APPLICATION(req, res) {
+    legacyApp.get("/t/:topic([1-9]+)/:post([1-9]+)", [&]APPLICATION(req, res) {
 
-        std::cout << req.params["topic"] << " " << req.params["post"] << std::endl;
+        unsigned long postID = std::stoul(req.params["post"]);
 
+        string username = req.cookie(USERNAMECOOKIE);
+        string sessionTkn = req.cookie(SESSIONTOKEN);
+
+        userService.checkUserSession(username, sessionTkn, [&](bool b) {
+            htmlResponseCreationService.createPostOverviewResponseFromDao(postID, b ? username : "",
+                                                                           [&](string s) { res.send(s); });
+        });
 
     });
 
