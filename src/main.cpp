@@ -11,6 +11,7 @@
 #include <database/mariadb/MariaDBCommandSequence.h>
 #include "daos/DaoImpl/UserDaoImpl.h"
 #include "daos/DaoInterfaces/UserDao.h"
+#include "service/HTMLResponseCreationService.h"
 #include "daos/DaoImpl/CommentDaoImpl.h"
 #include "daos/DaoImpl/PostDaoImpl.h"
 #include "daos/DaoImpl/TopicDaoImpl.h"
@@ -24,28 +25,11 @@ void sendFile([[maybe_unused]] express::Request &(req), [[maybe_unused]] express
     res.sendFile(path, [&](int) { (res.sendStatus(400)); });
 }
 
+
 int main(int argc, char *argv[]) {
 
-/*
-    database::mariadb::MariaDBConnection DBConnection(&DBClient, DBConnectionDetails);
-
-    std::function<void(MYSQL_RES *)> onUseResult = [](MYSQL_RES *) {};
-    std::function<void(const std::string &, unsigned int)> onError = [](const std::string &, unsigned int) {};
-
-    std::function<void()> onConnecting;
-    std::function<void()> onConnect;
-
-    database::mariadb::commands::sync::MariaDBUseResultCommand DBCommand(onUseResult, onError);
-    //database::mariadb::commands::async::MariaDBConnectCommand ConnectCommand(DBConnectionDetails,onConnecting,onConnect,onError);
-    database::mariadb::commands::async::MariaDBQueryCommand QueryCommand("Select * From Users", onConnect, onError);
-
-    // MYSQL mysql;
-    utils::Timeval currentTime = 10000.0;
-    // ((database::mariadb::MariaDBCommand *) &QueryCommand)->commandStart(&mysql, currentTime);
-
-    QueryCommand.setMariaDBConnection(&DBConnection);
-    DBConnection.commandStart(currentTime);
-*/
+    static const string USERNAMECOOKIE = "Username";
+    static const string SESSIONTOKEN = "SessionToken";
 
     const database::mariadb::MariaDBConnectionDetails DBConnectionDetails{
             "localhost",
@@ -59,39 +43,30 @@ int main(int argc, char *argv[]) {
 
     database::mariadb::MariaDBClient DBClient(DBConnectionDetails);
 
+
     UserDaoImpl userDao(DBClient);
-    function<void(bool)> callback = [](bool b) { std::cout << b << std::endl; };
-    userDao.createUser("allNewFidi", "nicePassword", "asdfcasdfasdf","URL", callback);
-
-/*
-
     CommentDaoImpl commentDao(DBClient);
     PostDaoImpl postDao(DBClient);
     TopicDaoImpl topicDao(DBClient);
 
-*/
 
-/*    std::string sql = "Select * from User;";
-
-    database::mariadb::MariaDBCommandSequence &sequence = DBClient.query(sql, [&](const MYSQL_ROW &rows) {
-        if (rows != nullptr) {
-            std::cout << "AHHHHHHHHHHHHHHHHHHHHHHHHHHHH" << std::endl;
-
-            for (int i = 0; rows[i + 1]; ++i) {
-                std::cout << rows[i] << std::endl;
-
-            }
-        }
-
-    }, [](const std::string &, int) {
-    });
-
-*/
+    service::HTMLResponseCreationService htmlResponseCreationService(commentDao, postDao, topicDao);
 
 
     express::WebApp::init(argc, argv);
 
     express::legacy::in::WebApp legacyApp("getPost");
+
+    legacyApp.get("/", []APPLICATION(req, res) {
+
+        cout << req.cookie(USERNAMECOOKIE) << endl;
+
+
+
+
+    });
+
+
     legacyApp.get("/home", []APPLICATION(req, res) {
 
         res.send("<!DOCTYPE html>\n"
@@ -190,6 +165,14 @@ int main(int argc, char *argv[]) {
     });
 
     legacyApp.get("/:dir(js|css|assets)/:suffix", sendFile);
+
+    legacyApp.get("/:topic/:post", []APPLICATION(req, res) {
+
+        req.params["topic"];
+        req.params["post"];
+
+
+    });
 
 
     legacyApp.use([]APPLICATION(req, res) {

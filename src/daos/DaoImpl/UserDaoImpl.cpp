@@ -41,7 +41,7 @@ void UserDaoImpl::getById(unsigned long id, std::function<void(User &&)> callbac
 
 }
 
-void UserDaoImpl::getByUsername(const std::string& username, std::function<void(User&&)> callback) {
+void UserDaoImpl::getByUsername(const std::string &username, std::function<void(User &&)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -73,7 +73,7 @@ void UserDaoImpl::getByUsername(const std::string& username, std::function<void(
 
 }
 
-void UserDaoImpl::isUserNameTaken(const std::string& username, std::function<void(bool)> callback) {
+void UserDaoImpl::isUserNameTaken(const std::string &username, std::function<void(bool)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -91,10 +91,10 @@ void UserDaoImpl::isUserNameTaken(const std::string& username, std::function<voi
                    });
 }
 
-void UserDaoImpl::createUser(const std::string& username, const std::string& passwordHash, const ustring& salt,
-                             const std::string& avatarURL, std::function<void(bool)> callback) {
+void UserDaoImpl::createUser(const std::string &username, const std::string &passwordHash, const ustring &salt,
+                             const std::string &avatarURL, std::function<void(bool)> callback) {
 
-    const char* salt_c_ptr = reinterpret_cast<const char*>(salt.c_str());
+    const char *salt_c_ptr = reinterpret_cast<const char *>(salt.c_str());
     std::ostringstream sql;
     sql <<
         "INSERT INTO User (username, passwordHash, salt) "
@@ -103,12 +103,15 @@ void UserDaoImpl::createUser(const std::string& username, const std::string& pas
 
     DBClient.exec(sql.str(),
                   [callback]() { callback(true); },
-                  [callback](const std::string &s, int) { std::cout << s << std::endl;  callback(false); });
+                  [callback](const std::string &s, int) {
+                      std::cout << s << std::endl;
+                      callback(false);
+                  });
 
 
 }
 
-void UserDaoImpl::getPasswordHashById(unsigned long id, std::function<void(std::string&&)> callback) {
+void UserDaoImpl::getPasswordHashById(unsigned long id, std::function<void(std::string &&)> callback) {
     std::ostringstream sql;
     sql <<
         "SELECT passwordHash"
@@ -128,7 +131,7 @@ void UserDaoImpl::getPasswordHashById(unsigned long id, std::function<void(std::
                    });
 }
 
-void UserDaoImpl::getPasswordHashByUsername(const std::string& username, std::function<void(std::string&&)> callback) {
+void UserDaoImpl::getPasswordHashByUsername(const std::string &username, std::function<void(std::string &&)> callback) {
     std::ostringstream sql;
     sql <<
         "SELECT passwordHash"
@@ -148,7 +151,7 @@ void UserDaoImpl::getPasswordHashByUsername(const std::string& username, std::fu
                    });
 }
 
-void UserDaoImpl::getIdByUsername(const std::string& username, std::function<void(unsigned long)> callback) {
+void UserDaoImpl::getIdByUsername(const std::string &username, std::function<void(unsigned long)> callback) {
     std::ostringstream sql;
     sql <<
         "SELECT id"
@@ -168,7 +171,7 @@ void UserDaoImpl::getIdByUsername(const std::string& username, std::function<voi
                    });
 }
 
-void UserDaoImpl::getSaltById(unsigned long id, std::function<void(ustring&&)> callback) {
+void UserDaoImpl::getSaltById(unsigned long id, std::function<void(ustring &&)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -179,7 +182,7 @@ void UserDaoImpl::getSaltById(unsigned long id, std::function<void(ustring&&)> c
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
                        if (rows[0] != nullptr) {
-                           callback(reinterpret_cast<const unsigned char*>(rows[0]));
+                           callback(reinterpret_cast<const unsigned char *>(rows[0]));
                        } else {
                            callback({});
                        }
@@ -190,7 +193,7 @@ void UserDaoImpl::getSaltById(unsigned long id, std::function<void(ustring&&)> c
 
 }
 
-void UserDaoImpl::getSaltByUsername(const std::string& username, std::function<void(ustring&&)> callback) {
+void UserDaoImpl::getSaltByUsername(const std::string &username, std::function<void(ustring &&)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -201,7 +204,7 @@ void UserDaoImpl::getSaltByUsername(const std::string& username, std::function<v
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
                        if (rows[0] != nullptr) {
-                           callback(reinterpret_cast<const unsigned char*>(rows[0]));
+                           callback(reinterpret_cast<const unsigned char *>(rows[0]));
                        } else {
                            callback({});
                        }
@@ -212,27 +215,82 @@ void UserDaoImpl::getSaltByUsername(const std::string& username, std::function<v
 
 }
 
-void UserDaoImpl::setSessionTokenById(unsigned long id, const std::string& sessionToken, std::function<void(bool)> callback) {
+void UserDaoImpl::setSessionTokenById(unsigned long id, const std::string &sessionToken,
+                                      std::function<void(bool)> callback) {
     std::ostringstream sql;
     sql <<
         "UPDATE User"
         "SET sessionToken='" << sessionToken << "'"
-        "WHERE id=" << id << ";";
+                                                "WHERE id=" << id << ";";
 
     DBClient.exec(sql.str(),
                   [callback]() { callback(true); },
-                  [callback](const std::string &s, int) { std::cout << s << std::endl;  callback(false); });
+                  [callback](const std::string &s, int) {
+                      std::cout << s << std::endl;
+                      callback(false);
+                  });
 }
 
-void UserDaoImpl::setSessionTokenByUsername(const std::string& username, const std::string& sessionToken, std::function<void(bool)> callback) {
+void UserDaoImpl::setSessionTokenByUsername(const std::string &username, const std::string &sessionToken,
+                                            std::function<void(bool)> callback) {
     std::ostringstream sql;
     sql <<
         "UPDATE User"
         "SET sessionToken='" << sessionToken << "'"
-         "WHERE username='" << username << "';";
+                                                "WHERE username='" << username << "';";
 
     DBClient.exec(sql.str(),
                   [callback]() { callback(true); },
-                  [callback](const std::string &s, int) { std::cout << s << std::endl;  callback(false); });
+                  [callback](const std::string &s, int) {
+                      std::cout << s << std::endl;
+                      callback(false);
+                  });
+}
+
+void UserDaoImpl::getSessionTokenById(unsigned long id, std::function<void(std::string &&)> callback) {
+
+    std::ostringstream sql;
+    sql <<
+        "SELECT sessionToken "
+        "FROM User "
+        "WHERE id = '" << id << "';";
+
+    DBClient.query(
+            sql.str(),
+            [callback](const MYSQL_ROW &rows) {
+                if (rows[0] != nullptr) {
+                    callback(rows[0]);
+                } else {
+                    callback({});
+                }
+            },
+            [callback](const std::string &, int) {
+                callback({});
+            });
+
+
+}
+
+void UserDaoImpl::getSessionTokenByUsername(const std::string &username, std::function<void(std::string &&)> callback) {
+
+    std::ostringstream sql;
+    sql <<
+        "SELECT sessionToken "
+        "FROM User "
+        "WHERE username = '" << username << "';";
+
+    DBClient.query(
+            sql.str(),
+            [callback](const MYSQL_ROW &rows) {
+                if (rows[0] != nullptr) {
+                    callback(rows[0]);
+                } else {
+                    callback({});
+                }
+            },
+            [callback](const std::string &, int) {
+                callback({});
+            });
+
 }
 

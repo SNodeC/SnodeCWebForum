@@ -57,8 +57,6 @@ void PostDaoImpl::getRecentPostsOfTopic(unsigned long id, int amount, int start,
                    [callback](const std::string &, int) {
                        callback({});
                    });
-
-
 }
 
 void PostDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> callback) {
