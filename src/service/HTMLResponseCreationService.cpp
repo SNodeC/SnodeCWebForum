@@ -161,7 +161,7 @@ namespace service
                 "                    <i class='gg-heart center'></i>\n"
                 "                </div>\n"
                 "                <div class='subforum-description subforum-column'>\n"
-                "                    <h4 class='t-ov-el'><a href='/topic/" << topic.id << "'>" << topic.title << "</a></h4>\n"
+                "                    <h4 class='t-ov-el'><a href='/t/" << topic.id << "'>" << topic.title << "</a></h4>\n"
                 "                    <p class='t-ov-el'>" << topic.description << "</p>\n"
                 "                </div>\n"
                 "                <div class='subforum-stats subforum-column center'>\n";
