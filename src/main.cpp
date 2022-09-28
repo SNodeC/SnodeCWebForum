@@ -53,19 +53,23 @@ int main(int argc, char *argv[]) {
 
     service::HTMLResponseCreationService htmlResponseCreationService(commentDao, postDao, topicDao);
     service::UserService userService(userDao);
+/*
 
     topicDao.getPostCount(1, [](int count) {
 
         cout << count << endl;
 
+*/
 /*        for (auto t: topics) {
 
             cout << t.title << endl;
 
-        }*/
+        }*//*
+
 
     });
 
+*/
 
     express::WebApp::init(argc, argv);
 

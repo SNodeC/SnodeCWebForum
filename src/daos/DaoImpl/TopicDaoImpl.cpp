@@ -3,6 +3,7 @@
 //
 
 #include <sstream>
+#include <iostream>
 #include "TopicDaoImpl.h"
 
 void TopicDaoImpl::create(const std::string &title, const std::string &description, unsigned long userID,
@@ -10,7 +11,7 @@ void TopicDaoImpl::create(const std::string &title, const std::string &descripti
 
     std::ostringstream sql;
     sql <<
-        "Insert INTO Topic (creatorID, title, description)"
+        "Insert INTO Topic (creatorID, title, description) "
         "VALUES (" << userID << ",'" << title << "','" << description << "');";
 
 
@@ -26,7 +27,7 @@ void TopicDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> cal
     std::ostringstream sql;
     sql <<
         "SELECT u.id, u.username , u.passwordHash, u.salt, u.avatarURL, u.sessionToken , DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
-        "FROM User u left JOIN Topic T on u.id = T.creatorID"
+        "FROM User u left JOIN Topic T on u.id = T.creatorID "
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),
@@ -64,7 +65,7 @@ void TopicDaoImpl::getRecentTopics(int amount, int start,
 
     if (amount != -1) {
         sql <<
-            "LIMIT " << amount <<
+            "LIMIT " << amount << " "
             "OFFSET " << start;
     }
 
@@ -97,13 +98,15 @@ void TopicDaoImpl::getPostCount(unsigned long id, std::function<void(int)> callb
     std::ostringstream sql;
     sql <<
         "SELECT COUNT(*) "
-        "FROM Post p left JOIN Topic t on p.topicID = t.id"
-        "WHERE t.id = " << id << ";";
+        "FROM Post "
+        "WHERE topicID = " << id << ";";
 
 
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
                        if (rows != nullptr && rows[0] != nullptr) {
+                           std::cout << rows[0] << std::endl;
+
                            callback(std::stoi(rows[0]));
                        } else {
                            callback(-1);

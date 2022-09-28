@@ -78,7 +78,7 @@ void UserDaoImpl::isUserNameTaken(const std::string &username, std::function<voi
     std::ostringstream sql;
     sql <<
         "SELECT username "
-        "FROM User"
+        "FROM User "
         "WHERE username = '" << username << "';";
 
 
@@ -114,7 +114,7 @@ void UserDaoImpl::createUser(const std::string &username, const std::string &pas
 void UserDaoImpl::getPasswordHashById(unsigned long id, std::function<void(std::string &&)> callback) {
     std::ostringstream sql;
     sql <<
-        "SELECT passwordHash"
+        "SELECT passwordHash "
         "FROM User "
         "WHERE id = " << id << ";";
 
@@ -134,7 +134,7 @@ void UserDaoImpl::getPasswordHashById(unsigned long id, std::function<void(std::
 void UserDaoImpl::getPasswordHashByUsername(const std::string &username, std::function<void(std::string &&)> callback) {
     std::ostringstream sql;
     sql <<
-        "SELECT passwordHash"
+        "SELECT passwordHash "
         "FROM User "
         "WHERE username = " << username << ";";
 
@@ -154,7 +154,7 @@ void UserDaoImpl::getPasswordHashByUsername(const std::string &username, std::fu
 void UserDaoImpl::getIdByUsername(const std::string &username, std::function<void(unsigned long)> callback) {
     std::ostringstream sql;
     sql <<
-        "SELECT id"
+        "SELECT id "
         "FROM User "
         "WHERE username = '" << username << "';";
 
@@ -219,8 +219,8 @@ void UserDaoImpl::setSessionTokenById(unsigned long id, const std::string &sessi
                                       std::function<void(bool)> callback) {
     std::ostringstream sql;
     sql <<
-        "UPDATE User"
-        "SET sessionToken='" << sessionToken << "'"
+        "UPDATE User "
+        "SET sessionToken='" << sessionToken << "' "
                                                 "WHERE id=" << id << ";";
 
     DBClient.exec(sql.str(),
@@ -235,8 +235,8 @@ void UserDaoImpl::setSessionTokenByUsername(const std::string &username, const s
                                             std::function<void(bool)> callback) {
     std::ostringstream sql;
     sql <<
-        "UPDATE User"
-        "SET sessionToken='" << sessionToken << "'"
+        "UPDATE User "
+        "SET sessionToken='" << sessionToken << "' "
                                                 "WHERE username='" << username << "';";
 
     DBClient.exec(sql.str(),

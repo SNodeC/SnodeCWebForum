@@ -32,7 +32,7 @@ void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int s
 
     if (amount != -1) {
         sql <<
-            "LIMIT " << amount <<
+            "LIMIT " << amount << " "
             "OFFSET " << start;
     }
     sql << ";";
@@ -65,7 +65,7 @@ void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> c
     std::ostringstream sql;
     sql <<
         "SELECT u.id, u.username , u.password, u.salt, DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
-        "FROM User u left JOIN Comment c on u.id = c.creatorID"
+        "FROM User u left JOIN Comment c on u.id = c.creatorID "
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),

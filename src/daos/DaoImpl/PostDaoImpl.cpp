@@ -3,6 +3,7 @@
 //
 
 #include <sstream>
+#include <iostream>
 #include "PostDaoImpl.h"
 
 
@@ -11,7 +12,7 @@ void PostDaoImpl::create(const std::string &title, const std::string &content, u
 
     std::ostringstream sql;
     sql <<
-        "INSERT INTO Post (topicID, creatorID, title, content)"
+        "INSERT INTO Post (topicID, creatorID, title, content) "
         "VALUES (" << topicId << "," << userID << ",'" << title << "','" << content << "');";
 
     DBClient.exec(sql.str(),
@@ -27,12 +28,12 @@ void PostDaoImpl::getRecentPostsOfTopic(unsigned long id, int amount, int start,
     sql <<
         "SELECT id,topicID, creatorID, title, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
         "FROM Post "
-        "WHERE topicID = " << id <<
+        "WHERE topicID = " << id << " "
         "ORDER BY creationDate DESC ";
 
     if (amount != -1) {
         sql <<
-            "LIMIT " << amount <<
+            "LIMIT " << amount << " "
             "OFFSET " << start;
     }
     sql << ";";
@@ -64,7 +65,7 @@ void PostDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> call
     std::ostringstream sql;
     sql <<
         "SELECT u.id, u.username , u.passwordHash, u.salt, u.avatarURL, u.sessionToken , DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
-        "FROM User u left JOIN Post p on u.id = p.creatorID"
+        "FROM User u left JOIN Post p on u.id = p.creatorID "
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),
@@ -97,7 +98,7 @@ void PostDaoImpl::getTopic(unsigned long id, std::function<void(Topic &&)> callb
     std::ostringstream sql;
     sql <<
         "SELECT t.id, t.creatorID , t.title, t.description, DATE_FORMAT(t.creationDate, '%d/%m/%Y') "
-        "FROM Topic t left JOIN Post p on u.id = p.creatorID"
+        "FROM Topic t left JOIN Post p on u.id = p.creatorID "
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),
@@ -154,7 +155,7 @@ void PostDaoImpl::getById(unsigned long id, std::function<void(Post &&)> callbac
 void PostDaoImpl::getCommentCount(unsigned long id, std::function<void(int)> callback) {
     std::ostringstream sql;
     sql <<
-        "SELECT COUNT(*)"
+        "SELECT COUNT(*) "
         "FROM Comment "
         "WHERE postID = " << id << ";";
 
@@ -162,6 +163,8 @@ void PostDaoImpl::getCommentCount(unsigned long id, std::function<void(int)> cal
     DBClient.query(sql.str(),
                    [callback](const MYSQL_ROW &rows) {
                        if (rows != nullptr && rows[0] != nullptr) {
+                           std::cout << rows[0] << std::endl;
+
                            callback(std::stoi(rows[0]));
                        } else {
                            callback(-1);
