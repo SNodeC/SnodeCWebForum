@@ -40,10 +40,6 @@ html, body {
     width: 100%;
 }
 
-header {
-    /* margin: 10px; */
-}
-
 #content {
     min-width: 650px;
     margin-top: 0;
@@ -61,7 +57,7 @@ footer {
     /* display: block; */
     text-align: center;
     font-weight: bolder;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 a {
@@ -74,15 +70,16 @@ a {
 
 h1 {
     margin-top: 0px;
-    margin-bottom: 50px;
+    margin-bottom: 20px;
     text-align: center;
     font-size: max(min(8vw, 4rem), 3.2rem);
     font-family: BungeeSpice;
     letter-spacing: 0.15rem;
     text-transform: uppercase;
     color: #fff;
-    text-shadow: -4px 4px #ef3550,
-        -8px 8px #f48fb1,
+    text-shadow: 
+         -4px  4px #ef3550,
+         -8px  8px #f48fb1,
         -12px 12px #7e57c2,
         -16px 16px #2196f3,
         -20px 20px #26c6da,
@@ -118,27 +115,50 @@ h2 {
 }
 
 .error {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: inline-block;
+    width: 100%;
+    padding: 3px 5px;
+    margin: 5px 0px;
+    border-radius: 0px;
+    color: #ef3550;
+    border: solid #ef3550 5px;
+    border-image: linear-gradient(to bottom right, #f48fb1 0%, #ef3550 25%, #ef3550 75%, #ff5722 100%);
+    border-image-slice: 1;
+    background-color: #ef355012;
+}
 
-    margin: 60px;
-    text-align: center;
-    font-size: 8rem;
-    font-family: BungeeSpice;
-    letter-spacing: 0.8rem;
-    text-transform: uppercase;
-    color: #fff;
-    text-shadow: -4px 4px #ef3550,
-        -8px 8px #f48fb1,
-        -12px 12px #7e57c2,
-        -16px 16px #2196f3,
-        -20px 20px #26c6da,
-        -24px 24px #43a047,
-        -28px 28px #eeff41,
-        -32px 32px #f9a825,
-        -36px 36px #ff5722;
+.warning {
+    display: inline-block;
+    width: 100%;
+    padding: 3px 5px;
+    margin: 5px 0px;
+    border-radius: 0px;
+    color: #eeff41;
+    border: solid #eeff41 5px;
+    border-image: linear-gradient(to bottom right, #f9a825 0%, #eeff41 25%, #eeff41 75%, #43a047 100%);
+    border-image-slice: 1;
+    background-color: #eeff4112;
+}
 
+.info {
+    display: inline-block;
+    width: 100%;
+    padding: 3px 5px;
+    margin: 5px 0px;
+    border-radius: 5px;
+    color: #26c6da;
+    border: solid #26c6da 5px;
+    border-image: linear-gradient(to bottom right, #43a047 0%, #26c6da 25%, #26c6da 75%, #2196f3 100%);
+    border-image-slice: 1;
+    background-color: #26c6da12;
+}
+
+.error:empty, .warning:empty, .info:empty {
+    display: none;
+}
+
+.error span::before, .warning span::before, .info span::before {
+    content: '- ';
 }
 
 .t-a-c {
@@ -176,6 +196,14 @@ h2 {
     margin-bottom: 20px;
 }
 
+.m-b-30 {
+    margin-bottom: 30px;
+}
+
+.m-b-40 {
+    margin-bottom: 40px;
+}
+
 .m-b-50 {
     margin-bottom: 50px;
 }
@@ -192,12 +220,29 @@ h2 {
     margin-top: 20px;
 }
 
+.m-t-30 {
+    margin-top: 30px;
+}
+
+.m-t-40 {
+    margin-top: 40px;
+}
+
+
 .m-t-50 {
     margin-top: 50px;
 }
 
 .m-t-100 {
     margin-top: 100px;
+}
+
+.min-h-1 {
+    min-height: 1px;
+}
+
+.w-100p {
+    width: 100%;
 }
 
 .flex-70 {
@@ -228,7 +273,7 @@ h2 {
 /* TODO:  if counting not possible delete 10% and change 20 to 30...*/
 .subforum-row {
     display: grid;
-    grid-template-columns: 5% auto 10% 30%;
+    grid-template-columns: 50px auto 10% 30%;
 }
 
 .subforum-column {
@@ -287,10 +332,6 @@ h2 {
 
 .brand {
     white-space: nowrap;
-}
-
-.brand h1 {
-    margin-bottom: 20px;
 }
 
 /* forum info Styling */
@@ -445,9 +486,8 @@ h2 {
 
 .authors {
     overflow: auto;
-    flex-basis: 30%;
-    flex-grow: 0;
-    flex-shrink: 0;
+    width: 175px;
+    margin-right: 5px;
 }
 
 .content {
@@ -462,8 +502,8 @@ h2 {
 }
 
 .username {
-    font-size: 20px;
-    font-weight: bold;
+    font-size: 18px;
+    font-weight: normal;
     font-family: Nunito-Bold;
     color: #fb00ff;
     max-width: 100%;
@@ -472,8 +512,11 @@ h2 {
 .body .authors img {
     max-width: 80px;
     max-height: 80px;
-    border-radius: 40px;
+    border-radius: 14px;
     margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
 
 /* ########################################### */
@@ -489,7 +532,6 @@ h2 {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 30px;
 }
 
 textarea {
@@ -538,7 +580,7 @@ textarea::placeholder {
     align-items: center;
     justify-content: center;
     margin: 30px;
-    width: 30%;
+    width: 40%;
 }
 
 .user-login {
@@ -561,5 +603,5 @@ textarea::placeholder {
     display: flex;
     justify-content: right;
     align-items: center;
-    margin: 10px 40px 10px auto;
+    margin: 10px auto 10px auto; /* for right aling 10 40 10 auto */
 }

@@ -3,7 +3,7 @@
 CREATE OR REPLACE TABLE User
 (
     id        INT UNSIGNED AUTO_INCREMENT,
-    username  VARCHAR(30) not null,
+    username  VARCHAR(30) not null unique,
     password  VARCHAR(50) not null,
     salt      VARCHAR(16) not null,
     avatarURL VARCHAR(150),

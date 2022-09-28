@@ -6,7 +6,7 @@
 #include <openssl/rand.h>
 #include "Utils.h"
 
-std::string Utils::GetFieldByName(unsigned char *bodyData, std::string fieldName) {
+std::string Utils::GetFieldByName(unsigned char *bodyData, const std::string& fieldName) {
 
     std::string bodyString(reinterpret_cast<char *>(bodyData));
 
@@ -16,8 +16,6 @@ std::string Utils::GetFieldByName(unsigned char *bodyData, std::string fieldName
 
     std::string result = bodyString.substr(index2, index3 - (index2));
     return result;
-
-
 }
 
 ustring Utils::createRandomSalt(size_t length) {

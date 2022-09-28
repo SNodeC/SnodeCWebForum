@@ -18,7 +18,7 @@ void UserDaoImpl::getById(unsigned long id, std::function<void(User &&)> callbac
 
 
     DBClient.query(sql.str(),
-                   [&](const MYSQL_ROW &rows) {
+                   [callback](const MYSQL_ROW &rows) {
 
                        if (rows[0] == nullptr) {
                            callback(User{
@@ -31,7 +31,7 @@ void UserDaoImpl::getById(unsigned long id, std::function<void(User &&)> callbac
                        }
 
                    },
-                   [&](const std::string &, int) {
+                   [callback](const std::string &, int) {
                        callback({});
                    });
 
@@ -39,7 +39,7 @@ void UserDaoImpl::getById(unsigned long id, std::function<void(User &&)> callbac
 }
 
 
-void UserDaoImpl::isUserNameTaken(std::string username, std::function<void(bool)> callback) {
+void UserDaoImpl::isUserNameTaken(const std::string& username, std::function<void(bool)> callback) {
 
 
     std::ostringstream sql;
@@ -50,16 +50,16 @@ void UserDaoImpl::isUserNameTaken(std::string username, std::function<void(bool)
 
 
     DBClient.query(sql.str(),
-                   [&](const MYSQL_ROW &rows) {
+                   [callback](const MYSQL_ROW &rows) {
                        callback(rows[0] != nullptr);
                    },
-                   [&](const std::string &, int) {
+                   [callback](const std::string &, int) {
                        callback(false);
                    });
 }
 
-void UserDaoImpl::createUser(std::string username, std::string password, std::string salt, std::string avatarURL,
-                             std::function<void(bool)> callback) {
+void UserDaoImpl::createUser(const std::string& username, const std::string& password, const ustring& salt,
+                             const std::string& avatarURL, std::function<void(bool)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -68,13 +68,13 @@ void UserDaoImpl::createUser(std::string username, std::string password, std::st
 
 
     DBClient.exec(sql.str(),
-                  [&]() { callback(true); },
-                  [&](const std::string &s, int) { std::cout << s << std::endl;  callback(false); });
+                  [callback]() { callback(true); },
+                  [callback](const std::string &s, int) { std::cout << s << std::endl;  callback(false); });
 
 
 }
 
-void UserDaoImpl::checkUserPassword(unsigned long id, std::string password,
+void UserDaoImpl::checkUserPassword(unsigned long id, const std::string& password,
                                     std::function<void(bool)> callback) {
 
     std::ostringstream sql;
@@ -84,12 +84,12 @@ void UserDaoImpl::checkUserPassword(unsigned long id, std::string password,
         "WHERE id =" << id << ";";
 
     DBClient.query(sql.str(),
-                   [&](const MYSQL_ROW &rows) {
+                   [callback](const MYSQL_ROW &rows) {
                        if (rows[0] == nullptr) {
                            callback(std::strcmp(password.c_str(), rows[0]));
                        }
                    },
-                   [&](const std::string &, int) {
+                   [callback](const std::string &, int) {
                        callback(false);
                    });
 
@@ -97,7 +97,7 @@ void UserDaoImpl::checkUserPassword(unsigned long id, std::string password,
 }
 
 
-void UserDaoImpl::getSalt(unsigned long id, std::function<void(std::string)> callback) {
+void UserDaoImpl::getSalt(unsigned long id, std::function<void(std::string&&)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -107,12 +107,12 @@ void UserDaoImpl::getSalt(unsigned long id, std::function<void(std::string)> cal
 
 
     DBClient.query(sql.str(),
-                   [&](const MYSQL_ROW &rows) {
+                   [callback](const MYSQL_ROW &rows) {
                        if (rows[0] == nullptr) {
                            callback(rows[0]);
                        }
                    },
-                   [&](const std::string &, int) {
+                   [callback](const std::string &, int) {
                        callback({});
                    });
 

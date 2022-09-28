@@ -5,17 +5,17 @@
 #include <sstream>
 #include "CommentDaoImpl.h"
 
-void CommentDaoImpl::create(std::string content, int creatorID, int postID, std::function<void(bool)> callback) {
+void CommentDaoImpl::create(const std::string& content, int creatorID, int postID, std::function<void(bool)> callback) {
 
     std::ostringstream sql;
     sql <<
-        "INSERT INTO Comment (creatorID, postID, commentText) "
+        "INSERT INTO Comment (creatorID, postID, content) "
         "VALUES (" << creatorID << "," << postID << ",'" << content << "');";
 
 
     DBClient.exec(sql.str(),
-                  [&]() { callback(true); },
-                  [&](const std::string &, int) { callback(false); });
+                  [callback]() { callback(true); },
+                  [callback](const std::string &, int) { callback(false); });
 
 }
 
@@ -35,12 +35,12 @@ void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int s
             "OFFSET " << start << ";";
     }
 
-    std::vector<Comment> returnVector;
+    std::shared_ptr<std::vector<Comment>> commentsPtr = std::make_shared<std::vector<Comment>>();
 
     DBClient.query(sql.str(),
-                   [&](const MYSQL_ROW &rows) {
+                   [callback, commentsPtr](const MYSQL_ROW &rows) {
                        if (rows[0] == nullptr) {
-                           returnVector.push_back(Comment{
+                           commentsPtr->push_back(Comment{
                                    std::stoul(rows[0]),
                                    Post{std::stoul(rows[1])},
                                    User{std::stoul(rows[2])},
@@ -48,10 +48,10 @@ void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int s
                                    rows[4]
                            });
                        } else {
-                           callback(std::move(returnVector));
+                           callback(*commentsPtr);
                        }
                    },
-                   [&](const std::string &, int) {
+                   [callback](const std::string &, int) {
                        callback({});
                    });
 
@@ -67,7 +67,7 @@ void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> c
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),
-                   [&](const MYSQL_ROW &rows) {
+                   [callback](const MYSQL_ROW &rows) {
                        if (rows[0] == nullptr) {
                            callback(User{
                                    std::stoul(rows[0]),
@@ -78,7 +78,7 @@ void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> c
                                    rows[5]});
                        }
                    },
-                   [&](const std::string &, int) {
+                   [callback](const std::string &, int) {
                        callback({});
                    });
 
@@ -95,7 +95,7 @@ void CommentDaoImpl::getById(unsigned long id, std::function<void(Comment &&)> c
 
 
     DBClient.query(sql.str(),
-                   [&](const MYSQL_ROW &rows) {
+                   [callback](const MYSQL_ROW &rows) {
 
                        if (rows[0] == nullptr) {
                            callback(Comment{
@@ -106,9 +106,7 @@ void CommentDaoImpl::getById(unsigned long id, std::function<void(Comment &&)> c
                                    rows[4]});
                        }
                    },
-                   [&](const std::string &, int) {
+                   [callback](const std::string &, int) {
                        callback({});
                    });
-
-
 }

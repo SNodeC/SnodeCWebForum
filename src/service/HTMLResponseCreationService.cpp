@@ -31,6 +31,7 @@ namespace service
 
     const char* cls::DEFAULT_TITLE = "Our nice Forum";
     const char* cls::EMPTY_USER_NAME = "";
+    const vector<string> cls::EMPTY_VECTOR;
 
 #pragma endregion
 
@@ -62,7 +63,7 @@ namespace service
             "    <header>\n"
             "        <div class='navbar'>\n"
             "            <div class='brand'>\n"
-            "                <a href='home.html'>\n"
+            "                <a href='./'>\n"
             "                    <h1>" + string(FORUM_NAME) + "</h1>"
             "                </a>"
             "            </div>\n"
@@ -335,7 +336,7 @@ namespace service
             contentBuffer <<
                 "            <div class='body'>\n"
                 "                <div class='authors'>\n"
-                "                    <div class='username t-ov-el'>" << commentCreator.userName << "</div>\n"
+                "                    <div class='username t-a-c t-ov-el'>" << commentCreator.userName << "</div>\n"
                 "                    <img src='" << commentCreator.avatarURL << "' alt='user avatar'>\n"
                 "                </div>\n"
                 "                <div class='content'>\n"
@@ -350,38 +351,142 @@ namespace service
         return createAndFillResponse(contentBuffer.str(), userName, post.title);
     }
 
-    string cls::createLoginPageResponse() {
-        const string content{
+    string cls::createLoginPageResponse(const vector<string>& errors, const vector<string>& warnings,
+                                        const vector<string>& infos) {
+        static const string resultHead{
             "    <div class='unhidden'>\n"
             "        <div class='login'>\n"
-            "            <h1 class='m-t-100'>Login</h1>\n"
-            "            <div class='rainbow-box m-b-20'>\n"
-            "                <input class='user-login m-b-10' placeholder='Username'></input><br>\n"
-            "                <input class='user-login' type='password' placeholder='Password'>\n"
+            "            <h1 class='m-b-50'>Login</h1>\n"
+            "            <div class='rainbow-box m-b-10'>\n"
+            "                <input class='user-login' placeholder='Username'></input>\n"
+            "                <hr class='post-hr'>\n"
+            "                <input  class='user-login' type='password' placeholder='Password'>\n"
             "            </div>\n"
-            "            <input  class='submit' type='submit' value='Login' id='login'>\n"
-            "            <div class='m-t-50 t-a-c'>\n"
-            "                No account? <a href='register.html'>Register here!</a>\n"
+            "            <div class='m-b-10 min-h-1'>\n"
+        };
+
+        static const string resultEnd{
             "            </div>\n"
+            "            <input  class='submit' type='submit' value='Login' id='signup'>\n"
+            "            <div class='m-t-40 t-a-c'>\n"
+            "                No account? <a href='./register'>Register here!</a>\n"
+            "            </div>"
+            "            <div class='m-t-10 t-a-c w-100p'> "
+            "                &lt;&lt; <a href=\"javascript:history.back()\">Back</a>\n"
+            "            </div>"
             "        </div>\n"
-            "    </div>"};
-        return createAndFillResponse(content, EMPTY_USER_NAME, LOGIN_TITLE, false);
+            "    </div>\n"
+        };
+
+        static const string errorHead{
+            "                <div class='error'>"
+        };
+
+        static const string warningHead{
+            "                <div class='warning'>"
+        };
+
+        static const string infoHead{
+            "                <div class='info'>"
+        };
+
+        static const string msgEnd{
+            "</div>\n"
+        };
+
+        ostringstream contentBuffer{};
+
+        contentBuffer << resultHead;
+
+        contentBuffer << errorHead;
+        for(const string& error : errors) {
+            contentBuffer << "<span>" << error << "</span><br>\n";
+        }
+        contentBuffer << msgEnd;
+
+        contentBuffer << warningHead;
+        for(const string& warning : warnings) {
+            contentBuffer << "<span>" << warning << "</span><br>\n";
+        }
+        contentBuffer << msgEnd;
+
+        contentBuffer << infoHead;
+        for(const string& info : infos) {
+            contentBuffer << "<span>" << info << "</span><br>\n";
+        }
+        contentBuffer << msgEnd;
+
+        contentBuffer << resultEnd;
+
+        return createAndFillResponse(contentBuffer.str(), EMPTY_USER_NAME, LOGIN_TITLE, false);
     }
 
-    string cls::createRegisterAccountResponse() {
-        const string content{
+    string cls::createRegisterAccountResponse(const vector<string>& errors, const vector<string>& warnings,
+                                              const vector<string>& infos) {
+        static const string resultHead{
             "    <div class='unhidden'>\n"
             "        <div class='login'>\n"
-            "            <h1 class='m-t-100'>Login</h1>\n"
-            "            <div class='rainbow-box m-b-20'>\n"
-            "                <input class='user-login m-b-10' placeholder='Set Username'></input>\n"
+            "            <h1 class='m-b-50'>Register</h1>\n"
+            "            <div class='rainbow-box m-b-10'>\n"
+            "                <input class='user-login' placeholder='Username'></input>\n"
+            "                <hr class='post-hr'>\n"
             "                <input  class='user-login' type='password' placeholder='Password'>\n"
             "                <input  class='user-login' type='password' placeholder='Repeat Password'>\n"
             "            </div>\n"
-            "            <input  class='submit' type='submit' value='Sign Up' id='signup'>\n"
+            "            <div class='m-b-10 min-h-1'>\n"
+        };
+
+        static const string resultEnd{
+            "            </div>\n"
+            "            <input  class='submit' type='submit' value='Register' id='signup'>\n"
+            "            <div class='m-t-40 t-a-c w-100p'> "
+            "                &lt;&lt; <a href=\"javascript:history.back()\">Back</a>\n"
+            "            </div>"
             "        </div>\n"
-            "    </div>"};
-        return createAndFillResponse(content, EMPTY_USER_NAME, REGISTER_TITLE, false);
+            "    </div>\n"
+        };
+
+        static const string errorHead{
+            "                <div class='error'>"
+        };
+
+        static const string warningHead{
+            "                <div class='warning'>"
+        };
+
+        static const string infoHead{
+            "                <div class='info'>"
+        };
+
+        static const string msgEnd{
+            "</div>\n"
+        };
+
+        ostringstream contentBuffer{};
+
+        contentBuffer << resultHead;
+
+        contentBuffer << errorHead;
+        for(const string& error : errors) {
+            contentBuffer << "<span>" << error << "</span><br>\n";
+        }
+        contentBuffer << msgEnd;
+
+        contentBuffer << warningHead;
+        for(const string& warning : warnings) {
+            contentBuffer << "<span>" << warning << "</span><br>\n";
+        }
+        contentBuffer << msgEnd;
+
+        contentBuffer << infoHead;
+        for(const string& info : infos) {
+            contentBuffer << "<span>" << info << "</span><br>\n";
+        }
+        contentBuffer << msgEnd;
+
+        contentBuffer << resultEnd;
+
+        return createAndFillResponse(contentBuffer.str(), EMPTY_USER_NAME, REGISTER_TITLE, false);
     }
 }
 
@@ -389,155 +494,155 @@ namespace service
 
 #pragma region Instance Methods
 
-void cls::createHomeResponseFromDao(const string& userName, const resCallback& rCallback) {
+    void cls::createHomeResponseFromDao(const string& userName, const resCallback& rCallback) {
 
-    function<void(vector<Topic> &&)> callback = [this, rCallback, userName](vector<Topic> && topics) {
-        shared_ptr<string> userNamePtr = make_shared<string>(userName);
-        shared_ptr<vector<Topic>> topicsPtr = make_shared<vector<Topic>>(std::move(topics));
-        shared_ptr<size_t> topicCountPtr = make_shared<size_t>(topicsPtr->size());
+        function<void(vector<Topic> &&)> callback = [this, rCallback, userName](vector<Topic> && topics) {
+            shared_ptr<string> userNamePtr = make_shared<string>(userName);
+            shared_ptr<vector<Topic>> topicsPtr = make_shared<vector<Topic>>(std::move(topics));
+            shared_ptr<size_t> topicCountPtr = make_shared<size_t>(topicsPtr->size());
 
-        shared_ptr<vector<int>> postCountsPtr = make_shared<vector<int>>(*topicCountPtr);
-        shared_ptr<vector<Post>> latestPostsIncCreatorPtr = make_shared<vector<Post>>(*topicCountPtr);
+            shared_ptr<vector<int>> postCountsPtr = make_shared<vector<int>>(*topicCountPtr);
+            shared_ptr<vector<Post>> latestPostsIncCreatorPtr = make_shared<vector<Post>>(*topicCountPtr);
 
-        shared_ptr<vector<function<void(int)>>> countCallbacksPtr = make_shared<vector<function<void(int)>>>(*topicCountPtr);
-        shared_ptr<vector<function<void(vector<Post>&&)>>> postCallbacksPtr = make_shared<vector<function<void(vector<Post>&&)>>>(*topicCountPtr);
-        shared_ptr<vector<function<void(User&&)>>> userCallbacksPtr = make_shared<vector<function<void(User&&)>>>(*topicCountPtr);
+            shared_ptr<vector<function<void(int)>>> countCallbacksPtr = make_shared<vector<function<void(int)>>>(*topicCountPtr);
+            shared_ptr<vector<function<void(vector<Post>&&)>>> postCallbacksPtr = make_shared<vector<function<void(vector<Post>&&)>>>(*topicCountPtr);
+            shared_ptr<vector<function<void(User&&)>>> userCallbacksPtr = make_shared<vector<function<void(User&&)>>>(*topicCountPtr);
 
-        shared_ptr<bool> firedPtr = make_shared<bool>(false);
-        shared_ptr<size_t> countsCountPtr = make_shared<size_t>(0);
-        shared_ptr<size_t> postsCountPtr = make_shared<size_t>(0);
-        for(size_t i = 0; i < (*topicCountPtr); ++i)
-        {
-            unsigned long curTopicCreatorId = (*topicsPtr)[i].creator.id;
+            shared_ptr<bool> firedPtr = make_shared<bool>(false);
+            shared_ptr<size_t> countsCountPtr = make_shared<size_t>(0);
+            shared_ptr<size_t> postsCountPtr = make_shared<size_t>(0);
+            for(size_t i = 0; i < (*topicCountPtr); ++i)
+            {
+                unsigned long curTopicCreatorId = (*topicsPtr)[i].creator.id;
 
-            // get post counts
-            (*countCallbacksPtr)[i] = [i, countsCountPtr, firedPtr, postsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
-            (int count) {
-                (*postCountsPtr)[i] = count;
-                ++(*countsCountPtr);
-                if (!(*firedPtr) && (*countsCountPtr) >= (*topicCountPtr) && (*postsCountPtr) >= (*topicCountPtr)) {
-                    *firedPtr = true;
-                    rCallback(createHomeResponse(*topicsPtr, *postCountsPtr, *latestPostsIncCreatorPtr, *userNamePtr));
-                }
-            };
-            this->_topicDao.getPostCount(curTopicCreatorId, (*countCallbacksPtr)[i]);
-
-            // get the latest post
-            (*postCallbacksPtr)[i] = [this, i, userCallbacksPtr, postsCountPtr, firedPtr, countsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
-            (vector<Post>&& recentPost) {
-                // get the creator for the latest post
-                shared_ptr<vector<Post>> recentPostPtr = make_shared<vector<Post>>(std::move(recentPost));
-                (*userCallbacksPtr)[i] = [i, recentPostPtr, postsCountPtr, firedPtr, countsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
-                (User&& creator) {
-                    (*recentPostPtr)[i].creator = creator;
-                    ++(*postsCountPtr);
+                // get post counts
+                (*countCallbacksPtr)[i] = [i, countsCountPtr, firedPtr, postsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
+                (int count) {
+                    (*postCountsPtr)[i] = count;
+                    ++(*countsCountPtr);
                     if (!(*firedPtr) && (*countsCountPtr) >= (*topicCountPtr) && (*postsCountPtr) >= (*topicCountPtr)) {
                         *firedPtr = true;
                         rCallback(createHomeResponse(*topicsPtr, *postCountsPtr, *latestPostsIncCreatorPtr, *userNamePtr));
                     }
                 };
-                this->_postDao.getCreator((*recentPostPtr)[i].id, (*userCallbacksPtr)[i]);
-            };
-            this->_postDao.getRecentPostsOfTopic(curTopicCreatorId, 1, 0, (*postCallbacksPtr)[i]);
-        }
-    };
+                this->_topicDao.getPostCount(curTopicCreatorId, (*countCallbacksPtr)[i]);
 
-    this->_topicDao.getRecentTopics(-1, 0, callback);
-}
-
-void cls::createTopicOverviewResponseFromDao(unsigned long topicId, const string& userName, const resCallback& rCallback) {
-
-    function<void(Topic&&)> callback = [this, rCallback, userName](Topic&& topic) {
-        shared_ptr<string> userNamePtr = make_shared<string>(userName);
-        shared_ptr<Topic> topicPtr = make_shared<Topic>(std::move(topic));
-
-        function<void(vector<Post>&&)> postsCallback = [this, rCallback, topicPtr, userNamePtr](vector<Post>&& posts){
-            shared_ptr<vector<Post>> postsPtr = make_shared<vector<Post>>(std::move(posts));
-            shared_ptr<size_t> postCountPtr = make_shared<size_t>(postsPtr->size());
-            shared_ptr<vector<int>> commentCountsPtr = make_shared<vector<int>>();
-
-            shared_ptr<vector<function<void(int)>>> commentCallbacksPtr = make_shared<vector<function<void(int)>>>(*postCountPtr);
-            shared_ptr<vector<function<void(User&&)>>> creatorCallbacksPtr = make_shared<vector<function<void(User&&)>>>(*postCountPtr);
-
-            shared_ptr<bool> firedPtr = make_shared<bool>(false);
-            shared_ptr<size_t> countsCountPtr = make_shared<size_t>(0);
-            shared_ptr<size_t> creatorsCountPtr = make_shared<size_t>(0);
-            for(size_t i = 0; i < (*postCountPtr); ++i)
-            {
-                // get comment counts
-                (*commentCallbacksPtr)[i] = [this, i, commentCountsPtr, countsCountPtr, firedPtr, creatorsCountPtr, postCountPtr, &rCallback, topicPtr, postsPtr, userNamePtr](int count){
-                    (*commentCountsPtr)[i] = count;
-                    ++(*countsCountPtr);
-                    if (!(*firedPtr) && (*countsCountPtr) >= (*postCountPtr) && (*creatorsCountPtr) >= (*postCountPtr))
-                    {
-                        *firedPtr = true;
-                        rCallback(this->createTopicOverviewResponse(*topicPtr, *postsPtr, *commentCountsPtr, *userNamePtr));
-                    }
+                // get the latest post
+                (*postCallbacksPtr)[i] = [this, i, userCallbacksPtr, postsCountPtr, firedPtr, countsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
+                (vector<Post>&& recentPost) {
+                    // get the creator for the latest post
+                    shared_ptr<vector<Post>> recentPostPtr = make_shared<vector<Post>>(std::move(recentPost));
+                    (*userCallbacksPtr)[i] = [i, recentPostPtr, postsCountPtr, firedPtr, countsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
+                    (User&& creator) {
+                        (*recentPostPtr)[i].creator = creator;
+                        ++(*postsCountPtr);
+                        if (!(*firedPtr) && (*countsCountPtr) >= (*topicCountPtr) && (*postsCountPtr) >= (*topicCountPtr)) {
+                            *firedPtr = true;
+                            rCallback(createHomeResponse(*topicsPtr, *postCountsPtr, *latestPostsIncCreatorPtr, *userNamePtr));
+                        }
+                    };
+                    this->_postDao.getCreator((*recentPostPtr)[i].id, (*userCallbacksPtr)[i]);
                 };
-                this->_postDao.getCommentCount((*postsPtr)[i].creator.id, (*commentCallbacksPtr)[i]);
-
-                // get creators for each post
-                (*creatorCallbacksPtr)[i] = [this, i, postsPtr, creatorsCountPtr, firedPtr, countsCountPtr, postCountPtr, rCallback, topicPtr, commentCountsPtr, userNamePtr](User&& user)
-                {
-                    (*postsPtr)[i].creator = user;
-                    ++(*creatorsCountPtr);
-                    if (!(*firedPtr) && (*countsCountPtr) >= (*postCountPtr) && (*creatorsCountPtr) >= (*postCountPtr))
-                    {
-                        *firedPtr = true;
-                        rCallback(this->createTopicOverviewResponse(*topicPtr, *postsPtr, *commentCountsPtr, *userNamePtr));
-                    }
-                };
-                this->_postDao.getCreator((*postsPtr)[i].creator.id, (*creatorCallbacksPtr)[i]);
+                this->_postDao.getRecentPostsOfTopic(curTopicCreatorId, 1, 0, (*postCallbacksPtr)[i]);
             }
         };
 
-        _postDao.getRecentPostsOfTopic((*topicPtr).id, -1, 0, postsCallback);
-    };
+        this->_topicDao.getRecentTopics(-1, 0, callback);
+    }
 
-    _topicDao.getById(topicId, callback);
-}
+    void cls::createTopicOverviewResponseFromDao(unsigned long topicId, const string& userName, const resCallback& rCallback) {
 
-void cls::createPostOverviewResponseFromDao(unsigned long postId, const string& userName, const resCallback& rCallback) {
+        function<void(Topic&&)> callback = [this, rCallback, userName](Topic&& topic) {
+            shared_ptr<string> userNamePtr = make_shared<string>(userName);
+            shared_ptr<Topic> topicPtr = make_shared<Topic>(std::move(topic));
 
-    function<void(Post&&)> callback = [this, rCallback, userName](Post&& post) {
-        shared_ptr<string> userNamePtr = make_shared<string>(userName);
-        shared_ptr<Post> postPtr = make_shared<Post>(std::move(post));
+            function<void(vector<Post>&&)> postsCallback = [this, rCallback, topicPtr, userNamePtr](vector<Post>&& posts){
+                shared_ptr<vector<Post>> postsPtr = make_shared<vector<Post>>(std::move(posts));
+                shared_ptr<size_t> postCountPtr = make_shared<size_t>(postsPtr->size());
+                shared_ptr<vector<int>> commentCountsPtr = make_shared<vector<int>>();
 
-        // get user for post
-        function<void(User&&)> creatorCallback = [this, rCallback, userNamePtr, postPtr](User&& user) {
-            (*postPtr).creator = user;
-            // get topic for post
-            function<void(Topic&&)> topicCallback = [this, rCallback, userNamePtr, postPtr](Topic&& topic) {
-                (*postPtr).topic = topic;
-                // get comments for post
-                function<void(vector<Comment>&&)> commentsCallback = [this, rCallback, userNamePtr, postPtr](vector<Comment>&& comments) {
-                    // get creators for each comment
-                    shared_ptr<vector<Comment>> commentsPtr = make_shared<vector<Comment>>(std::move(comments));
-                    shared_ptr<size_t> commentsCountPtr = make_shared<size_t>(commentsPtr->size());
+                shared_ptr<vector<function<void(int)>>> commentCallbacksPtr = make_shared<vector<function<void(int)>>>(*postCountPtr);
+                shared_ptr<vector<function<void(User&&)>>> creatorCallbacksPtr = make_shared<vector<function<void(User&&)>>>(*postCountPtr);
 
-                    shared_ptr<vector<function<void(User&&)>>> userCallbacksPtr = make_shared<vector<function<void(User&&)>>>(*commentsCountPtr);
+                shared_ptr<bool> firedPtr = make_shared<bool>(false);
+                shared_ptr<size_t> countsCountPtr = make_shared<size_t>(0);
+                shared_ptr<size_t> creatorsCountPtr = make_shared<size_t>(0);
+                for(size_t i = 0; i < (*postCountPtr); ++i)
+                {
+                    // get comment counts
+                    (*commentCallbacksPtr)[i] = [this, i, commentCountsPtr, countsCountPtr, firedPtr, creatorsCountPtr, postCountPtr, &rCallback, topicPtr, postsPtr, userNamePtr](int count){
+                        (*commentCountsPtr)[i] = count;
+                        ++(*countsCountPtr);
+                        if (!(*firedPtr) && (*countsCountPtr) >= (*postCountPtr) && (*creatorsCountPtr) >= (*postCountPtr))
+                        {
+                            *firedPtr = true;
+                            rCallback(this->createTopicOverviewResponse(*topicPtr, *postsPtr, *commentCountsPtr, *userNamePtr));
+                        }
+                    };
+                    this->_postDao.getCommentCount((*postsPtr)[i].creator.id, (*commentCallbacksPtr)[i]);
 
-                    shared_ptr<bool> firePtr = make_shared<bool>(false);
-                    shared_ptr<size_t> creatorCountPtr = make_shared<size_t>(0);
-                    for(size_t i = 0; i < (*commentsCountPtr); ++i) {
-                        (*userCallbacksPtr)[i] = [this, i, commentsPtr, firePtr, creatorCountPtr, commentsCountPtr, rCallback, postPtr, userNamePtr](User&& creator){
-                            (*commentsPtr)[i].creator = creator;
-                            ++(*creatorCountPtr);
-                            if(!(*firePtr) && (*creatorCountPtr) >= (*commentsCountPtr)) {
-                                *firePtr = true;
-                                rCallback(this->createPostOverviewResponse(*postPtr, *commentsPtr, *userNamePtr));
-                            }
-                        };
-                        this->_commentDao.getCreator((*commentsPtr)[i].id, (*userCallbacksPtr)[i]);
-                    }
-                };
-                this->_commentDao.getRecentCommentsOfPost((*postPtr).id, -1, 0, commentsCallback);
+                    // get creators for each post
+                    (*creatorCallbacksPtr)[i] = [this, i, postsPtr, creatorsCountPtr, firedPtr, countsCountPtr, postCountPtr, rCallback, topicPtr, commentCountsPtr, userNamePtr](User&& user)
+                    {
+                        (*postsPtr)[i].creator = user;
+                        ++(*creatorsCountPtr);
+                        if (!(*firedPtr) && (*countsCountPtr) >= (*postCountPtr) && (*creatorsCountPtr) >= (*postCountPtr))
+                        {
+                            *firedPtr = true;
+                            rCallback(this->createTopicOverviewResponse(*topicPtr, *postsPtr, *commentCountsPtr, *userNamePtr));
+                        }
+                    };
+                    this->_postDao.getCreator((*postsPtr)[i].creator.id, (*creatorCallbacksPtr)[i]);
+                }
             };
-            this->_postDao.getTopic((*postPtr).id, topicCallback);
+
+            _postDao.getRecentPostsOfTopic((*topicPtr).id, -1, 0, postsCallback);
         };
-        this->_postDao.getCreator((*postPtr).id, creatorCallback);
-    };
-    this->_postDao.getById(postId, callback);
-}
+
+        _topicDao.getById(topicId, callback);
+    }
+
+    void cls::createPostOverviewResponseFromDao(unsigned long postId, const string& userName, const resCallback& rCallback) {
+
+        function<void(Post&&)> callback = [this, rCallback, userName](Post&& post) {
+            shared_ptr<string> userNamePtr = make_shared<string>(userName);
+            shared_ptr<Post> postPtr = make_shared<Post>(std::move(post));
+
+            // get user for post
+            function<void(User&&)> creatorCallback = [this, rCallback, userNamePtr, postPtr](User&& user) {
+                (*postPtr).creator = user;
+                // get topic for post
+                function<void(Topic&&)> topicCallback = [this, rCallback, userNamePtr, postPtr](Topic&& topic) {
+                    (*postPtr).topic = topic;
+                    // get comments for post
+                    function<void(vector<Comment>&&)> commentsCallback = [this, rCallback, userNamePtr, postPtr](vector<Comment>&& comments) {
+                        // get creators for each comment
+                        shared_ptr<vector<Comment>> commentsPtr = make_shared<vector<Comment>>(std::move(comments));
+                        shared_ptr<size_t> commentsCountPtr = make_shared<size_t>(commentsPtr->size());
+
+                        shared_ptr<vector<function<void(User&&)>>> userCallbacksPtr = make_shared<vector<function<void(User&&)>>>(*commentsCountPtr);
+
+                        shared_ptr<bool> firePtr = make_shared<bool>(false);
+                        shared_ptr<size_t> creatorCountPtr = make_shared<size_t>(0);
+                        for(size_t i = 0; i < (*commentsCountPtr); ++i) {
+                            (*userCallbacksPtr)[i] = [this, i, commentsPtr, firePtr, creatorCountPtr, commentsCountPtr, rCallback, postPtr, userNamePtr](User&& creator){
+                                (*commentsPtr)[i].creator = creator;
+                                ++(*creatorCountPtr);
+                                if(!(*firePtr) && (*creatorCountPtr) >= (*commentsCountPtr)) {
+                                    *firePtr = true;
+                                    rCallback(this->createPostOverviewResponse(*postPtr, *commentsPtr, *userNamePtr));
+                                }
+                            };
+                            this->_commentDao.getCreator((*commentsPtr)[i].id, (*userCallbacksPtr)[i]);
+                        }
+                    };
+                    this->_commentDao.getRecentCommentsOfPost((*postPtr).id, -1, 0, commentsCallback);
+                };
+                this->_postDao.getTopic((*postPtr).id, topicCallback);
+            };
+            this->_postDao.getCreator((*postPtr).id, creatorCallback);
+        };
+        this->_postDao.getById(postId, callback);
+    }
 
 #pragma endregion

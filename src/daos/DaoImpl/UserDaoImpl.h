@@ -18,15 +18,14 @@ public:
 
     void getById(unsigned long id, std::function<void(User &&)> callback) override;
 
-    void isUserNameTaken(std::string username, std::function<void(bool)> callback) override;
+    void isUserNameTaken(const std::string username, std::function<void(bool)> callback) override;
 
-    void createUser(std::string username, std::string password, std::string salt, std::string avatarURL,
-                    std::function<void(bool)> callback) override;
+    void createUser(const std::string& username, const std::string& password, const std::string& salt,
+                    const std::string& avatarURL, std::function<void(bool)> callback) override;
 
-    void checkUserPassword(unsigned long id, std::string password, std::function<void(bool)> callback) override;
+    void checkUserPassword(unsigned long id, const std::string& password, std::function<void(bool)> callback) override;
 
-    void getSalt(unsigned long id, std::function<void(std::string)> callback) override;
+    void getSalt(unsigned long id, std::function<void(std::string&&)> callback) override;
 };
-
 
 #endif //GETANDPOSTSERVERTEMPLATE_USERSDAOIMPL_H

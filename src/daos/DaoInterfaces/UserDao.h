@@ -11,26 +11,22 @@
 #include "../../domain/User.h"
 #include "../../utils/Utils.h"
 
+typedef std::basic_string<unsigned char> ustring;
+
 class UserDao {
 
 public:
+    virtual void getById(unsigned long id, std::function<void(User&&)> callback) = 0;
 
-    virtual void getById(unsigned long id, std::function<void(User &&)> callback) = 0;
+    virtual void isUserNameTaken(const std::string& username, std::function<void(bool)> callback) = 0;
 
-    virtual void isUserNameTaken(std::string username, std::function<void(bool)> callback) = 0;
+    virtual void createUser(const std::string& username, const std::string& password, const ustring& salt,
+                            const std::string& avatarURL, std::function<void(bool)> callback) = 0;
 
-    virtual void
-    createUser(std::string username, std::string password, std::string salt, std::string avatarURL,
-               std::function<void(bool)> callback) = 0;
+    virtual void checkUserPassword(unsigned long id, const std::string& password,
+                                   std::function<void(bool)> callback) = 0;
 
-    virtual void
-    checkUserPassword(unsigned long id, std::string password, std::function<void(bool)> callback) = 0;
-
-    virtual void
-    getSalt(unsigned long id, std::function<void(std::string)> callback) = 0;
-
-
+    virtual void getSalt(unsigned long id, std::function<void(std::string&&)> callback) = 0;
 };
-
 
 #endif //GETANDPOSTSERVERTEMPLATE_USERSDAO_H

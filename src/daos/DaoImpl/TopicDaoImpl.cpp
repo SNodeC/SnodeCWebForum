@@ -5,7 +5,7 @@
 #include <sstream>
 #include "TopicDaoImpl.h"
 
-void TopicDaoImpl::create(std::string title, int userID, std::function<void(bool)> callback) {
+void TopicDaoImpl::create(const std::string& title, int userID, std::function<void(bool)> callback) {
 
 
     std::ostringstream sql;
@@ -15,8 +15,8 @@ void TopicDaoImpl::create(std::string title, int userID, std::function<void(bool
 
 
     DBClient.exec(sql.str(),
-                  [&]() { callback(true); },
-                  [&](const std::string &, int) { callback(false); });
+                  [callback]() { callback(true); },
+                  [callback](const std::string &, int) { callback(false); });
 
 
 }
@@ -30,7 +30,7 @@ void TopicDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> cal
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),
-                   [&](const MYSQL_ROW &rows) {
+                   [callback](const MYSQL_ROW &rows) {
                        if (rows[0] == nullptr) {
                            callback(User{
                                    std::stoul(rows[0]),
@@ -42,7 +42,7 @@ void TopicDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> cal
                        }
 
                    },
-                   [&](const std::string &, int) {
+                   [callback](const std::string &, int) {
                        callback({});
                    });
 
@@ -63,13 +63,12 @@ void TopicDaoImpl::getRecentTopics(int amount, int start,
             "LIMIT " << amount <<
             "OFFSET " << start << ";";
     }
-    std::vector<Topic> returnVector;
+    std::shared_ptr<std::vector<Topic>> topicsPtr = std::make_unique<std::vector<Topic>>();
 
     DBClient.query(sql.str(),
-                   [&](const MYSQL_ROW &rows) {
-                       std::vector<Topic> topics;
+                   [callback, topicsPtr](const MYSQL_ROW &rows) {
                        if (rows[0] == nullptr) {
-                           topics.push_back(Topic{
+                           topicsPtr->push_back(Topic{
                                    std::stoul(rows[0]),
                                    User{std::stoul(rows[1])},
                                    rows[2],
@@ -77,10 +76,10 @@ void TopicDaoImpl::getRecentTopics(int amount, int start,
                                    rows[4]
                            });
                        } else {
-                           callback(std::move(returnVector));
+                           callback(*returnVector);
                        }
                    },
-                   [&](const std::string &, int) {
+                   [callback](const std::string &, int) {
                        callback({});
                    });
 
@@ -97,13 +96,12 @@ void TopicDaoImpl::getPostCount(unsigned long id, std::function<void(int)> callb
 
 
     DBClient.query(sql.str(),
-                   [&](const MYSQL_ROW &rows) {
-                       std::vector<Topic> topics;
+                   [callback](const MYSQL_ROW &rows) {
                        if (rows[0] == nullptr) {
                            callback(std::stoi(rows[0]));
                        }
                    },
-                   [&](const std::string &, int) {
+                   [callback](const std::string &, int) {
                        callback(-1);
                    });
 
@@ -119,7 +117,7 @@ void TopicDaoImpl::getById(unsigned long id, std::function<void(Topic &&)> callb
         "WHERE id = " << id << ";";
 
     DBClient.query(sql.str(),
-                   [&](const MYSQL_ROW &rows) {
+                   [callback](const MYSQL_ROW &rows) {
 
                        if (rows[0] == nullptr) {
                            callback(Topic{
@@ -132,7 +130,7 @@ void TopicDaoImpl::getById(unsigned long id, std::function<void(Topic &&)> callb
                                    rows[6]});
                        }
                    },
-                   [&](const std::string &, int) {
+                   [callback](const std::string &, int) {
                        callback({});
                    });
 

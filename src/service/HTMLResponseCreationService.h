@@ -25,6 +25,7 @@ namespace service
     private:
         static const char* DEFAULT_TITLE;
         static const char* EMPTY_USER_NAME;
+        static const vector<string> EMPTY_VECTOR;
 
         static string createHead(const string& title = DEFAULT_TITLE);
         static string createHeader(const string& userName);
@@ -58,9 +59,14 @@ namespace service
                                                  const vector<Comment>& commentsIncCreator,
 
                                                  const string& userName = EMPTY_USER_NAME);
-        static string createLoginPageResponse();
 
-        static string createRegisterAccountResponse();
+        static string createLoginPageResponse(const vector<string>& errors = EMPTY_VECTOR,
+                                              const vector<string>& warnings = EMPTY_VECTOR,
+                                              const vector<string>& infos = EMPTY_VECTOR);
+
+        static string createRegisterAccountResponse(const vector<string>& errors = EMPTY_VECTOR,
+                                                    const vector<string>& warnings = EMPTY_VECTOR,
+                                                    const vector<string>& infos = EMPTY_VECTOR);
 
         void createHomeResponseFromDao(const string& userName, const resCallback&);
         void createTopicOverviewResponseFromDao(unsigned long topicId, const string& userName, const resCallback&);
