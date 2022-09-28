@@ -12,9 +12,10 @@ struct User {
 
     unsigned long id;
     std::string userName;
-    std::string password;
+    std::string passwordHash;
     std::string salt;
     std::string avatarURL;
+    std::string sessionToken;
     std::string creationDate;
 
 };

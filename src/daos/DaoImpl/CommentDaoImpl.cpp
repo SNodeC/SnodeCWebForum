@@ -5,7 +5,8 @@
 #include <sstream>
 #include "CommentDaoImpl.h"
 
-void CommentDaoImpl::create(const std::string& content, unsigned long creatorID, unsigned long postID, std::function<void(bool)> callback) {
+void CommentDaoImpl::create(const std::string &content, unsigned long creatorID, unsigned long postID,
+                            std::function<void(bool)> callback) {
 
     std::ostringstream sql;
     sql <<
@@ -26,20 +27,21 @@ void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int s
     sql <<
         "SELECT id, postID, creatorID, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
         "FROM Comment "
-        "WHERE postID = " << id <<
+        "WHERE postID = " << id << " "
         "ORDER BY creationDate DESC ";
 
     if (amount != -1) {
         sql <<
-            "LIMIT " << amount <<
-            "OFFSET " << start << ";";
+            "LIMIT " << amount << " "
+            "OFFSET " << start;
     }
+    sql << ";";
 
     std::shared_ptr<std::vector<Comment>> commentsPtr = std::make_shared<std::vector<Comment>>();
 
     DBClient.query(sql.str(),
                    [callback, commentsPtr](const MYSQL_ROW &rows) {
-                       if (rows[0] == nullptr) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            commentsPtr->push_back(Comment{
                                    std::stoul(rows[0]),
                                    Post{std::stoul(rows[1])},
@@ -47,6 +49,7 @@ void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int s
                                    rows[3],
                                    rows[4]
                            });
+
                        } else {
                            callback(std::move(*commentsPtr));
                        }
@@ -60,15 +63,17 @@ void CommentDaoImpl::getRecentCommentsOfPost(unsigned long id, int amount, int s
 
 void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> callback) {
 
+    std::shared_ptr<size_t> counterPtr = std::make_shared<size_t>(0);
+
     std::ostringstream sql;
     sql <<
-        "SELECT u.id, u.username , u.password, u.salt, DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
-        "FROM User u left JOIN Comment c on u.id = c.creatorID"
-        "WHERE id = " << id << ";";
+        "SELECT u.id, u.username, u.passwordHash, u.salt, u.avatarURL, u.sessionToken , DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
+        "FROM User u left JOIN Comment c on u.id = c.creatorID "
+        "WHERE c.id = " << id << ";";
 
     DBClient.query(sql.str(),
-                   [callback](const MYSQL_ROW &rows) {
-                       if (rows[0] == nullptr) {
+                   [callback, counterPtr](const MYSQL_ROW &rows) {
+                       if (rows != nullptr && rows[0] != nullptr) {
                            callback(User{
                                    std::stoul(rows[0]),
                                    rows[1],
@@ -76,7 +81,8 @@ void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> c
                                    rows[3],
                                    rows[4],
                                    rows[5]});
-                       } else {
+                           ++(*counterPtr);
+                       } else if (*counterPtr == 0) {
                            callback({});
                        }
                    },
@@ -89,6 +95,8 @@ void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> c
 
 void CommentDaoImpl::getById(unsigned long id, std::function<void(Comment &&)> callback) {
 
+    std::shared_ptr<size_t> counterPtr = std::make_shared<size_t>(0);
+
     std::ostringstream sql;
     sql <<
         "SELECT id, postID, creatorID, content, DATE_FORMAT(creationDate, '%d/%m/%Y') "
@@ -96,21 +104,23 @@ void CommentDaoImpl::getById(unsigned long id, std::function<void(Comment &&)> c
         "WHERE id = " << id << ";";
 
 
-    DBClient.query(sql.str(),
-                   [callback](const MYSQL_ROW &rows) {
+    DBClient.query(
+            sql.str(),
+            [callback, counterPtr](const MYSQL_ROW &rows) {
 
-                       if (rows[0] == nullptr) {
-                           callback(Comment{
-                                   std::stoul(rows[0]),
-                                   Post{std::stoul(rows[1])},
-                                   User{std::stoul(rows[2])},
-                                   rows[3],
-                                   rows[4]});
-                       } else {
-                           callback({});
-                       }
-                   },
-                   [callback](const std::string &, int) {
-                       callback({});
-                   });
+                if (rows != nullptr && rows[0] != nullptr) {
+                    callback(Comment{
+                            std::stoul(rows[0]),
+                            Post{std::stoul(rows[1])},
+                            User{std::stoul(rows[2])},
+                            rows[3],
+                            rows[4]});
+                    ++(*counterPtr);
+                } else if (*counterPtr == 0) {
+                    callback({});
+                }
+            },
+            [callback](const std::string &, int) {
+                callback({});
+            });
 }

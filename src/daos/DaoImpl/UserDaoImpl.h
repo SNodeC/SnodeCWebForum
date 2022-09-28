@@ -38,6 +38,10 @@ public:
     void setSessionTokenById(unsigned long id, const std::string& sessionToken, std::function<void(bool)> callback) override;
 
     void setSessionTokenByUsername(const std::string& username, const std::string& sessionToken, std::function<void(bool)> callback) override;
+
+    void getSessionTokenById(unsigned long id, std::function<void(std::string &&)> callback) override;
+
+    void getSessionTokenByUsername(const std::string &username, std::function<void(std::string &&)> callback) override;
 };
 
 #endif //GETANDPOSTSERVERTEMPLATE_USERSDAOIMPL_H
