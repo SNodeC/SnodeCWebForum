@@ -499,6 +499,7 @@ namespace service
         function<void(vector<Topic> &&)> callback = [this, rCallback, userName](vector<Topic> && topics) {
             if (topics.empty()) {
                 rCallback(createHomeResponse(topics, {}, {}, userName));
+                return;
             }
 
             shared_ptr<string> userNamePtr = make_shared<string>(userName);
@@ -517,7 +518,7 @@ namespace service
             shared_ptr<size_t> postsCountPtr = make_shared<size_t>(0);
             for(size_t i = 0; i < (*topicCountPtr); ++i)
             {
-                unsigned long curTopicCreatorId = (*topicsPtr)[i].creator.id;
+                unsigned long curTopicId = (*topicsPtr)[i].id;
 
                 // get post counts
                 (*countCallbacksPtr)[i] = [i, countsCountPtr, firedPtr, postsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
@@ -529,28 +530,37 @@ namespace service
                         rCallback(createHomeResponse(*topicsPtr, *postCountsPtr, *latestPostsIncCreatorPtr, *userNamePtr));
                     }
                 };
-                this->_topicDao.getPostCount(curTopicCreatorId, (*countCallbacksPtr)[i]);
+                this->_topicDao.getPostCount(curTopicId, (*countCallbacksPtr)[i]);
 
                 // get the latest post
                 (*postCallbacksPtr)[i] = [this, i, userCallbacksPtr, postsCountPtr, firedPtr, countsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
                 (vector<Post>&& recentPost) {
                     // get the creator for the latest post
-                    shared_ptr<vector<Post>> recentPostPtr = make_shared<vector<Post>>(std::move(recentPost));
-                    (*userCallbacksPtr)[i] = [i, recentPostPtr, postsCountPtr, firedPtr, countsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
-                    (User&& creator) {
-                        (*recentPostPtr)[i].creator = creator;
+                    if (recentPost.empty()) { // no recent post found
+                        latestPostsIncCreatorPtr->push_back({});
                         ++(*postsCountPtr);
                         if (!(*firedPtr) && (*countsCountPtr) >= (*topicCountPtr) && (*postsCountPtr) >= (*topicCountPtr)) {
                             *firedPtr = true;
                             rCallback(createHomeResponse(*topicsPtr, *postCountsPtr, *latestPostsIncCreatorPtr, *userNamePtr));
                         }
-                    };
-                    this->_postDao.getCreator((*recentPostPtr)[i].id, (*userCallbacksPtr)[i]);
+                    } else { // most recent post found
+                        shared_ptr<Post> recentPostPtr = make_shared<Post>(std::move(recentPost[0]));
+                        (*userCallbacksPtr)[i] = [i, recentPostPtr, postsCountPtr, firedPtr, countsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
+                                (User&& creator) {
+                            (*recentPostPtr).creator = creator;
+                            latestPostsIncCreatorPtr->push_back(*recentPostPtr);
+                            ++(*postsCountPtr);
+                            if (!(*firedPtr) && (*countsCountPtr) >= (*topicCountPtr) && (*postsCountPtr) >= (*topicCountPtr)) {
+                                *firedPtr = true;
+                                rCallback(createHomeResponse(*topicsPtr, *postCountsPtr, *latestPostsIncCreatorPtr, *userNamePtr));
+                            }
+                        };
+                        this->_postDao.getCreator((*recentPostPtr).id, (*userCallbacksPtr)[i]);
+                    }
                 };
-                this->_postDao.getRecentPostsOfTopic(curTopicCreatorId, 1, 0, (*postCallbacksPtr)[i]);
+                this->_postDao.getRecentPostsOfTopic(curTopicId, 1, 0, (*postCallbacksPtr)[i]);
             }
         };
-
         this->_topicDao.getRecentTopics(-1, 0, callback);
     }
 
@@ -561,6 +571,11 @@ namespace service
             shared_ptr<Topic> topicPtr = make_shared<Topic>(std::move(topic));
 
             function<void(vector<Post>&&)> postsCallback = [this, rCallback, topicPtr, userNamePtr](vector<Post>&& posts){
+                if (posts.empty()) {
+                    rCallback(this->createTopicOverviewResponse(*topicPtr, posts, {}, *userNamePtr));
+                    return;
+                }
+
                 shared_ptr<vector<Post>> postsPtr = make_shared<vector<Post>>(std::move(posts));
                 shared_ptr<size_t> postCountPtr = make_shared<size_t>(postsPtr->size());
                 shared_ptr<vector<int>> commentCountsPtr = make_shared<vector<int>>();
@@ -620,6 +635,11 @@ namespace service
                     (*postPtr).topic = topic;
                     // get comments for post
                     function<void(vector<Comment>&&)> commentsCallback = [this, rCallback, userNamePtr, postPtr](vector<Comment>&& comments) {
+                        if (comments.empty()) {
+                            rCallback(this->createPostOverviewResponse(*postPtr, comments, *userNamePtr));
+                            return;
+                        }
+
                         // get creators for each comment
                         shared_ptr<vector<Comment>> commentsPtr = make_shared<vector<Comment>>(std::move(comments));
                         shared_ptr<size_t> commentsCountPtr = make_shared<size_t>(commentsPtr->size());

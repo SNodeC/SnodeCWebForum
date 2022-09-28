@@ -132,7 +132,7 @@ namespace service {
         shared_ptr<string> sessionTokenPtr = make_shared<string>(sessionToken);
 
         function<void(string&&)> sessionTokenCallback = [sessionTokenPtr, callback](string&& sessionToken) {
-            callback(*sessionTokenPtr == sessionToken);
+            callback(!sessionToken.empty() && *sessionTokenPtr == sessionToken);
         };
 
         _userDao.getSessionTokenByUsername(username, sessionTokenCallback);
