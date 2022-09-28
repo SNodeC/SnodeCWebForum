@@ -236,7 +236,7 @@ namespace service
         };
 
         ostringstream topicHrefBuffer{};
-        topicHrefBuffer << "/topic/" << topic.id;
+        topicHrefBuffer << "/t/" << topic.id;
         const string topicHref = topicHrefBuffer.str();
 
         ostringstream contentBuffer{};
@@ -612,7 +612,7 @@ namespace service
                             rCallback(this->createTopicOverviewResponse(*topicPtr, *postsPtr, *commentCountsPtr, *userNamePtr));
                         }
                     };
-                    this->_postDao.getCreator((*postsPtr)[i].creator.id, (*creatorCallbacksPtr)[i]);
+                    this->_postDao.getCreator((*postsPtr)[i].id, (*creatorCallbacksPtr)[i]);
                 }
             };
 
