@@ -506,8 +506,8 @@ namespace service
             shared_ptr<vector<Topic>> topicsPtr = make_shared<vector<Topic>>(std::move(topics));
             shared_ptr<size_t> topicCountPtr = make_shared<size_t>(topicsPtr->size());
 
-            shared_ptr<vector<int>> postCountsPtr = make_shared<vector<int>>(*topicCountPtr);
-            shared_ptr<vector<Post>> latestPostsIncCreatorPtr = make_shared<vector<Post>>(*topicCountPtr);
+            shared_ptr<vector<int>> postCountsPtr = make_shared<vector<int>>();
+            shared_ptr<vector<Post>> latestPostsIncCreatorPtr = make_shared<vector<Post>>();
 
             shared_ptr<vector<function<void(int)>>> countCallbacksPtr = make_shared<vector<function<void(int)>>>(*topicCountPtr);
             shared_ptr<vector<function<void(vector<Post>&&)>>> postCallbacksPtr = make_shared<vector<function<void(vector<Post>&&)>>>(*topicCountPtr);
@@ -523,7 +523,7 @@ namespace service
                 // get post counts
                 (*countCallbacksPtr)[i] = [i, countsCountPtr, firedPtr, postsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
                 (int count) {
-                    (*postCountsPtr)[i] = count;
+                    postCountsPtr->push_back(count);
                     ++(*countsCountPtr);
                     if (!(*firedPtr) && (*countsCountPtr) >= (*topicCountPtr) && (*postsCountPtr) >= (*topicCountPtr)) {
                         *firedPtr = true;
@@ -548,7 +548,7 @@ namespace service
                         (*userCallbacksPtr)[i] = [i, recentPostPtr, postsCountPtr, firedPtr, countsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
                                 (User&& creator) {
                             (*recentPostPtr).creator = creator;
-                            (*latestPostsIncCreatorPtr)[i] = *recentPostPtr;
+                            latestPostsIncCreatorPtr->push_back(*recentPostPtr);
                             ++(*postsCountPtr);
                             if (!(*firedPtr) && (*countsCountPtr) >= (*topicCountPtr) && (*postsCountPtr) >= (*topicCountPtr)) {
                                 *firedPtr = true;
