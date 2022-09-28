@@ -612,7 +612,7 @@ namespace service
                             rCallback(this->createTopicOverviewResponse(*topicPtr, *postsPtr, *commentCountsPtr, *userNamePtr));
                         }
                     };
-                    this->_postDao.getCreator((*postsPtr)[i].creator.id, (*creatorCallbacksPtr)[i]);
+                    this->_postDao.getCreator((*postsPtr)[i].id, (*creatorCallbacksPtr)[i]);
                 }
             };
 

@@ -28,7 +28,7 @@ void TopicDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> cal
     sql <<
         "SELECT u.id, u.username , u.passwordHash, u.salt, u.avatarURL, u.sessionToken , DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
         "FROM User u left JOIN Topic T on u.id = T.creatorID "
-        "WHERE id = " << id << ";";
+        "WHERE t.id = " << id << ";";
 
     DBClient.query(sql.str(),
                    [callback, counterPtr](const MYSQL_ROW &rows) {

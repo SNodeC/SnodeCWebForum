@@ -69,7 +69,7 @@ void PostDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> call
     sql <<
         "SELECT u.id, u.username , u.passwordHash, u.salt, u.avatarURL, u.sessionToken , DATE_FORMAT(u.creationDate, '%d/%m/%Y') "
         "FROM User u left JOIN Post p on u.id = p.creatorID "
-        "WHERE id = " << id << ";";
+        "WHERE p.id = " << id << ";";
 
     DBClient.query(sql.str(),
                    [callback, counterPtr](const MYSQL_ROW &rows) {
