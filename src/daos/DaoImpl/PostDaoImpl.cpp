@@ -9,11 +9,10 @@
 void PostDaoImpl::create(const std::string &title, const std::string &content, unsigned long userID,
                          unsigned long topicId, std::function<void(bool)> callback) {
 
-    // TODO: FIX THIS SHIT
     std::ostringstream sql;
     sql <<
-        "INSERT INTO Post (creatorID, title) "
-        "VALUES (" << userID << ",'" << title << "');";
+        "INSERT INTO Post (topicID, creatorID, title, content)"
+        "VALUES (" << topicId << "," << userID << ",'" << title << "','" << content << "');";
 
     DBClient.exec(sql.str(),
                   [callback]() { callback(true); },
@@ -156,8 +155,8 @@ void PostDaoImpl::getCommentCount(unsigned long id, std::function<void(int)> cal
     std::ostringstream sql;
     sql <<
         "SELECT COUNT(*)"
-        "FROM Post p left JOIN Comment c on p.id = c.creatorID"
-        "WHERE p.id = " << id << ";";
+        "FROM Comment "
+        "WHERE postID = " << id << ";";
 
 
     DBClient.query(sql.str(),

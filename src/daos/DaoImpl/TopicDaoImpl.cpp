@@ -8,11 +8,10 @@
 void TopicDaoImpl::create(const std::string &title, const std::string &description, unsigned long userID,
                           std::function<void(bool)> callback) {
 
-    // TODO: FIX THIS SHIT
     std::ostringstream sql;
     sql <<
-        "INSERT INTO Topic (creatorID, title) "
-        "VALUES (" << userID << ",'" << title << "');";
+        "Insert INTO Topic (creatorID, title, description)"
+        "VALUES (" << userID << ",'" << title << "','" << description << "');";
 
 
     DBClient.exec(sql.str(),
