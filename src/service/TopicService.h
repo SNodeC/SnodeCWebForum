@@ -32,6 +32,8 @@ namespace service {
 
         void createTopic(const string& title, const string& description, const string& username, 
                          function<void(int)> callback);
+
+        void checkTopicId(unsigned long topicId, function<void(bool)> callback);
     };
 
 } // service

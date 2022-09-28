@@ -494,7 +494,7 @@ namespace service
 
 #pragma region Instance Methods
 
-    void cls::createHomeResponseFromDao(const string& userName, const resCallback& rCallback) {
+    void cls::createHomeResponseFromDao(const string& userName, resCallback rCallback) {
 
         function<void(vector<Topic> &&)> callback = [this, rCallback, userName](vector<Topic> && topics) {
             if (topics.empty()) {
@@ -506,8 +506,8 @@ namespace service
             shared_ptr<vector<Topic>> topicsPtr = make_shared<vector<Topic>>(std::move(topics));
             shared_ptr<size_t> topicCountPtr = make_shared<size_t>(topicsPtr->size());
 
-            shared_ptr<vector<int>> postCountsPtr = make_shared<vector<int>>(*topicCountPtr);
-            shared_ptr<vector<Post>> latestPostsIncCreatorPtr = make_shared<vector<Post>>(*topicCountPtr);
+            shared_ptr<vector<int>> postCountsPtr = make_shared<vector<int>>();
+            shared_ptr<vector<Post>> latestPostsIncCreatorPtr = make_shared<vector<Post>>();
 
             shared_ptr<vector<function<void(int)>>> countCallbacksPtr = make_shared<vector<function<void(int)>>>(*topicCountPtr);
             shared_ptr<vector<function<void(vector<Post>&&)>>> postCallbacksPtr = make_shared<vector<function<void(vector<Post>&&)>>>(*topicCountPtr);
@@ -523,7 +523,7 @@ namespace service
                 // get post counts
                 (*countCallbacksPtr)[i] = [i, countsCountPtr, firedPtr, postsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
                 (int count) {
-                    (*postCountsPtr)[i] = count;
+                    postCountsPtr->push_back(count);
                     ++(*countsCountPtr);
                     if (!(*firedPtr) && (*countsCountPtr) >= (*topicCountPtr) && (*postsCountPtr) >= (*topicCountPtr)) {
                         *firedPtr = true;
@@ -548,7 +548,7 @@ namespace service
                         (*userCallbacksPtr)[i] = [i, recentPostPtr, postsCountPtr, firedPtr, countsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
                                 (User&& creator) {
                             (*recentPostPtr).creator = creator;
-                            (*latestPostsIncCreatorPtr)[i] = *recentPostPtr;
+                            latestPostsIncCreatorPtr->push_back(*recentPostPtr);
                             ++(*postsCountPtr);
                             if (!(*firedPtr) && (*countsCountPtr) >= (*topicCountPtr) && (*postsCountPtr) >= (*topicCountPtr)) {
                                 *firedPtr = true;
@@ -565,10 +565,10 @@ namespace service
         this->_topicDao.getRecentTopics(-1, 0, callback);
     }
 
-    void cls::createTopicOverviewResponseFromDao(unsigned long topicId, const string& userName, const resCallback& rCallback) {
+    void cls::createTopicOverviewResponseFromDao(unsigned long topicId, const string& userName, resCallback rCallback) {
+        shared_ptr<string> userNamePtr = make_shared<string>(userName);
 
-        function<void(Topic&&)> callback = [this, rCallback, userName](Topic&& topic) {
-            shared_ptr<string> userNamePtr = make_shared<string>(userName);
+        function<void(Topic&&)> callback = [this, rCallback, userNamePtr](Topic&& topic) {
             shared_ptr<Topic> topicPtr = make_shared<Topic>(std::move(topic));
 
             function<void(vector<Post>&&)> postsCallback = [this, rCallback, topicPtr, userNamePtr](vector<Post>&& posts){
@@ -579,7 +579,7 @@ namespace service
 
                 shared_ptr<vector<Post>> postsPtr = make_shared<vector<Post>>(std::move(posts));
                 shared_ptr<size_t> postCountPtr = make_shared<size_t>(postsPtr->size());
-                shared_ptr<vector<int>> commentCountsPtr = make_shared<vector<int>>();
+                shared_ptr<vector<int>> commentCountsPtr = make_shared<vector<int>>(*postCountPtr);
 
                 shared_ptr<vector<function<void(int)>>> commentCallbacksPtr = make_shared<vector<function<void(int)>>>(*postCountPtr);
                 shared_ptr<vector<function<void(User&&)>>> creatorCallbacksPtr = make_shared<vector<function<void(User&&)>>>(*postCountPtr);
@@ -590,7 +590,7 @@ namespace service
                 for(size_t i = 0; i < (*postCountPtr); ++i)
                 {
                     // get comment counts
-                    (*commentCallbacksPtr)[i] = [this, i, commentCountsPtr, countsCountPtr, firedPtr, creatorsCountPtr, postCountPtr, &rCallback, topicPtr, postsPtr, userNamePtr](int count){
+                    (*commentCallbacksPtr)[i] = [this, i, commentCountsPtr, countsCountPtr, firedPtr, creatorsCountPtr, postCountPtr, rCallback, topicPtr, postsPtr, userNamePtr](int count){
                         (*commentCountsPtr)[i] = count;
                         ++(*countsCountPtr);
                         if (!(*firedPtr) && (*countsCountPtr) >= (*postCountPtr) && (*creatorsCountPtr) >= (*postCountPtr))
@@ -622,7 +622,7 @@ namespace service
         _topicDao.getById(topicId, callback);
     }
 
-    void cls::createPostOverviewResponseFromDao(unsigned long postId, const string& userName, const resCallback& rCallback) {
+    void cls::createPostOverviewResponseFromDao(unsigned long postId, const string& userName, resCallback rCallback) {
 
         function<void(Post&&)> callback = [this, rCallback, userName](Post&& post) {
             shared_ptr<string> userNamePtr = make_shared<string>(userName);

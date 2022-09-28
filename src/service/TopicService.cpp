@@ -22,4 +22,11 @@ namespace service {
         };
         _userDao.getIdByUsername(username, userIdCallback);
     }
+
+    void TopicService::checkTopicId(unsigned long topicId, function<void(bool)> callback) {
+        function<void(Topic&&)> topicCallback = [callback, topicId](Topic&& topic) {
+            callback(topic.id != topicId);
+        };
+        _topicDao.getById(topicId, topicCallback);
+    }
 } // service
