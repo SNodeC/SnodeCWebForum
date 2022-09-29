@@ -95,7 +95,7 @@ window.onload = () => {
             if (data.status === 200) {
                 console.log('it go');
             } else if (data.status === 400) {
-                appendSpan(error_anchor, 'Username \"' + username.value + ' \" already taken');
+                appendSpan(error_anchor, 'Username \"' + username.value + '\" already taken');
             }
         })
             .catch(err => console.log(err));

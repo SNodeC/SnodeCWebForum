@@ -104,4 +104,5 @@ std::string Utils::escapeForSQL(const std::string& data)
             default:     result.append(&data[pos], 1); break;
         }
     }
+    return result;
 }

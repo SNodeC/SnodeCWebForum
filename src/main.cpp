@@ -2,6 +2,7 @@
 // Created by student on 9/14/22.
 //
 #include <iostream>
+#include <numeric>
 #include <express/legacy/in/WebApp.h>
 #include <database/mariadb/MariaDBConnection.h>
 #include <database/mariadb/MariaDBClient.h>
@@ -19,6 +20,8 @@
 #include "service/TopicService.h"
 #include "service/PostService.h"
 #include "service/CommentService.h"
+#include "utils/Utils.h"
+
 
 #define CERTF <PATH_TO_SERVER_CERTIFICATE_CHAIN_FILE>
 #define KEYF <PATH_TO_SERVER_CERTIFICATE_KEY_FILE>
@@ -162,14 +165,22 @@ int main(int argc, char *argv[]) {
 
         std::string userName = Utils::getFieldByName(req.body.data(), "Username");
         std::string password = Utils::getFieldByName(req.body.data(), "Password");
-
-        userDao.isUserNameTaken(userName, [&](bool b) {
+        userService.checkUserNameTaken(userName, [userName, password, &res, &userService](bool b) {
             if (b) {
                 res.sendStatus(400);
-                std::cout << "IT TAKEN GET FUCKED" << std::endl;
             } else {
-                res.sendStatus(200);
-                std::cout << "IT NOT TAKEN" << std::endl;
+                userService.createUser(userName, password, [&](int err) {
+                    if (err == service::UserService::SUCCESS) {
+                        res.sendStatus(200);
+                    } else {
+                        //std::vector<std::string> errorMessages = service::UserService::getUserCreateErrorMessages(err);
+//
+                        //std::string errors = std::accumulate(errorMessages.begin(), errorMessages.end(),
+                        //                                     std::string(" "));
+//
+                        res.status(500).send("errors");
+                    }
+                });
             }
         });
     });
