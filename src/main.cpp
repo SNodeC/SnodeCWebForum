@@ -171,14 +171,21 @@ int main(int argc, char *argv[]) {
             } else {
                 userService.createUser(userName, password, [&](int err) {
                     if (err == service::UserService::SUCCESS) {
-                        res.sendStatus(200);
+                        userService.createNewUserSession(userName,[](bool b){
+
+
+                        });
+                        res.status(200).send("");
+
                     } else {
-                        //std::vector<std::string> errorMessages = service::UserService::getUserCreateErrorMessages(err);
-//
-                        //std::string errors = std::accumulate(errorMessages.begin(), errorMessages.end(),
-                        //                                     std::string(" "));
-//
-                        res.status(500).send("errors");
+
+                        std::vector<std::string> errorMessages = service::UserService::getUserCreateErrorMessages(err);
+                        std::stringstream errors;
+                        for (const auto &error: errorMessages) {
+                            errors << error << " ";
+                        }
+
+                        res.status(500).send(errors.str());
                     }
                 });
             }
@@ -209,11 +216,14 @@ int main(int argc, char *argv[]) {
     });
 */
 
-    //  express::tls::in::WebApp tlsWebApp({{"certChain", CERTF},
-    //                                  {"keyPEM", KEYF},
-    //                                  {"password", KEYFPASS}});
-    //  tlsWebApp.use(legacyApp);
+/*
 
+      express::tls::in::WebApp tlsWebApp({{"certChain", CERTF},
+                                      {"keyPEM", KEYF},
+                                      {"password", KEYFPASS}});
+      tlsWebApp.use(legacyApp);
+
+*/
 
 
     legacyApp.listen(8080, [](
@@ -225,16 +235,18 @@ int main(int argc, char *argv[]) {
             VLOG(0) << "snode.c listening on port 8080 for legacy connections";
         }
     });
+/*
 
-    //  tlsWebApp.listen(8088, [](
-    //          const express::legacy::in::WebApp::SocketAddress &socketAddress,
-    //          int err) {
-    //      if (err != 0) {
-    //          PLOG(FATAL) << "listen on port 8088";
-    //      } else {
-    //          VLOG(0) << "snode.c listening on port 8088 for SSL/TLS connections";
-    //      }
-    //  });
+      tlsWebApp.listen(8088, [](
+              const express::legacy::in::WebApp::SocketAddress &socketAddress,
+              int err) {
+          if (err != 0) {
+              PLOG(FATAL) << "listen on port 8088";
+          } else {
+              VLOG(0) << "snode.c listening on port 8088 for SSL/TLS connections";
+          }
+      });
+*/
 
     return express::WebApp::start();
 
