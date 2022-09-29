@@ -76,7 +76,7 @@ namespace service
             "        </div>\n"
             "    </header>\n"
         };
-        static const string resultNoUser{resultStart + "<a id='logout'>Login</a>\n" + resultEnd};
+        static const string resultNoUser{resultStart + "<a id='logout' href='/login/' >Login</a>\n" + resultEnd};
 
         return userName.empty() ? resultNoUser :
             resultStart +
@@ -305,8 +305,8 @@ namespace service
             "        <div class='navigate'>\n"
             "            <span>\n"
             "                <a href='/'>Home</a> >> "
-            "                <a href='/topic/" << topic.id << "'>" << topic.title << "</a> >> "
-            "                <a href='/topic/" << topic.id << "/" << post.id << "'>" << post.title << "</a>\n"
+            "                <a href='/t/" << topic.id << "'>" << topic.title << "</a> >> "
+            "                <a href='/t/" << topic.id << "/" << post.id << "'>" << post.title << "</a>\n"
             "            </span>\n"
             "        </div>\n"
             "        <div class='rainbow-box'>\n"
@@ -375,7 +375,7 @@ namespace service
             "            </div>\n"
             "            <input  class='submit' type='submit' value='Login' id='signup'>\n"
             "            <div class='m-t-40 t-a-c'>\n"
-            "                No account? <a href='/register'>Register here!</a>\n"
+            "                No account? <a href='/register/'>Register here!</a>\n"
             "            </div>"
             "            <div class='m-t-10 t-a-c w-100p'> "
             "                &lt;&lt; <a href='javascript:history.back()'>Back</a>\n"
@@ -431,24 +431,24 @@ namespace service
                                               const vector<string>& infos) {
         static const string resultHead{
             "    <div class='unhidden'>\n"
-            "        <div class='login'>\n"
+            "        <form id='registerForm' class='login' action='' method='Post'>\n"
             "            <h1 class='m-b-50'>Register</h1>\n"
             "            <div class='rainbow-box m-b-10'>\n"
-            "                <input class='user-login' placeholder='Username'></input>\n"
+            "                <input class='user-login' placeholder='Username' name='username' required ></input>\n"
             "                <hr class='post-hr'>\n"
-            "                <input  class='user-login' type='password' placeholder='Password'>\n"
-            "                <input  class='user-login' type='password' placeholder='Repeat Password'>\n"
+            "                <input  class='user-login' type='password' placeholder='Password' name='password1' required>\n"
+            "                <input  class='user-login' type='password' placeholder='Repeat Password' name='password2' required>\n"
             "            </div>\n"
             "            <div class='m-b-10 min-h-1'>\n"
         };
 
         static const string resultEnd{
             "            </div>\n"
-            "            <input  class='submit' type='submit' value='Register' id='signup'>\n"
+            "            <input class='submit' type='submit' value='Register' id='register'>\n"
             "            <div class='m-t-40 t-a-c w-100p'> "
             "                &lt;&lt; <a href='javascript:history.back()'>Back</a>\n"
             "            </div>"
-            "        </div>\n"
+            "        </form>\n"
             "    </div>\n"
         };
 

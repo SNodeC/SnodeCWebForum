@@ -9,6 +9,7 @@
 #include <database/mariadb/MariaDBConnectionDetails.h>
 #include <database/mariadb/commands/sync/MariaDBUseResultCommand.h>
 #include <database/mariadb/MariaDBCommandSequence.h>
+#include <express/tls/in/WebApp.h>
 #include "daos/DaoImpl/UserDaoImpl.h"
 #include "service/HTMLResponseCreationService.h"
 #include "service/UserService.h"
@@ -19,15 +20,9 @@
 #include "service/PostService.h"
 #include "service/CommentService.h"
 
-
-using namespace std;
-
-void sendFile([[maybe_unused]] express::Request &(req), [[maybe_unused]] express::Response &(res)) {
-
-    const std::string path = "." + req.originalUrl;
-    std::cout << req.originalUrl << std::endl;
-    res.sendFile(path, [&](int) { (res.sendStatus(400)); });
-}
+#define CERTF <PATH_TO_SERVER_CERTIFICATE_CHAIN_FILE>
+#define KEYF <PATH_TO_SERVER_CERTIFICATE_KEY_FILE>
+#define KEYFPASS <PASSWORD_OF_THE_SERVER_CERTIFICATE_KEY_FILE>
 
 
 int main(int argc, char *argv[]) {
@@ -70,17 +65,22 @@ int main(int argc, char *argv[]) {
 
         string sessionTkn = req.cookie(SESSIONTOKEN);
 
-        userService.checkUserSession(*userNamePtr, sessionTkn, [topicID, &topicService,userNamePtr, &htmlResponseCreationService, &res](bool b) {
-            topicService.checkTopicId(topicID, [topicID, userNamePtr, &htmlResponseCreationService, &res](bool b) {
-                if (b) {
-                    htmlResponseCreationService.createTopicOverviewResponseFromDao(topicID, b ? *userNamePtr : "",
+        userService.checkUserSession(*userNamePtr, sessionTkn,
+                                     [topicID, &topicService, userNamePtr, &htmlResponseCreationService, &res](bool b) {
+                                         topicService.checkTopicId(topicID,
+                                                                   [topicID, userNamePtr, &htmlResponseCreationService, &res](
+                                                                           bool b) {
+                                                                       if (b) {
+                                                                           htmlResponseCreationService.createTopicOverviewResponseFromDao(
+                                                                                   topicID, b ? *userNamePtr : "",
                                                                                    [&](string s) { res.send(s); });
-                } else {
-                    res.status(404).send(
-                            service::HTMLResponseCreationService::createNotFoundResponse(b ? *userNamePtr : ""));
-                }
-            });
-        });
+                                                                       } else {
+                                                                           res.status(404).send(
+                                                                                   service::HTMLResponseCreationService::createNotFoundResponse(
+                                                                                           b ? *userNamePtr : ""));
+                                                                       }
+                                                                   });
+                                     });
     });
 
     legacyApp.get("/t/:topic([1-9]+)/:post([1-9]+)", [&]APPLICATION(req, res) {
@@ -91,17 +91,23 @@ int main(int argc, char *argv[]) {
 
         string sessionTkn = req.cookie(SESSIONTOKEN);
 
-        userService.checkUserSession(*userNamePtr, sessionTkn, [topicID, postID, &postService,userNamePtr, &htmlResponseCreationService, &res](bool b) {
-            postService.checkPostId(postID, topicID , [postID, userNamePtr, &htmlResponseCreationService, &res](bool b) {
-                if (b) {
-                    htmlResponseCreationService.createPostOverviewResponseFromDao(postID, b ? *userNamePtr : "",
-                                                                                   [&](string s) { res.send(s); });
-                } else {
-                    res.status(404).send(
-                            service::HTMLResponseCreationService::createNotFoundResponse(b ? *userNamePtr : ""));
-                }
-            });
-        });
+        userService.checkUserSession(*userNamePtr, sessionTkn,
+                                     [topicID, postID, &postService, userNamePtr, &htmlResponseCreationService, &res](
+                                             bool b) {
+                                         postService.checkPostId(postID, topicID,
+                                                                 [postID, userNamePtr, &htmlResponseCreationService, &res](
+                                                                         bool b) {
+                                                                     if (b) {
+                                                                         htmlResponseCreationService.createPostOverviewResponseFromDao(
+                                                                                 postID, b ? *userNamePtr : "",
+                                                                                 [&](string s) { res.send(s); });
+                                                                     } else {
+                                                                         res.status(404).send(
+                                                                                 service::HTMLResponseCreationService::createNotFoundResponse(
+                                                                                         b ? *userNamePtr : ""));
+                                                                     }
+                                                                 });
+                                     });
     });
 
 
@@ -114,8 +120,59 @@ int main(int argc, char *argv[]) {
         });
     });
 
+    legacyApp.get("/login", [&]APPLICATION(req, res) {
 
-    legacyApp.get("/:dir(js|css|assets)/:suffix", sendFile);
+        string username = req.cookie(USERNAMECOOKIE);
+        string sessionTkn = req.cookie(SESSIONTOKEN);
+        userService.checkUserSession(username, sessionTkn, [&](bool b) {
+            if (b) {
+                htmlResponseCreationService.createHomeResponseFromDao(username,
+                                                                      [&](string s) { res.send(s); });
+            } else {
+                res.send(service::HTMLResponseCreationService::createLoginPageResponse());
+            }
+        });
+    });
+
+
+    legacyApp.get("/register", [&]APPLICATION(req, res) {
+
+        string username = req.cookie(USERNAMECOOKIE);
+        string sessionTkn = req.cookie(SESSIONTOKEN);
+        userService.checkUserSession(username, sessionTkn, [&](bool b) {
+            if (b) {
+                htmlResponseCreationService.createHomeResponseFromDao(username,
+                                                                      [&](string s) { res.send(s); });
+            } else {
+                res.send(service::HTMLResponseCreationService::createRegisterAccountResponse());
+            }
+        });
+    });
+
+
+    legacyApp.get("/:dir(js|css|assets)/:suffix", Utils::sendFile);
+
+    legacyApp.post("/register", [&]APPLICATION(req, res) {
+/*        //std::cout << "Cookie-Value of \"TestCookie\": " << req.cookie("TestCookie");
+        std::cout << "Content-Type: " << req.get("Content-Type") << std::endl;
+        std::cout << "Content-Length: " << req.get("Content-Length") << std::endl;*/
+
+        req.body.push_back(0);
+        std::string userName = Utils::getFieldByName(req.body.data(), "username");
+        std::string password1 = Utils::getFieldByName(req.body.data(), "password");
+        std::string password2 = Utils::getFieldByName(req.body.data(), "password2");
+
+        userDao.isUserNameTaken(userName, [&](bool b) {
+            if (b) {
+                std::cout << "IT TAKEN GET FUCKED" << std::endl;
+                res.sendStatus(400);
+            } else {
+                std::cout << "IT NOT TAKEN" << std::endl;
+                res.sendStatus(200);
+
+            }
+        });
+    });
 
     legacyApp.use([&]APPLICATION(req, res) {
         string username = req.cookie(USERNAMECOOKIE);
@@ -126,26 +183,8 @@ int main(int argc, char *argv[]) {
 
     });
 
-    /*  legacyApp.post("/", []APPLICATION(req, res) {
-             //std::cout << "Cookie-Value of \"TestCookie\": " << req.cookie("TestCookie");
-             std::cout << "Content-Type: " << req.get("Content-Type") << std::endl;
-             std::cout << "Content-Length: " << req.get("Content-Length") << std::endl;
 
-             req.body.push_back(0);
-             std::cout << "Body: " << std::endl;
-             std::cout << req.body.data() << std::endl;
-
-             res.send("<html>"
-                      "    <body>"
-                      "        <h1> Username= " + Utils::GetFieldByName(req.body.data(), "UserName") + "</h1>"
-                                                                                                       "        <h1> Password= " +
-                      Utils::GetFieldByName(req.body.data(), "PassWord") + "</h1>"
-                                                                           "    </body>"
-                                                                           "</html>");
-
-         });*/
-
-
+/*
     legacyApp.listen(8080, [](
             const express::legacy::in::WebApp::SocketAddress &socketAddress,
             int err
@@ -157,6 +196,34 @@ int main(int argc, char *argv[]) {
             std::cout << "GetPostServer is listening on " << socketAddress.toString() << std::endl;
         }
     });
+*/
+
+    //  express::tls::in::WebApp tlsWebApp({{"certChain", CERTF},
+    //                                  {"keyPEM", KEYF},
+    //                                  {"password", KEYFPASS}});
+    //  tlsWebApp.use(legacyApp);
+
+
+
+    legacyApp.listen(8080, [](
+            const express::legacy::in::WebApp::SocketAddress &socketAddress,
+            int err) {
+        if (err != 0) {
+            PLOG(FATAL) << "listen on port 8080";
+        } else {
+            VLOG(0) << "snode.c listening on port 8080 for legacy connections";
+        }
+    });
+
+    //  tlsWebApp.listen(8088, [](
+    //          const express::legacy::in::WebApp::SocketAddress &socketAddress,
+    //          int err) {
+    //      if (err != 0) {
+    //          PLOG(FATAL) << "listen on port 8088";
+    //      } else {
+    //          VLOG(0) << "snode.c listening on port 8088 for SSL/TLS connections";
+    //      }
+    //  });
 
     return express::WebApp::start();
 

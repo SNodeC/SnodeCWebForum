@@ -4,9 +4,12 @@
 #include <sstream>
 #include <openssl/evp.h>
 #include <openssl/rand.h>
+#include <express/Request.h>
+#include <iostream>
+#include <express/Response.h>
 #include "Utils.h"
 
-std::string Utils::GetFieldByName(unsigned char *bodyData, const std::string& fieldName) {
+std::string Utils::getFieldByName(unsigned char *bodyData, const std::string &fieldName) {
 
     std::string bodyString(reinterpret_cast<char *>(bodyData));
 
@@ -50,17 +53,36 @@ std::string Utils::hashPassword(const std::string &password, const ustring &salt
     }
 }
 
-std::string Utils::escapeForHTML(const std::string& data) {
+void Utils::sendFile([[maybe_unused]] express::Request &(req), [[maybe_unused]] express::Response &(res)) {
+
+    const std::string path = "." + req.originalUrl;
+    res.sendFile(path, [&](int) { (res.sendStatus(400)); });
+}
+
+
+std::string Utils::escapeForHTML(const std::string &data) {
     std::string result;
     result.reserve(data.size());
-    for(size_t pos = 0; pos != data.size(); ++pos) {
-        switch(data[pos]) {
-            case '&':  result.append("&amp;");  break;
-            case '\"': result.append("&quot;"); break;
-            case '\'': result.append("&#39;");  break;
-            case '<':  result.append("&lt;");   break;
-            case '>':  result.append("&gt;");   break;
-            default:   result.append(&data[pos], 1); break;
+    for (size_t pos = 0; pos != data.size(); ++pos) {
+        switch (data[pos]) {
+            case '&':
+                result.append("&amp;");
+                break;
+            case '\"':
+                result.append("&quot;");
+                break;
+            case '\'':
+                result.append("&#39;");
+                break;
+            case '<':
+                result.append("&lt;");
+                break;
+            case '>':
+                result.append("&gt;");
+                break;
+            default:
+                result.append(&data[pos], 1);
+                break;
         }
     }
     return result;

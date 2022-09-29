@@ -14,7 +14,9 @@ window.onload = () => {
 
     const login = document.getElementById('login');
     const logout = document.getElementById('logout');
-    const signup = document.getElementById('signup');
+    const register = document.getElementById('register');
+
+    const form = document.getElementById('registerForm');
 
     const toggleTextFunc = (element) => {
         const text = element.innerHTML;
@@ -62,12 +64,50 @@ window.onload = () => {
         });
     }
 
-    if (signup !== null) {
-        signup.addEventListener('click', () => {
-            window.location = "home.html";
-            console.log("signup");
-        });
-    }
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const payload = new FormData(form);
+
+        console.log([...payload]);
+
+        fetch('', {
+            method: "Post",
+            body: payload,
+        }).then(res => res.json())
+            .then(data => console.log(data))
+            .catch(err => console.log(err));
+
+    })
+    /*
+
+        if (register !== null) {
+            register.addEventListener('click', () => {
+    /!*
+
+                const params = {
+                    param1:
+                    param2:
+                    param2:
+                }
+
+                const options = {
+                    method: 'POST',
+                    body: JSON.stringify(params)
+                }
+
+                fetch('/', options)
+                    .then(response => response.json())
+                    .then(response => {
+
+                    })
+    *!/
+
+                window.location = "home.html";
+                console.log("register");
+            });
+        }
+    */
 
     if (logout !== null) {
         logout.addEventListener('click', () => {
