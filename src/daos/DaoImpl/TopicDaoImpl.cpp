@@ -4,6 +4,7 @@
 
 #include <sstream>
 #include "TopicDaoImpl.h"
+#include "../../utils/Utils.h"
 
 void TopicDaoImpl::create(const std::string &title, const std::string &description, unsigned long userID,
                           std::function<void(bool)> callback) {
@@ -11,7 +12,7 @@ void TopicDaoImpl::create(const std::string &title, const std::string &descripti
     std::ostringstream sql;
     sql <<
         "Insert INTO Topic (creatorID, title, description) "
-        "VALUES (" << userID << ",'" << title << "','" << description << "');";
+        "VALUES (" << userID << ",'" << Utils::escapeForSQL(title) << "','" << Utils::escapeForSQL(description) << "');";
 
 
     DBClient.exec(sql.str(),

@@ -8,7 +8,6 @@
 
 #include "../DaoInterfaces/UserDao.h"
 #include "DaoImpl.h"
-#include "../../utils/Utils.h"
 
 class UserDaoImpl : public UserDao, protected DaoImpl {
 

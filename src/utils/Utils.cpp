@@ -87,3 +87,21 @@ std::string Utils::escapeForHTML(const std::string &data) {
     }
     return result;
 }
+
+std::string Utils::escapeForSQL(const std::string& data)
+{
+    std::string result;
+    result.reserve(data.size());
+    for(size_t pos = 0; pos != data.size(); ++pos) {
+        switch(data[pos]) {
+            case '\0':   result.append("\\\0"); break;
+            case '\n':   result.append("\\\n"); break;
+            case '\r':   result.append("\\\r"); break;
+            case '\'':   result.append("\\\'"); break;
+            case '\"':   result.append("\\\""); break;
+            case '\\':   result.append("\\\\"); break;
+            case '\x1A': result.append("\\\x1A"); break;
+            default:     result.append(&data[pos], 1); break;
+        }
+    }
+}

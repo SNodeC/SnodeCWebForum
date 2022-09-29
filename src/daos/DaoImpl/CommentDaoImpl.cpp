@@ -4,6 +4,8 @@
 
 #include <sstream>
 #include "CommentDaoImpl.h"
+#include "../../utils/Utils.h"
+
 
 void CommentDaoImpl::create(const std::string &content, unsigned long creatorID, unsigned long postID,
                             std::function<void(bool)> callback) {
@@ -11,7 +13,7 @@ void CommentDaoImpl::create(const std::string &content, unsigned long creatorID,
     std::ostringstream sql;
     sql <<
         "INSERT INTO Comment (creatorID, postID, content) "
-        "VALUES (" << creatorID << "," << postID << ",'" << content << "');";
+        "VALUES (" << creatorID << "," << postID << ",'" << Utils::escapeForSQL(content) << "');";
 
 
     DBClient.exec(sql.str(),

@@ -24,7 +24,9 @@ public:
     static std::string
     hashPassword(const std::string &password, const ustring &salt, int iterations = 4096, int hashLength = 16);
 
-    static std::string escapeForHTML(const std::string &data);
+    static std::string escapeForHTML(const std::string& data);
+
+    static std::string escapeForSQL(const std::string& data);
 };
 
 
