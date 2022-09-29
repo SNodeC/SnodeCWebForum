@@ -4,6 +4,7 @@
 
 #include <sstream>
 #include "PostDaoImpl.h"
+#include "../../utils/Utils.h"
 
 
 void PostDaoImpl::create(const std::string &title, const std::string &content, unsigned long userID,
@@ -12,7 +13,7 @@ void PostDaoImpl::create(const std::string &title, const std::string &content, u
     std::ostringstream sql;
     sql <<
         "INSERT INTO Post (topicID, creatorID, title, content) "
-        "VALUES (" << topicId << "," << userID << ",'" << title << "','" << content << "');";
+        "VALUES (" << topicId << "," << userID << ",'" << Utils::escapeForSQL(title) << "','" << Utils::escapeForSQL(content) << "');";
 
     DBClient.exec(sql.str(),
                   [callback]() { callback(true); },

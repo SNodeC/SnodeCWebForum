@@ -9,7 +9,6 @@
 #include <functional>
 #include <vector>
 #include "../../domain/User.h"
-#include "../../utils/Utils.h"
 
 typedef std::basic_string<unsigned char> ustring;
 

@@ -1,4 +1,5 @@
 #include "HTMLResponseCreationService.h"
+#include "../utils/Utils.h"
 
 #include <memory>
 #include <sstream>
@@ -53,6 +54,7 @@ namespace service
                   "    <title>" << title << "</title>\n"
                   "    <link rel='stylesheet' href='/css/style.css'>\n"
                   "    <link rel='stylesheet' href='https://css.gg/heart.css'>\n"
+                  "    <link rel='stylesheet' href='https://css.gg/spinner-alt.css'>\n"
                   "    <script type='text/javascript' src='/js/main.js'></script>\n"
                   "</head>\n";
         return buffer.str();
@@ -80,7 +82,7 @@ namespace service
 
         return userName.empty() ? resultNoUser :
             resultStart +
-            "                    <span id='username'>Logged in as " + userName + "</span>\n"
+            "                    <span id='username'>Logged in as " + Utils::escapeForHTML(userName) + "</span>\n"
             "                    <a id='logout'>Log out</a>\n"
             + resultEnd;
     }
@@ -167,8 +169,8 @@ namespace service
                 "                    <i class='gg-heart center'></i>\n"
                 "                </div>\n"
                 "                <div class='subforum-description subforum-column'>\n"
-                "                    <h4 class='t-ov-el'><a href='/t/" << topic.id << "'>" << topic.title << "</a></h4>\n"
-                "                    <p class='t-ov-el'>" << topic.description << "</p>\n"
+                "                    <h4 class='t-ov-el'><a href='/t/" << topic.id << "'>" << Utils::escapeForHTML(topic.title) << "</a></h4>\n"
+                "                    <p class='t-ov-el'>" << Utils::escapeForHTML(topic.description) << "</p>\n"
                 "                </div>\n"
                 "                <div class='subforum-stats subforum-column center'>\n";
             if (postCounts[i] < MAX_POST_COUNT) {
@@ -179,7 +181,7 @@ namespace service
             contentBuffer <<
                 "                </div>\n"
                 "                <div class='subforum-info subforum-column'>\n"
-                "                    <p class='t-ov-el'>Latest by <br> <span class='username'>" << latestPost.creator.userName << "</span><br>" << latestPost.creationDate << "<p>\n"
+                "                    <p class='t-ov-el'>Latest by <br> <span class='username'>" << Utils::escapeForHTML(latestPost.creator.userName) << "</span><br>" << Utils::escapeForHTML(latestPost.creationDate) << "<p>\n"
                 "                </div>\n"
                 "            </div>\n"
                 "            <hr class='topic-hr'>";
@@ -253,7 +255,7 @@ namespace service
 
         ostringstream contentBuffer{};
         contentBuffer << resultHead
-                      <<  "                <a href='/'>Home</a> >> <a href='" << topicHref << "'>" << topic.title << "</a>\n"
+                      <<  "                <a href='/'>Home</a> >> <a href='" << topicHref << "'>" << Utils::escapeForHTML(topic.title) << "</a>\n"
                       << resultMid
                       << (userName.empty() ? addNoTopicForm : addTopicForm);
 
@@ -262,10 +264,10 @@ namespace service
             contentBuffer <<
                 "            <div class='table-row'>\n"
                 "                <div class='subjects post-title'>\n"
-                "                    <a href='" << topicHref << "/" << post.id << "'>" << post.title << "</a>\n"
+                "                    <a href='" << topicHref << "/" << post.id << "'>" << Utils::escapeForHTML(post.title) << "</a>\n"
                 "                </div>\n"
                 "                <div class='post-user center'>\n"
-                "                    <span>Posted by <br> <span class='username'>" << post.creator.userName << "</span></span>\n"
+                "                    <span>Posted by <br> <span class='username'>" << Utils::escapeForHTML(post.creator.userName) << "</span></span>\n"
                 "                </div>\n"
                 "                <div class='replies center'>\n"
                 "                    <span>Re.: " << postCommentCounts[i] << "</span>\n"
@@ -322,8 +324,8 @@ namespace service
             "        <div class='navigate'>\n"
             "            <span>\n"
             "                <a href='/'>Home</a> >> "
-            "                <a href='/topic/" << topic.id << "'>" << topic.title << "</a> >> "
-            "                <a href='/topic/" << topic.id << "/" << post.id << "'>" << post.title << "</a>\n"
+            "                <a href='/topic/" << topic.id << "'>" << Utils::escapeForHTML(topic.title) << "</a> >> "
+            "                <a href='/topic/" << topic.id << "/" << post.id << "'>" << Utils::escapeForHTML(post.title) << "</a>\n"
             "            </span>\n"
             "        </div>\n"
             "        <div class='rainbow-box'>\n"
@@ -331,7 +333,7 @@ namespace service
             "                <div class='subject-post'>\n"
             "                    <h2>" << post.title << "</h2>\n"
             "                    <div class='text t-ov-el'>\n"
-            "                        by <span class='username'>" << creator.userName << "</span>\n"
+            "                        by <span class='username'>" << Utils::escapeForHTML(creator.userName) << "</span>\n"
             "                    </div>\n"
             "                </div>\n"
             "            </div>"
@@ -339,7 +341,7 @@ namespace service
             "            <div class='table-row'>\n"
             "                <div class='subject-post'>\n"
             "                    <div class='text desc-post'>\n"
-                                     << post.content << "\n"
+                                     << Utils::escapeForHTML(post.content) << "\n"
             "                    </div>\n"
             "                </div>\n"
             "            </div>\n"
@@ -359,11 +361,11 @@ namespace service
             contentBuffer <<
                 "            <div class='body'>\n"
                 "                <div class='authors'>\n"
-                "                    <div class='username t-a-c t-ov-el'>" << commentCreator.userName << "</div>\n"
+                "                    <div class='username t-a-c t-ov-el'>" << Utils::escapeForHTML(commentCreator.userName) << "</div>\n"
                 "                    <img src='" << commentCreator.avatarURL << "' alt='user avatar'>\n"
                 "                </div>\n"
                 "                <div class='content'>\n"
-                                     << comment.content << "\n"
+                                     << Utils::escapeForHTML(comment.content) << "\n"
                 "                </div>\n"
                 "            </div>\n"
                 "            <hr class='comment-hr'>\n";
@@ -408,11 +410,11 @@ namespace service
         };
 
         static const string warningHead{
-            "                <div id='error-anchor' class='warning'>"
+            "                <div id='warning-anchor' class='warning'>"
         };
 
         static const string infoHead{
-            "                <div id='error-anchor' class='info'>"
+            "                <div id='info-anchor' class='info'>"
         };
 
         static const string msgEnd{
@@ -425,19 +427,19 @@ namespace service
 
         contentBuffer << errorHead;
         for(const string& error : errors) {
-            contentBuffer << "<span>" << error << "</span><br>\n";
+            contentBuffer << "<span>" << Utils::escapeForHTML(error) << "</span><br>\n";
         }
         contentBuffer << msgEnd;
 
         contentBuffer << warningHead;
         for(const string& warning : warnings) {
-            contentBuffer << "<span>" << warning << "</span><br>\n";
+            contentBuffer << "<span>" << Utils::escapeForHTML(warning) << "</span><br>\n";
         }
         contentBuffer << msgEnd;
 
         contentBuffer << infoHead;
         for(const string& info : infos) {
-            contentBuffer << "<span>" << info << "</span><br>\n";
+            contentBuffer << "<span>" << Utils::escapeForHTML(info) << "</span><br>\n";
         }
         contentBuffer << msgEnd;
 
@@ -474,15 +476,15 @@ namespace service
         };
 
         static const string errorHead{
-            "                <div class='error'>"
+            "                <div id='error-anchor' class='error'>"
         };
 
         static const string warningHead{
-            "                <div class='warning'>"
+            "                <div id='warning-anchor' class='warning'>"
         };
 
         static const string infoHead{
-            "                <div class='info'>"
+            "                <div id='info-anchor' class='info'>"
         };
 
         static const string msgEnd{
@@ -495,19 +497,19 @@ namespace service
 
         contentBuffer << errorHead;
         for(const string& error : errors) {
-            contentBuffer << "<span>" << error << "</span><br>\n";
+            contentBuffer << "<span>" << Utils::escapeForHTML(error) << "</span><br>\n";
         }
         contentBuffer << msgEnd;
 
         contentBuffer << warningHead;
         for(const string& warning : warnings) {
-            contentBuffer << "<span>" << warning << "</span><br>\n";
+            contentBuffer << "<span>" << Utils::escapeForHTML(warning) << "</span><br>\n";
         }
         contentBuffer << msgEnd;
 
         contentBuffer << infoHead;
         for(const string& info : infos) {
-            contentBuffer << "<span>" << info << "</span><br>\n";
+            contentBuffer << "<span>" << Utils::escapeForHTML(info) << "</span><br>\n";
         }
         contentBuffer << msgEnd;
 

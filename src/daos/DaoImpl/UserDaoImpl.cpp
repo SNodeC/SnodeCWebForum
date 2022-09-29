@@ -3,6 +3,7 @@
 //
 
 #include "UserDaoImpl.h"
+#include "../../utils/Utils.h"
 
 #include <sstream>
 #include <cstring>
@@ -49,7 +50,7 @@ void UserDaoImpl::getByUsername(const std::string &username, std::function<void(
     sql <<
         "SELECT id, username, passwordHash, salt, avatarURL, DATE_FORMAT(creationDate, '%d/%m/%Y') "
         "FROM User "
-        "WHERE username = '" << username << "';";
+        "WHERE username = '" << Utils::escapeForSQL(username) << "';";
 
 
     DBClient.query(sql.str(),
@@ -83,7 +84,7 @@ void UserDaoImpl::isUserNameTaken(const std::string &username, std::function<voi
     sql <<
         "SELECT username "
         "FROM User "
-        "WHERE username = '" << username << "';";
+        "WHERE username = '" << Utils::escapeForSQL(username) << "';";
 
 
     DBClient.query(sql.str(),
@@ -107,10 +108,12 @@ void UserDaoImpl::createUser(const std::string &username, const std::string &pas
                              const std::string &avatarURL, std::function<void(bool)> callback) {
 
     const char *salt_c_ptr = reinterpret_cast<const char *>(salt.c_str());
+    std::string salt_str{salt_c_ptr};
     std::ostringstream sql;
     sql <<
         "INSERT INTO User (username, passwordHash, salt) "
-        "VALUES ('" << username << "','" << passwordHash << "','" << salt_c_ptr << "','" << avatarURL << "');";
+        "VALUES ('" << Utils::escapeForSQL(username) << "','" << Utils::escapeForSQL(passwordHash) << "','"
+        << Utils::escapeForSQL(salt_str) << "','" << Utils::escapeForSQL(avatarURL) << "');";
 
 
     DBClient.exec(sql.str(),
@@ -154,7 +157,7 @@ UserDaoImpl::getPasswordHashByUsername(const std::string &username, std::functio
     sql <<
         "SELECT passwordHash "
         "FROM User "
-        "WHERE username = " << username << ";";
+        "WHERE username = " << Utils::escapeForSQL(username) << ";";
 
     DBClient.query(sql.str(),
                    [callback, counterPtr](const MYSQL_ROW &rows) {
@@ -178,7 +181,7 @@ void UserDaoImpl::getIdByUsername(const std::string &username, std::function<voi
     sql <<
         "SELECT id "
         "FROM User "
-        "WHERE username = '" << username << "';";
+        "WHERE username = '" << Utils::escapeForSQL(username) << "';";
 
     DBClient.query(sql.str(),
                    [callback, counterPtr](const MYSQL_ROW &rows) {
@@ -226,7 +229,7 @@ void UserDaoImpl::getSaltByUsername(const std::string &username, std::function<v
     sql <<
         "SELECT salt "
         "FROM User "
-        "WHERE username = '" << username << "';";
+        "WHERE username = '" << Utils::escapeForSQL(username) << "';";
 
     DBClient.query(sql.str(),
                    [callback, counterPtr](const MYSQL_ROW &rows) {
@@ -250,7 +253,7 @@ void UserDaoImpl::setSessionTokenById(unsigned long id, const std::string &sessi
     std::ostringstream sql;
     sql <<
         "UPDATE User "
-        "SET sessionToken='" << sessionToken << "' "
+        "SET sessionToken='" << Utils::escapeForSQL(sessionToken) << "' "
                                                 "WHERE id=" << id << ";";
 
     DBClient.exec(sql.str(),
@@ -265,8 +268,8 @@ void UserDaoImpl::setSessionTokenByUsername(const std::string &username, const s
     std::ostringstream sql;
     sql <<
         "UPDATE User "
-        "SET sessionToken='" << sessionToken << "' "
-                                                "WHERE username='" << username << "';";
+        "SET sessionToken='" << Utils::escapeForSQL(sessionToken) << "' "
+        "WHERE username='" << Utils::escapeForSQL(username) << "';";
 
     DBClient.exec(sql.str(),
                   [callback]() { callback(true); },
@@ -308,7 +311,7 @@ UserDaoImpl::getSessionTokenByUsername(const std::string &username, std::functio
     sql <<
         "SELECT sessionToken "
         "FROM User "
-        "WHERE username = '" << username << "';";
+        "WHERE username = '" << Utils::escapeForSQL(username) << "';";
 
     DBClient.query(
             sql.str(),
