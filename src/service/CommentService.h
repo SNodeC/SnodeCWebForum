@@ -7,21 +7,33 @@
 
 #include <functional>
 #include <string>
+#include <vector>
 
 #include "../daos/DaoInterfaces/UserDao.h"
 #include "../daos/DaoInterfaces/CommentDao.h"
 
-using std::string;
 using std::function;
+using std::string;
+using std::vector;
 
 namespace service {
 
     class CommentService {
     private:
+        static bool checkContentFormat(const string& content);
+
         CommentDao& _commentDao;
         UserDao& _userDao;
 
     public:
+        enum TopicCreationResult {
+            SUCCESS =         0b00,
+            INVALID_CONTENT = 0b01,
+            INTERNAL_ERROR =  0b10
+        };
+
+        static vector<string> getCommentCreateErrorMessages(int errorCode);
+
         CommentService() = delete;
         CommentService(const CommentService&) = delete;
         CommentService(CommentService&&) = delete;

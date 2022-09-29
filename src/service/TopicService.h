@@ -7,21 +7,35 @@
 
 #include <functional>
 #include <string>
+#include <vector>
 
 #include "../daos/DaoInterfaces/UserDao.h"
 #include "../daos/DaoInterfaces/TopicDao.h"
 
-using std::string;
 using std::function;
+using std::string;
+using std::vector;
 
 namespace service {
 
     class TopicService {
     private:
+        static bool checkTitleFormat(const string& title);
+        static bool checkDescriptionFormat(const string& description);
+
         TopicDao& _topicDao;
         UserDao& _userDao;
 
     public:
+        enum TopicCreationResult {
+            SUCCESS =             0b000,
+            INVALID_TITLE =       0b001,
+            INVALID_DESCRIPTION = 0b010,
+            INTERNAL_ERROR =      0b100
+        };
+
+        static vector<string> getTopicCreateErrorMessages(int errorCode);
+
         TopicService() = delete;
         TopicService(const TopicService&) = delete;
         TopicService(TopicService&&) = delete;

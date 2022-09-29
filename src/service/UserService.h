@@ -3,24 +3,19 @@
 
 #include <functional>
 #include <string>
+#include <vector>
 
 #include "../daos/DaoInterfaces/UserDao.h"
 
-using std::string;
 using std::function;
+using std::string;
+using std::vector;
 
 typedef std::basic_string<unsigned char> ustring;
 
 namespace service {
     class UserService {
     private:
-        enum UserCreationResult {
-            SUCCESS = 0b000,
-            INVALID_USERNAME = 0b001,
-            INVALID_PASSWORD = 0b010,
-            INTERNAL_ERROR = 0b100
-        };
-
         static std::string hashPassword(const string& password, const ustring& salt);
         static ustring createNewSalt();
         static std::string createNewSessionToken();
@@ -31,13 +26,20 @@ namespace service {
         UserDao& _userDao;
 
     public:
+        enum UserCreationResult {
+            SUCCESS =          0b000,
+            INVALID_USERNAME = 0b001,
+            INVALID_PASSWORD = 0b010,
+            INTERNAL_ERROR =   0b100
+        };
+
+        static vector<string> getUserCreateErrorMessages(int errorCode);
+
         UserService() = delete;
         UserService(const UserService&) = delete;
         UserService(UserService&&) = delete;
         UserService& operator=(const UserService&) = delete;
         UserService& operator=(UserService&&) = delete;
-
-        static string getUserCreateErrorMessage(int errorCode);
 
         explicit UserService(UserDao& userDao);
 

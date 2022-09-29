@@ -19,6 +19,10 @@ namespace service {
     const size_t USERNAME_MIN_LENGTH = 3;
     const size_t PASSWORD_MIN_LENGTH = 8;
 
+    const char* USERNAME_ERR_MSG = "Username must be at least 3 characters long";
+    const char* PASSWORD_ERR_MSG = "Password must be at least 8 characters long";
+    const char* INTERNAL_ERR_MSG = "There seems to be a problem with the server. Try again later";
+
 #pragma endregion
 
 #pragma region Constructors
@@ -66,9 +70,25 @@ namespace service {
         return result;
     }
 
-    string cls::getUserCreateErrorMessage(int errorCode) {
-        // TODO: finish this
-        return "";
+    vector<string> cls::getUserCreateErrorMessages(int errorCode) {
+        static const string invalidUsername{USERNAME_ERR_MSG};
+        static const string invalidPassword{PASSWORD_ERR_MSG};
+        static const string internalError{INTERNAL_ERR_MSG};
+
+        vector<string> result;
+        if (errorCode & INVALID_USERNAME) {
+            result.push_back(invalidUsername);
+        }
+
+        if (errorCode & INVALID_PASSWORD) {
+            result.push_back(invalidPassword);
+        }
+
+        if (errorCode & INTERNAL_ERROR) {
+            result.push_back(internalError);
+        }
+
+        return std::move(result);
     }
 
 #pragma endregion
@@ -76,16 +96,16 @@ namespace service {
 #pragma region Instance Methods
 
     void cls::createUser(const string& username, const string& password, function<void(int)> callback) {
-        int result = UserCreationResult::SUCCESS;
+        int result = SUCCESS;
         if(!checkUserNameFormat(username)) { // invalid username
-            result |= UserCreationResult::INVALID_USERNAME;
+            result |= INVALID_USERNAME;
         }
 
         if (!checkPasswordFormat(password)) { // invalid password
-            result |= UserCreationResult::INVALID_PASSWORD;
+            result |= INVALID_PASSWORD;
         }
 
-        if (result != UserCreationResult::SUCCESS) {
+        if (result != SUCCESS) {
             callback(result);
             return;
         }
@@ -95,7 +115,7 @@ namespace service {
         string hash = hashPassword(password, salt);
 
         function<void(bool)> createCallback = [callback](bool success) {
-            callback(success ? UserCreationResult::SUCCESS : UserCreationResult::INTERNAL_ERROR);
+            callback(success ? SUCCESS : INTERNAL_ERROR);
         };
 
         _userDao.createUser(username, hash, salt, avatarURL, createCallback);
