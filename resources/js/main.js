@@ -1,33 +1,43 @@
 window.onload = () => {
+
+    // Home
     const toggle_topic = document.getElementById('toggle-topic');
     const toggle_text = document.getElementById('toggle-text');
     const submit_topic = document.getElementById('submit-topic');
-    const topic = document.getElementById("hide_topic");
+    const topic = document.getElementById('hide_topic');
 
+    // Topic overview
     const toggle_post = document.getElementById('toggle-post');
     const submit_post = document.getElementById('submit-post');
-    const post = document.getElementById("hide-post");
+    const post = document.getElementById('hide-post');
 
+    // Post overview
     const toggle_comment = document.getElementById('toggle-comment');
     const submit_comment = document.getElementById('submit-comment');
-    const comment = document.getElementById("hide-comment");
+    const comment = document.getElementById('hide-comment');
 
+    // Login/Logout/Register
     const login = document.getElementById('login');
     const logout = document.getElementById('logout');
     const register = document.getElementById('register');
 
     const form = document.getElementById('registerForm');
 
+    // Message anchors. Available wherever submits are available
+    const error_anchor = document.getElementById('error-anchor');
+    const warning_anchor = document.getElementById('warning-anchor');
+    const info_anchor = document.getElementById('info-anchor');
+
     const toggleTextFunc = (element) => {
         const text = element.innerHTML;
-        const prefix = text[0] === "+" ? "-" : "+";
+        const prefix = text[0] === '+' ? '-' : '+';
         element.innerHTML = prefix + text.substring(1);
     };
 
     /* Toggle visibility for Adding Topic */
     if (toggle_topic !== null && submit_topic !== null) {
         const toggle_func = () => {
-            topic.classList.toggle("unhidden");
+            topic.classList.toggle('unhidden');
             toggleTextFunc(toggle_text);
         }
 
@@ -38,7 +48,7 @@ window.onload = () => {
     /* Toggle visibility for Adding Post */
     if (toggle_post !== null && submit_post !== null) {
         const toggle_func = () => {
-            post.classList.toggle("unhidden");
+            post.classList.toggle('unhidden');
             toggleTextFunc(toggle_post);
         }
 
@@ -49,7 +59,7 @@ window.onload = () => {
     /* Toggle visibility for Adding Comment */
     if (toggle_comment !== null) {
         const toggle_func = () => {
-            comment.classList.toggle("unhidden");
+            comment.classList.toggle('unhidden');
             toggleTextFunc(toggle_comment);
         }
 
@@ -59,8 +69,8 @@ window.onload = () => {
 
     if (login !== null) {
         login.addEventListener('click', () => {
-            window.location = "home.html";
-            console.log("login");
+            window.location = 'home.html';
+            console.log('login');
         });
     }
 
@@ -72,7 +82,7 @@ window.onload = () => {
         console.log([...payload]);
 
         fetch('', {
-            method: "Post",
+            method: 'Post',
             body: payload,
         }).then(res => res.json())
             .then(data => console.log(data))
@@ -111,8 +121,18 @@ window.onload = () => {
 
     if (logout !== null) {
         logout.addEventListener('click', () => {
-            window.location = "login.html";
-            console.log("logout");
+            window.location = 'login.html';
+            console.log('logout');
         });
     }
+}
+
+function appendSpan(parent, content) {
+    const span = document.createElement('span');
+    span.innerHTML = `${content}<br>`;
+    parent.appendChild(span);
+}
+
+function removeAllChildren(parent) {
+    parent.replaceChildren();
 }

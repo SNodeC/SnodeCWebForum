@@ -133,13 +133,19 @@ namespace service
         static const string addTopicForm{
             "                <div class='right'><a id='toggle-topic'><h2 id='toggle-text'>+ Add new Topic</h2></a></div>\n"
             "            </div>\n"
-            "            <div id='hide_topic' class='hidden'>\n"
-            "                <div class='rainbow-box'>\n"
+            "            <div id='hide_topic' class='hidden m-30'>\n"
+            "                <div class='rainbow-box w-100p'>\n"
             "                    <textarea class='title' name='topic-name' rows='1' cols='50' placeholder='Topic Name goes here.'></textarea><br>\n"
             "                    <textarea class='content' name='topic-description' rows='4' cols='50' placeholder='Describe your Topic you want to add.'></textarea><br>\n"
-            "                    <input  id='submit-topic' class='submit' type='submit' value='Submit Topic'>\n"
             "                </div>\n"
+            "                <input  id='submit-topic' class='submit' type='submit' value='Submit Topic'>\n"
+            "                <div class='w-100p m-t-10'>\n"
+            "                    <div id='error-anchor' class='error'></div>\n"
+            "                    <div id='warning-anchor' class='warning'></div>\n"
+            "                    <div id='info-anchor' class='info'></div>\n"
+            "                </div>"
             "            </div>\n"
+            "            <hr class='topic-hr'>"
         };
 
         static const string addNoTopicForm{
@@ -222,13 +228,19 @@ namespace service
         static const string addTopicForm{
             "                <div class='add-new right'><a id='toggle-post'>+ Add new Post</a></div>\n"
             "            </div>"
-            "            <div id='hide-post' class='hidden'>\n"
-            "                <div class='rainbow-box'>\n"
+            "            <div id='hide-post' class='hidden m-30'>\n"
+            "                <div class='rainbow-box w-100p'>\n"
             "                    <textarea class='title' name='post-name' rows='1' cols='50' placeholder='Post Header goes here.'></textarea><br>\n"
-            "                    <textarea class='content' name='post-description' rows='4' cols='50' placeholder='Here comes the Text of your finely crafted Post.'></textarea><br>\n"
-            "                    <input  id='submit-post' class='submit' type='submit' value='Submit Post'>\n"
+            "                    <textarea class='content' name='post-description' rows='4' cols='50' placeholder='Here comes the Text of your finely crafted Post.'></textarea>\n"
             "                </div>\n"
+            "                <input  id='submit-post' class='submit' type='submit' value='Submit Post'>\n"
+            "                <div class='w-100p m-t-10'>\n"
+            "                    <div id='error-anchor' class='error'></div>\n"
+            "                    <div id='warning-anchor' class='warning'></div>\n"
+            "                    <div id='info-anchor' class='info'></div>\n"
+            "                </div>"
             "            </div>\n"
+            "            <hr class='post-hr'>\n"
         };
 
         static const string addNoTopicForm{
@@ -273,12 +285,17 @@ namespace service
             "        <div>\n"
             "            <h2><a id='toggle-comment'>+ Add comment</a></h2>\n"
             "        </div>\n"
-            "        <div id='hide-comment' class='hidden left'>\n"
-            "            <div class='rainbow-box'>\n"
+            "        <div id='hide-comment' class='hidden m-b-10 m-30'>\n"
+            "            <div class='rainbow-box w-100p'>\n"
             "                <textarea class='content' name='comment-description' rows='4' cols='50'\n"
-            "                    placeholder='Here comes the Text of your perfectly proper worded Comment.'></textarea><br>\n"
-            "                <input id='submit-comment' class='submit' type='submit' value='Reply'>\n"
+            "                    placeholder='Here comes the Text of your perfectly proper worded Comment.'></textarea>\n"
             "            </div>\n"
+            "            <input id='submit-comment' class='submit' type='submit' value='Reply'>\n"
+            "            <div class='w-100p m-t-10'>\n"
+            "                <div id='error-anchor' class='error'></div>\n"
+            "                <div id='warning-anchor' class='warning'></div>\n"
+            "                <div id='info-anchor' class='info'></div>\n"
+            "            </div>"
             "        </div>\n"
         };
 
@@ -360,40 +377,42 @@ namespace service
     string cls::createLoginPageResponse(const vector<string>& errors, const vector<string>& warnings,
                                         const vector<string>& infos) {
         static const string resultHead{
-            "    <div class='unhidden'>\n"
-            "        <div class='login'>\n"
-            "            <h1 class='m-b-50'>Login</h1>\n"
-            "            <div class='rainbow-box m-b-10'>\n"
-            "                <input class='user-login' placeholder='Username'></input>\n"
-            "                <hr class='post-hr'>\n"
-            "                <input  class='user-login' type='password' placeholder='Password'>\n"
-            "            </div>\n"
-            "            <div class='m-b-10 min-h-1'>\n"
+            "    <div id='content'>\n"
+            "        <div class='unhidden'>\n"
+            "            <div class='login'>\n"
+            "                <h1 class='m-b-50'>Login</h1>\n"
+            "                <div class='rainbow-box m-b-10'>\n"
+            "                    <input class='user-login' placeholder='Username'></input>\n"
+            "                    <hr class='post-hr'>\n"
+            "                    <input  class='user-login' type='password' placeholder='Password'>\n"
+            "                </div>\n"
+            "                <div class='m-b-10 min-h-1'>\n"
         };
 
         static const string resultEnd{
+            "                </div>\n"
+            "                <input  class='submit' type='submit' value='Login' id='signup'>\n"
+            "                <div class='m-t-40 t-a-c'>\n"
+            "                    No account? <a href='/register'>Register here!</a>\n"
+            "                </div>"
+            "                <div class='m-t-10 t-a-c w-100p'> "
+            "                    &lt;&lt; <a href='javascript:history.back()'>Back</a>\n"
+            "                </div>"
             "            </div>\n"
-            "            <input  class='submit' type='submit' value='Login' id='signup'>\n"
-            "            <div class='m-t-40 t-a-c'>\n"
-            "                No account? <a href='/register/'>Register here!</a>\n"
-            "            </div>"
-            "            <div class='m-t-10 t-a-c w-100p'> "
-            "                &lt;&lt; <a href='javascript:history.back()'>Back</a>\n"
-            "            </div>"
             "        </div>\n"
             "    </div>\n"
         };
 
         static const string errorHead{
-            "                <div class='error'>"
+            "                <div id='error-anchor' class='error'>"
         };
 
         static const string warningHead{
-            "                <div class='warning'>"
+            "                <div id='error-anchor' class='warning'>"
         };
 
         static const string infoHead{
-            "                <div class='info'>"
+            "                <div id='error-anchor' class='info'>"
         };
 
         static const string msgEnd{
@@ -430,25 +449,27 @@ namespace service
     string cls::createRegisterAccountResponse(const vector<string>& errors, const vector<string>& warnings,
                                               const vector<string>& infos) {
         static const string resultHead{
-            "    <div class='unhidden'>\n"
-            "        <form id='registerForm' class='login' action='' method='Post'>\n"
-            "            <h1 class='m-b-50'>Register</h1>\n"
-            "            <div class='rainbow-box m-b-10'>\n"
-            "                <input class='user-login' placeholder='Username' name='username' required ></input>\n"
-            "                <hr class='post-hr'>\n"
-            "                <input  class='user-login' type='password' placeholder='Password' name='password1' required>\n"
-            "                <input  class='user-login' type='password' placeholder='Repeat Password' name='password2' required>\n"
-            "            </div>\n"
-            "            <div class='m-b-10 min-h-1'>\n"
+            "        <div id='content'>"
+            "        <div class='unhidden'>\n"
+            "            <form id='registerForm' class='login' action='' method='Post'>\n"
+            "                <h1 class='m-b-50'>Register</h1>\n"
+            "                <div class='rainbow-box m-b-10'>\n"
+            "                    <input class='user-login' placeholder='Username' name='username' required ></input>\n"
+            "                    <hr class='post-hr'>\n"
+            "                    <input  class='user-login' type='password' placeholder='Password' name='password1' required>\n"
+            "                    <input  class='user-login' type='password' placeholder='Repeat Password' name='password2' required>\n"
+            "                </div>\n"
+            "                <div class='m-b-10 min-h-1'>\n"
         };
 
         static const string resultEnd{
-            "            </div>\n"
-            "            <input class='submit' type='submit' value='Register' id='register'>\n"
-            "            <div class='m-t-40 t-a-c w-100p'> "
-            "                &lt;&lt; <a href='javascript:history.back()'>Back</a>\n"
-            "            </div>"
-            "        </form>\n"
+            "                </div>\n"
+            "                <input class='submit' type='submit' value='Register' id='register'>\n"
+            "                <div class='m-t-10 t-a-c w-100p'> "
+            "                    &lt;&lt; <a href='javascript:history.back()'>Back</a>\n"
+            "                </div>"
+            "            </form>\n"
+            "        </div>\n"
             "    </div>\n"
         };
 
@@ -500,7 +521,7 @@ namespace service
 
 #pragma region Instance Methods
 
-    void cls::createHomeResponseFromDao(const string& userName, resCallback rCallback) {
+    void cls::createHomeResponseFromDao(const string& userName, resCallback rCallback) /* NOLINT */ {
 
         function<void(vector<Topic> &&)> callback = [this, rCallback, userName](vector<Topic> && topics) {
             if (topics.empty()) {
@@ -527,7 +548,7 @@ namespace service
                 unsigned long curTopicId = (*topicsPtr)[i].id;
 
                 // get post counts
-                (*countCallbacksPtr)[i] = [i, countsCountPtr, firedPtr, postsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
+                (*countCallbacksPtr)[i] = [countsCountPtr, firedPtr, postsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
                 (int count) {
                     postCountsPtr->push_back(count);
                     ++(*countsCountPtr);
@@ -551,7 +572,7 @@ namespace service
                         }
                     } else { // most recent post found
                         shared_ptr<Post> recentPostPtr = make_shared<Post>(std::move(recentPost[0]));
-                        (*userCallbacksPtr)[i] = [i, recentPostPtr, postsCountPtr, firedPtr, countsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
+                        (*userCallbacksPtr)[i] = [recentPostPtr, postsCountPtr, firedPtr, countsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
                                 (User&& creator) {
                             (*recentPostPtr).creator = creator;
                             latestPostsIncCreatorPtr->push_back(*recentPostPtr);
@@ -571,7 +592,7 @@ namespace service
         this->_topicDao.getRecentTopics(-1, 0, callback);
     }
 
-    void cls::createTopicOverviewResponseFromDao(unsigned long topicId, const string& userName, resCallback rCallback) {
+    void cls::createTopicOverviewResponseFromDao(unsigned long topicId, const string& userName, resCallback rCallback) { /* NOLINT */
         shared_ptr<string> userNamePtr = make_shared<string>(userName);
 
         function<void(Topic&&)> callback = [this, rCallback, userNamePtr](Topic&& topic) {
@@ -628,7 +649,7 @@ namespace service
         _topicDao.getById(topicId, callback);
     }
 
-    void cls::createPostOverviewResponseFromDao(unsigned long postId, const string& userName, resCallback rCallback) {
+    void cls::createPostOverviewResponseFromDao(unsigned long postId, const string& userName, resCallback rCallback) {  /* NOLINT */
 
         function<void(Post&&)> callback = [this, rCallback, userName](Post&& post) {
             shared_ptr<string> userNamePtr = make_shared<string>(userName);

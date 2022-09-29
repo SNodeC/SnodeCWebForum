@@ -31,6 +31,11 @@ html {
     overflow: hidden;
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+}
+
 html, body {
     overflow: auto;
     margin: 0;
@@ -44,17 +49,15 @@ html, body {
     min-width: 650px;
     margin-top: 0;
     padding-top: 0;
+    flex: 1 0 auto;
 }
 
 footer {
     width: 100%;
-    top: 100vh;
-    position: sticky;
+    flex-shrink: 0;
     margin-top: 20px;
     padding: 20px 40px;
     background: linear-gradient(180deg, #00000000 0%, #52057b 10%);
-    /*#52057b6c*/
-    /* display: block; */
     text-align: center;
     font-weight: bolder;
     font-size: 16px;
@@ -188,6 +191,30 @@ h2 {
     margin: 0;
 }
 
+.m-10 {
+    margin: 10px;
+}
+
+.m-20 {
+    margin: 20px;
+}
+
+.m-30 {
+    margin: 30px;
+}
+
+.m-40 {
+    margin: 40px;
+}
+
+.m-50 {
+    margin: 50px;
+}
+
+.m-100 {
+    margin: 100px;
+}
+
 .m-b-10 {
     margin-bottom: 10px;
 }
@@ -270,6 +297,7 @@ h2 {
     grid-template-columns: 60% 40%;
 }
 
+/* TODO:  if counting not possible delete 10% and change 20 to 30...*/
 .subforum-row {
     display: grid;
     grid-template-columns: 50px auto 10% 30%;
@@ -464,7 +492,7 @@ h2 {
 .post-user,
 .replies {
     display: flex;
-    align-items: unset;
+    align-items: left;
     /* align vertical */
 }
 
@@ -531,6 +559,7 @@ h2 {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 }
 
 textarea {
@@ -561,13 +590,21 @@ textarea::placeholder {
     width: 100%;
     border: none;
     padding: 10px;
+    background-color: #DDDDDD;
+    box-shadow: none;
+    margin-bottom: 0px;
+    transition: 300ms;
+}
+
+.submit:hover {
     background-color: white;
     box-shadow: -4px 4px #7e57c2,
-        -8px 8px #2196f3,
-        -12px 12px #43a047,
-        -16px 16px #eeff41,
-        -20px 20px #f9a825,
-        -24px 24px #ff5722;
+    -8px 8px #2196f3,
+    -12px 12px #43a047,
+    -16px 16px #eeff41,
+    -20px 20px #f9a825,
+    -24px 24px #ff5722;
+    margin-bottom: 24px;
 }
 
 /* ########################################### */
