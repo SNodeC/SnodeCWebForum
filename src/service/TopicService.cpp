@@ -18,9 +18,9 @@ namespace service {
     const size_t TITLE_MIN_LEN = 3;
     const size_t DESCRIPTION_MIN_LEN = 1;
 
-    const char* TITLE_ERR_MSG = "The topic title must be at least 3 characters long";
-    const char* DESCRIPTION_ERR_MSG = "The topic description cannot be empty";
-    const char* INTERNAL_ERR_MSG = "There seems to be a problem with the server. Try again later";
+    const char* TS_TITLE_ERR_MSG = "The topic title must be at least 3 characters long";
+    const char* TS_DESCRIPTION_ERR_MSG = "The topic description cannot be empty";
+    const char* TS_INTERNAL_ERR_MSG = "There seems to be a problem with the server. Try again later";
 
 #pragma endregion
 
@@ -43,9 +43,9 @@ namespace service {
     }
 
     vector<string> cls::getTopicCreateErrorMessages(int errorCode) {
-        static const string invalidTitle{TITLE_ERR_MSG};
-        static const string invalidDescription{DESCRIPTION_ERR_MSG};
-        static const string internalError{INTERNAL_ERR_MSG};
+        static const string invalidTitle{TS_TITLE_ERR_MSG};
+        static const string invalidDescription{TS_DESCRIPTION_ERR_MSG};
+        static const string internalError{TS_INTERNAL_ERR_MSG};
 
         vector<string> result;
 

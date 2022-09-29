@@ -454,10 +454,10 @@ namespace service
             "            <form id='registerForm' class='login' action='' method='Post'>\n"
             "                <h1 class='m-b-50'>Register</h1>\n"
             "                <div class='rainbow-box m-b-10'>\n"
-            "                    <input class='user-login' placeholder='Username' name='username' required ></input>\n"
+            "                    <input id='username' class='user-login' placeholder='Username' name='username' required ></input>\n"
             "                    <hr class='post-hr'>\n"
-            "                    <input  class='user-login' type='password' placeholder='Password' name='password1' required>\n"
-            "                    <input  class='user-login' type='password' placeholder='Repeat Password' name='password2' required>\n"
+            "                    <input id='password1' class='user-login' type='password' placeholder='Password' name='password1' required>\n"
+            "                    <input id='password2' class='user-login' type='password' placeholder='Repeat Password' name='password2' required>\n"
             "                </div>\n"
             "                <div class='m-b-10 min-h-1'>\n"
         };

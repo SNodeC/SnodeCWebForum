@@ -22,6 +22,9 @@ window.onload = () => {
     const register = document.getElementById('register');
 
     const form = document.getElementById('registerForm');
+    const username = document.getElementById('username');
+    const password1 = document.getElementById('password1');
+    const password2 = document.getElementById('password2');
 
     // Message anchors. Available wherever submits are available
     const error_anchor = document.getElementById('error-anchor');
@@ -79,45 +82,36 @@ window.onload = () => {
 
         const payload = new FormData(form);
 
-        console.log([...payload]);
+        console.log(payload);
 
-        fetch('', {
+        const userData = 'Username=' + [...payload][0][1] + '&Password=' + [...payload][1][1];
+
+        removeAllChildren(error_anchor);
+
+        fetch('/register', {
             method: 'Post',
-            body: payload,
-        }).then(res => res.json())
-            .then(data => console.log(data))
+            body: userData,
+        }).then(data => {
+            if (data.status === 200) {
+                console.log('it go');
+            } else if (data.status === 400) {
+                appendSpan(error_anchor, 'Username \"' + username.value + ' \" already taken');
+            }
+        })
             .catch(err => console.log(err));
-
     })
-    /*
 
-        if (register !== null) {
-            register.addEventListener('click', () => {
-    /!*
+    if (register !== null) {
+        register.addEventListener('click', () => {
 
-                const params = {
-                    param1:
-                    param2:
-                    param2:
-                }
+            if (password1.value === password2.value) {
+                password2.setCustomValidity('');
+            } else {
+                password2.setCustomValidity('Passwords don\'t match');
+            }
+        });
+    }
 
-                const options = {
-                    method: 'POST',
-                    body: JSON.stringify(params)
-                }
-
-                fetch('/', options)
-                    .then(response => response.json())
-                    .then(response => {
-
-                    })
-    *!/
-
-                window.location = "home.html";
-                console.log("register");
-            });
-        }
-    */
 
     if (logout !== null) {
         logout.addEventListener('click', () => {
@@ -126,6 +120,7 @@ window.onload = () => {
         });
     }
 }
+
 
 function appendSpan(parent, content) {
     const span = document.createElement('span');

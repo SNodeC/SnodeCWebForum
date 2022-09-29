@@ -17,8 +17,8 @@ namespace service {
 
     const size_t CONTENT_MIN_LEN = 1;
 
-    const char* CONTENT_ERR_MSG = "The post content cannot be empty";
-    const char* INTERNAL_ERR_MSG = "There seems to be a problem with the server. Try again later";
+    const char* CS_CONTENT_ERR_MSG = "The post content cannot be empty";
+    const char* CS_INTERNAL_ERR_MSG = "There seems to be a problem with the server. Try again later";
 
 #pragma endregion
 
@@ -35,8 +35,8 @@ namespace service {
     }
 
     vector<string> cls::getCommentCreateErrorMessages(int errorCode) {
-        static const string invalidContent{CONTENT_ERR_MSG};
-        static const string internalError{INTERNAL_ERR_MSG};
+        static const string invalidContent{CS_CONTENT_ERR_MSG};
+        static const string internalError{CS_INTERNAL_ERR_MSG};
 
         vector<string> result;
 

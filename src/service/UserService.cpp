@@ -19,9 +19,9 @@ namespace service {
     const size_t USERNAME_MIN_LENGTH = 3;
     const size_t PASSWORD_MIN_LENGTH = 8;
 
-    const char* USERNAME_ERR_MSG = "Username must be at least 3 characters long";
-    const char* PASSWORD_ERR_MSG = "Password must be at least 8 characters long";
-    const char* INTERNAL_ERR_MSG = "There seems to be a problem with the server. Try again later";
+    const char* US_USERNAME_ERR_MSG = "Username must be at least 3 characters long";
+    const char* US_PASSWORD_ERR_MSG = "Password must be at least 8 characters long";
+    const char* US_INTERNAL_ERR_MSG = "There seems to be a problem with the server. Try again later";
 
 #pragma endregion
 
@@ -71,9 +71,9 @@ namespace service {
     }
 
     vector<string> cls::getUserCreateErrorMessages(int errorCode) {
-        static const string invalidUsername{USERNAME_ERR_MSG};
-        static const string invalidPassword{PASSWORD_ERR_MSG};
-        static const string internalError{INTERNAL_ERR_MSG};
+        static const string invalidUsername{US_USERNAME_ERR_MSG};
+        static const string invalidPassword{US_PASSWORD_ERR_MSG};
+        static const string internalError{US_INTERNAL_ERR_MSG};
 
         vector<string> result;
         if (errorCode & INVALID_USERNAME) {

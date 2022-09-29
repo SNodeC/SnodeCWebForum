@@ -158,18 +158,18 @@ int main(int argc, char *argv[]) {
         std::cout << "Content-Length: " << req.get("Content-Length") << std::endl;*/
 
         req.body.push_back(0);
-        std::string userName = Utils::getFieldByName(req.body.data(), "username");
-        std::string password1 = Utils::getFieldByName(req.body.data(), "password");
-        std::string password2 = Utils::getFieldByName(req.body.data(), "password2");
+        std::cout << req.body.data() << std::endl;
+
+        std::string userName = Utils::getFieldByName(req.body.data(), "Username");
+        std::string password = Utils::getFieldByName(req.body.data(), "Password");
 
         userDao.isUserNameTaken(userName, [&](bool b) {
             if (b) {
-                std::cout << "IT TAKEN GET FUCKED" << std::endl;
                 res.sendStatus(400);
+                std::cout << "IT TAKEN GET FUCKED" << std::endl;
             } else {
-                std::cout << "IT NOT TAKEN" << std::endl;
                 res.sendStatus(200);
-
+                std::cout << "IT NOT TAKEN" << std::endl;
             }
         });
     });

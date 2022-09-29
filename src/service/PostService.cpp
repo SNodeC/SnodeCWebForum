@@ -18,9 +18,9 @@ namespace service {
     const size_t TITLE_MIN_LEN = 3;
     const size_t CONTENT_MIN_LEN = 1;
 
-    const char* TITLE_ERR_MSG = "The post title must be at least 3 characters long";
-    const char* CONTENT_ERR_MSG = "The post content cannot be empty";
-    const char* INTERNAL_ERR_MSG = "There seems to be a problem with the server. Try again later";
+    const char* PS_TITLE_ERR_MSG = "The post title must be at least 3 characters long";
+    const char* PS_CONTENT_ERR_MSG = "The post content cannot be empty";
+    const char* PS_INTERNAL_ERR_MSG = "There seems to be a problem with the server. Try again later";
 
 #pragma endregion
 
@@ -41,9 +41,9 @@ namespace service {
     }
 
     vector<string> cls::getPostCreateErrorMessages(int errorCode) {
-        static const string invalidTitle{TITLE_ERR_MSG};
-        static const string invalidContent{CONTENT_ERR_MSG};
-        static const string internalError{INTERNAL_ERR_MSG};
+        static const string invalidTitle{PS_TITLE_ERR_MSG};
+        static const string invalidContent{PS_CONTENT_ERR_MSG};
+        static const string internalError{PS_INTERNAL_ERR_MSG};
 
         vector<string> result;
 
