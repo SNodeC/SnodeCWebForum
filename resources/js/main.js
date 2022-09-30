@@ -127,7 +127,7 @@ window.onload = () => {
             }).then(data => {
                 if (data.status === 200) {
                     console.log(window.location.href);
-                  return false;
+                    return false;
                 } else if (data.status === 400) {
                     data.text().then(text => listErrors(text, error_anchor))
                 }
@@ -244,8 +244,10 @@ window.onload = () => {
 
     if (logout !== null) {
         logout.addEventListener('click', () => {
-            window.location = 'login';
-            console.log('logout');
+            window.location = '/login/';
+
+            deleteAllCookies();
+
         });
     }
 }
@@ -268,5 +270,16 @@ function listErrors(body, error_anchor) {
 
     for (let i = 0; i < errors.length; i++) {
         appendSpan(error_anchor, errors[i]);
+    }
+}
+
+function deleteAllCookies() {
+    var cookies = document.cookie.split(";");
+
+    for (var i = 0; i < cookies.length; i++) {
+        var cookie = cookies[i];
+        var eqPos = cookie.indexOf("=");
+        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+        document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
 }

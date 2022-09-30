@@ -124,8 +124,7 @@ int main(int argc, char *argv[]) {
                 });
     });
 
-
-    legacyApp.get("/t/", [&]APPLICATION(req, res) {
+    legacyApp.get("/", [&]APPLICATION(req, res) {
 
         shared_ptr<string> usernamePtr = make_shared<string>(req.cookie(USERNAMECOOKIE));
         shared_ptr<string> sessionTknPtr = make_shared<string>(req.cookie(SESSIONTOKEN));
@@ -148,10 +147,13 @@ int main(int argc, char *argv[]) {
         userService.checkUserSession((*usernamePtr), (*sessionTknPtr),
                                      [usernamePtr, &res, &htmlResponseCreationService](bool b) {
                                          if (b) {
-                                             htmlResponseCreationService.createHomeResponseFromDao((*usernamePtr),
-                                                                                                   [&](std::string s) {
-                                                                                                       res.send(s);
-                                                                                                   });
+
+                                             res.location("/");
+                                             res.sendStatus(303);
+                                             /* htmlResponseCreationService.createHomeResponseFromDao((*usernamePtr),
+                                                                                                    [&](std::string s) {
+                                                                                                        res.send(s);
+                                                                                                    });*/
                                          } else {
                                              res.send(service::HTMLResponseCreationService::createLoginPageResponse());
                                          }
@@ -215,8 +217,12 @@ int main(int argc, char *argv[]) {
                         userService.createNewUserSession((*usernamePtr), [usernamePtr, &res](bool b, string s) {
                             if (b) {
                                 res.cookie(USERNAMECOOKIE, (*usernamePtr),
-                                           {{"Max-Age", "3600"}, {"path", "/"}, {"SameSite", "None"}});
-                                res.cookie(SESSIONTOKEN, s, {{"Max-Age", "3600"}, {"path", "/"}, {"SameSite", "None"}});
+                                           {{"Max-Age",  "3600"},
+                                            {"path",     "/"},
+                                            {"SameSite", "None"}});
+                                res.cookie(SESSIONTOKEN, s, {{"Max-Age",  "3600"},
+                                                             {"path",     "/"},
+                                                             {"SameSite", "None"}});
                                 res.sendStatus(200);
                             } else {
                                 res.sendStatus(500);
@@ -230,81 +236,122 @@ int main(int argc, char *argv[]) {
 
     legacyApp.post("/t", [&]APPLICATION(req, res) {
 
-        req.body.push_back(0);
-        std::cout << req.body.data() << std::endl;
-
-        std::string title = Utils::getFieldByName(req.body.data(), "Title");
-        std::string content = Utils::getFieldByName(req.body.data(), "Content");
         shared_ptr<string> usernamePtr = make_shared<string>(req.cookie(USERNAMECOOKIE));
+        shared_ptr<string> sessionTknPtr = make_shared<string>(req.cookie(SESSIONTOKEN));
+
+        userService.checkUserSession(
+                (*usernamePtr), (*sessionTknPtr),
+                [usernamePtr, &res, &req, &topicService](bool b) {
+                    if (b) {
+
+                        req.body.push_back(0);
+                        std::cout << req.body.data() << std::endl;
+
+                        std::string title = Utils::getFieldByName(req.body.data(), "Title");
+                        std::string content = Utils::getFieldByName(req.body.data(), "Content");
+                        shared_ptr<string> usernamePtr = make_shared<string>(req.cookie(USERNAMECOOKIE));
 
 
-        topicService.createTopic(title, content, *usernamePtr, [&](int err) {
-            if (err == service::TopicService::SUCCESS) {
-                res.sendStatus(200);
+                        topicService.createTopic(title, content, *usernamePtr, [&](int err) {
+                            if (err == service::TopicService::SUCCESS) {
+                                res.sendStatus(200);
 
-            } else {
-                std::vector<std::string> errorMessages = service::TopicService::getTopicCreateErrorMessages(err);
-                std::stringstream errors;
-                for (const auto &error: errorMessages) {
-                    errors << error << ERRORSEP;
-                }
-                res.status(500).send(errors.str());
-            }
-        });
+                            } else {
+                                std::vector<std::string> errorMessages = service::TopicService::getTopicCreateErrorMessages(
+                                        err);
+                                std::stringstream errors;
+                                for (const auto &error: errorMessages) {
+                                    errors << error << ERRORSEP;
+                                }
+                                res.status(500).send(errors.str());
+                            }
+                        });
+                    } else {
+                        res.location("/login/");
+                        res.sendStatus(303);
+                    }
+                });
     });
 
     legacyApp.post("/p/:topic([1-9]+))", [&]APPLICATION(req, res) {
 
-        unsigned long topicID = std::stoul(req.params["topic"]);
-
-        req.body.push_back(0);
-
-        std::cout << req.body.data() << std::endl;
-
-        std::string title = Utils::getFieldByName(req.body.data(), "Title");
-        std::string content = Utils::getFieldByName(req.body.data(), "Content");
         shared_ptr<string> usernamePtr = make_shared<string>(req.cookie(USERNAMECOOKIE));
+        shared_ptr<string> sessionTknPtr = make_shared<string>(req.cookie(SESSIONTOKEN));
+
+        userService.checkUserSession(
+                (*usernamePtr), (*sessionTknPtr),
+                [usernamePtr, &res, &req, &postService](bool b) {
+                    if (b) {
+                        unsigned long topicID = std::stoul(req.params["topic"]);
+
+                        req.body.push_back(0);
+
+                        std::cout << req.body.data() << std::endl;
+
+                        std::string title = Utils::getFieldByName(req.body.data(), "Title");
+                        std::string content = Utils::getFieldByName(req.body.data(), "Content");
+                        shared_ptr<string> usernamePtr = make_shared<string>(
+                                req.cookie(USERNAMECOOKIE));
 
 
-        postService.createPost(title, content, *usernamePtr, topicID, [&](int err) {
-            if (err == service::PostService::SUCCESS) {
-                res.sendStatus(200);
+                        postService.createPost(title, content, *usernamePtr, topicID,
+                                               [&](int err) {
+                                                   if (err == service::PostService::SUCCESS) {
+                                                       res.sendStatus(200);
 
-            } else {
-                std::vector<std::string> errorMessages = service::PostService::getPostCreateErrorMessages(err);
-                std::stringstream errors;
-                for (const auto &error: errorMessages) {
-                    errors << error << ERRORSEP;
-                }
-                res.status(500).send(errors.str());
-            }
-        });
+                                                   } else {
+                                                       std::vector<std::string> errorMessages = service::PostService::getPostCreateErrorMessages(
+                                                               err);
+                                                       std::stringstream errors;
+                                                       for (const auto &error: errorMessages) {
+                                                           errors << error << ERRORSEP;
+                                                       }
+                                                       res.status(500).send(errors.str());
+                                                   }
+                                               });
+                    } else {
+                        res.location("/login/");
+                        res.sendStatus(303);
+                    }
+                });
     });
 
     legacyApp.post("/c/:post([1-9]+)", [&]APPLICATION(req, res) {
 
-        unsigned long postID = std::stoul(req.params["post"]);
+        shared_ptr<string> usernamePtr = make_shared<string>(req.cookie(USERNAMECOOKIE));
+        shared_ptr<string> sessionTknPtr = make_shared<string>(req.cookie(SESSIONTOKEN));
 
-        req.body.push_back(0);
-        std::cout << req.body.data() << std::endl;
-        std::string content = Utils::getFieldByName(req.body.data(), "Content");
-        std::string username = req.cookie(USERNAMECOOKIE);
+        userService.checkUserSession(
+                (*usernamePtr), (*sessionTknPtr),
+                [usernamePtr, &res, &req, &commentService](bool b) {
+                    if (b) {
+                        unsigned long postID = std::stoul(req.params["post"]);
+
+                        req.body.push_back(0);
+                        std::cout << req.body.data() << std::endl;
+                        std::string content = Utils::getFieldByName(req.body.data(), "Content");
+                        std::string username = req.cookie(USERNAMECOOKIE);
 
 
-        commentService.createComment(content, username, postID, [&](int err) {
-            if (err == service::PostService::SUCCESS) {
-                res.sendStatus(200);
-            } else {
-                std::vector<std::string> errorMessages = service::CommentService::getCommentCreateErrorMessages(err);
-                std::stringstream errors;
-                for (const auto &error: errorMessages) {
-                    errors << error << ERRORSEP;
-                }
-                res.status(500).send(errors.str());
-            }
-        });
+                        commentService.createComment(content, username, postID, [&](int err) {
+                            if (err == service::PostService::SUCCESS) {
+                                res.sendStatus(200);
+                            } else {
+                                std::vector<std::string> errorMessages = service::CommentService::getCommentCreateErrorMessages(
+                                        err);
+                                std::stringstream errors;
+                                for (const auto &error: errorMessages) {
+                                    errors << error << ERRORSEP;
+                                }
+                                res.status(500).send(errors.str());
+                            }
+                        });
+                    } else {
+                        res.location("/login/");
+                        res.sendStatus(303);
+                    }
+                });
     });
-
 
     legacyApp.use([&]APPLICATION(req, res) {
         std::string username = req.cookie(USERNAMECOOKIE);
