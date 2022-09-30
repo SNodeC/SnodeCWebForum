@@ -128,24 +128,39 @@ namespace service {
     }
 
     void cls::checkUserPassword(const string &username, const string &password, function<void(bool)> callback) {
+        if (username.empty() || password.empty()) {
+            callback(false);
+            return;
+        }
+
         shared_ptr<string> usernamePtr = make_shared<string>(username);
         shared_ptr<string> passwordPtr = make_shared<string>(password);
 
-        function<void(ustring &&)> saltCallback = [this, usernamePtr, passwordPtr, callback](ustring &&salt) {
-            string curHash = hashPassword(*passwordPtr, salt);
-            shared_ptr<string> curHashPtr = make_shared<string>(std::move(curHash));
+        function<void(bool)> userExistsCallback = [this, usernamePtr, passwordPtr, callback](bool userExists) {
 
-            function<void(string)> hashCallback = [curHashPtr, callback](string &&hash) {
+            if (!userExists) {
+                callback(false);
+                return;
+            }
 
-                std::cout << hash << std::endl;
-                std::cout << *curHashPtr << std::endl;
-                callback((*curHashPtr) == hash);
+            function<void(ustring &&)> saltCallback = [this, usernamePtr, passwordPtr, callback](ustring &&salt) {
+                string curHash = hashPassword(*passwordPtr, salt);
+                shared_ptr<string> curHashPtr = make_shared<string>(std::move(curHash));
+
+                function<void(string)> hashCallback = [curHashPtr, callback](string &&hash) {
+
+                    std::cout << hash << std::endl;
+                    std::cout << *curHashPtr << std::endl;
+                    callback((*curHashPtr) == hash);
+                };
+
+                _userDao.getPasswordHashByUsername(*usernamePtr, hashCallback);
             };
 
-            _userDao.getPasswordHashByUsername(*usernamePtr, hashCallback);
+            _userDao.getSaltByUsername(*usernamePtr, saltCallback);
         };
 
-        _userDao.getSaltByUsername(username, saltCallback);
+        _userDao.isUserNameTaken(username, userExistsCallback);
     }
 
     void cls::checkUserSession(const string &username, const string &sessionToken, function<void(bool)> callback) {
@@ -154,21 +169,49 @@ namespace service {
             return;
         }
 
+        shared_ptr<string> usernamePtr = make_shared<string>(username);
         shared_ptr<string> sessionTokenPtr = make_shared<string>(sessionToken);
 
-        function<void(string &&)> sessionTokenCallback = [sessionTokenPtr, callback](string &&sessionToken) {
-            callback(!sessionToken.empty() && *sessionTokenPtr == sessionToken);
+        function<void(bool)> userExistsCallback = [this, usernamePtr, sessionTokenPtr, callback](bool userExists) {
+            if (!userExists)
+            {
+                callback(false);
+                return;
+            }
+
+            function<void(string &&)> sessionTokenCallback = [sessionTokenPtr, callback](string &&sessionToken) {
+                callback(!sessionToken.empty() && *sessionTokenPtr == sessionToken);
+            };
+
+            _userDao.getSessionTokenByUsername(*usernamePtr, sessionTokenCallback);
         };
 
-        _userDao.getSessionTokenByUsername(username, sessionTokenCallback);
+        _userDao.isUserNameTaken(username, userExistsCallback);
     }
 
     void cls::createNewUserSession(const string &username, function<void(bool, string &&)> callback) {
-        shared_ptr<string> newSessionTokenPtr = make_shared<string>(createNewSessionToken());
-        _userDao.setSessionTokenByUsername(username, (*newSessionTokenPtr),
-                                           [callback, newSessionTokenPtr](bool b) {
-                                               callback(b, std::move(*newSessionTokenPtr));
-                                           });
+        if (username.empty()) {
+            callback(false, "");
+            return;
+        }
+
+        shared_ptr<string> usernamePtr = make_shared<string>(username);
+
+        function<void(bool)> userExistsCallback = [this, usernamePtr, callback](bool userExists) {
+            if (!userExists)
+            {
+                callback(false, "");
+                return;
+            }
+
+            shared_ptr<string> newSessionTokenPtr = make_shared<string>(createNewSessionToken());
+            _userDao.setSessionTokenByUsername(*usernamePtr, (*newSessionTokenPtr),
+                                               [callback, newSessionTokenPtr](bool b) {
+                                                   callback(b, std::move(*newSessionTokenPtr));
+                                               });
+        };
+
+        _userDao.isUserNameTaken(username, userExistsCallback);
     }
 
 #pragma endregion
