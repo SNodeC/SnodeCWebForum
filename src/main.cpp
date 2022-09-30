@@ -30,8 +30,8 @@
 
 int main(int argc, char *argv[]) {
 
-    static const string USERNAMECOOKIE = "Username";
-    static const string SESSIONTOKEN = "SessionToken";
+    static conststd::string USERNAMECOOKIE = "Username";
+    static conststd::string SESSIONTOKEN = "SessionToken";
 
     const database::mariadb::MariaDBConnectionDetails DBConnectionDetails{
             "localhost",
@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
         unsigned long topicID = std::stoul(req.params["topic"]);
         std::shared_ptr<string> userNamePtr = std::make_shared<string>(req.cookie(USERNAMECOOKIE));
 
-        string sessionTkn = req.cookie(SESSIONTOKEN);
+       std::string sessionTkn = req.cookie(SESSIONTOKEN);
 
         userService.checkUserSession(*userNamePtr, sessionTkn,
                                      [topicID, &topicService, userNamePtr, &htmlResponseCreationService, &res](bool b) {
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
                                                                        if (b) {
                                                                            htmlResponseCreationService.createTopicOverviewResponseFromDao(
                                                                                    topicID, b ? *userNamePtr : "",
-                                                                                   [&](string s) { res.send(s); });
+                                                                                   [&](std::string s) { res.send(s); });
                                                                        } else {
                                                                            res.status(404).send(
                                                                                    service::HTMLResponseCreationService::createNotFoundResponse(
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
         unsigned long postID = std::stoul(req.params["post"]);
         std::shared_ptr<string> userNamePtr = std::make_shared<string>(req.cookie(USERNAMECOOKIE));
 
-        string sessionTkn = req.cookie(SESSIONTOKEN);
+       std::string sessionTkn = req.cookie(SESSIONTOKEN);
 
         userService.checkUserSession(
                 *userNamePtr, sessionTkn,
@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
                                 if (b) {
                                     htmlResponseCreationService.createPostOverviewResponseFromDao(
                                             postID, b ? *userNamePtr : "",
-                                            [&](string s) { res.send(s); });
+                                            [&](std::string s) { res.send(s); });
                                 } else {
                                     res.status(404).send(
                                             service::HTMLResponseCreationService::createNotFoundResponse(
@@ -118,22 +118,22 @@ int main(int argc, char *argv[]) {
 
     legacyApp.get("", [&]APPLICATION(req, res) {
 
-        string username = req.cookie(USERNAMECOOKIE);
-        string sessionTkn = req.cookie(SESSIONTOKEN);
+       std::string username = req.cookie(USERNAMECOOKIE);
+       std::string sessionTkn = req.cookie(SESSIONTOKEN);
         userService.checkUserSession(username, sessionTkn, [&](bool b) {
-            htmlResponseCreationService.createHomeResponseFromDao(b ? username : "", [&](string s) { res.send(s); });
+            htmlResponseCreationService.createHomeResponseFromDao(b ? username : "", [&](std::string s) { res.send(s); });
         });
     });
 
     legacyApp.get("/login", [&]APPLICATION(req, res) {
 
-        string username = req.cookie(USERNAMECOOKIE);
-        string sessionTkn = req.cookie(SESSIONTOKEN);
+       std::string username = req.cookie(USERNAMECOOKIE);
+       std::string sessionTkn = req.cookie(SESSIONTOKEN);
 
         userService.checkUserSession(username, sessionTkn, [&](bool b) {
             if (b) {
                 htmlResponseCreationService.createHomeResponseFromDao(username,
-                                                                      [&](string s) { res.send(s); });
+                                                                      [&](std::string s) { res.send(s); });
             } else {
                 res.send(service::HTMLResponseCreationService::createLoginPageResponse());
             }
@@ -142,12 +142,12 @@ int main(int argc, char *argv[]) {
 
     legacyApp.get("/register", [&]APPLICATION(req, res) {
 
-        string username = req.cookie(USERNAMECOOKIE);
-        string sessionTkn = req.cookie(SESSIONTOKEN);
+       std::string username = req.cookie(USERNAMECOOKIE);
+       std::string sessionTkn = req.cookie(SESSIONTOKEN);
         userService.checkUserSession(username, sessionTkn, [&](bool b) {
             if (b) {
                 htmlResponseCreationService.createHomeResponseFromDao(username,
-                                                                      [&](string s) { res.send(s); });
+                                                                      [&](std::string s) { res.send(s); });
             } else {
                 res.send(service::HTMLResponseCreationService::createRegisterAccountResponse());
             }
@@ -160,15 +160,16 @@ int main(int argc, char *argv[]) {
         req.body.push_back(0);
         std::cout << req.body.data() << std::endl;
 
-        std::string userName = Utils::getFieldByName(req.body.data(), "Username");
-        std::string password = Utils::getFieldByName(req.body.data(), "Password");
-        userService.checkUserNameTaken(userName, [userName, password, &res, &userService](bool b) {
+        std::shared_ptr<string> usernamePtr = std::make_shared<string>(Utils::getFieldByName(req.body.data(), "Username"));
+        std::shared_ptr<string> passwordPtr = std::make_shared<string>(Utils::getFieldByName(req.body.data(), "Password"));
+
+        userService.checkUserNameTaken((*usernamePtr), [usernamePtr, passwordPtr, &res, &userService](bool b) {
             if (b) {
                 res.sendStatus(400);
             } else {
-                userService.createUser(userName, password, [&](int err) {
+                userService.createUser((*usernamePtr), (*passwordPtr), [&](int err) {
                     if (err == service::UserService::SUCCESS) {
-                        userService.createNewUserSession(userName, [](bool b) {
+                        userService.createNewUserSession((*usernamePtr), [](bool b) {
                             if (b) {
                                 //Session created //TODO
                             } else {
@@ -196,18 +197,22 @@ int main(int argc, char *argv[]) {
         req.body.push_back(0);
         std::cout << req.body.data() << std::endl;
 
-        std::string userName = Utils::getFieldByName(req.body.data(), "Username");
-        std::string password = Utils::getFieldByName(req.body.data(), "Password");
+        std::shared_ptr<string> usernamePtr = std::make_shared<string>(Utils::getFieldByName(req.body.data(), "Username"));
+        std::shared_ptr<string> passwordPtr = std::make_shared<string>(Utils::getFieldByName(req.body.data(), "Password"));
 
-        userService.checkUserPassword(userName, password, [userName, password, &res, &userService](bool b) {
+        userService.checkUserPassword((*usernamePtr), (*passwordPtr), [usernamePtr, passwordPtr, &res, &userService](bool b) {
             if (b) {
-                userService.createNewUserSession(userName, [&](bool b) {
-                    res.cookie(USERNAMECOOKIE, userName, {{"Max-Age", "3600"}});
+                userService.createNewUserSession((*usernamePtr), [&](bool b) {
+                    res.cookie(USERNAMECOOKIE, (*usernamePtr), {{"Max-Age", "3600"}});
+
+                    userService.checkUserSession((*usernamePtr),)
+
+                    res.cookie(SESSIONTOKEN, (*usernamePtr), {{"Max-Age", "3600"}});
 
                     if (b) { //TODO
-                        //Session Creator
+                        //Session created
                     } else {
-                        //session not created
+                        //Session not created
                     }
                 });
                 res.status(200).send("");
@@ -225,7 +230,7 @@ int main(int argc, char *argv[]) {
 
         std::string title = Utils::getFieldByName(req.body.data(), "Title");
         std::string content = Utils::getFieldByName(req.body.data(), "Content");
-        string username = req.cookie(USERNAMECOOKIE);
+       std::string username = req.cookie(USERNAMECOOKIE);
 
 
         topicService.createTopic(title, content, username, [&](int err) {
@@ -253,7 +258,7 @@ int main(int argc, char *argv[]) {
 
         std::string title = Utils::getFieldByName(req.body.data(), "Title");
         std::string content = Utils::getFieldByName(req.body.data(), "Content");
-        string username = req.cookie(USERNAMECOOKIE);
+       std::string username = req.cookie(USERNAMECOOKIE);
 
 
         postService.createPost(title, content, username, topicID, [&](int err) {
@@ -278,7 +283,7 @@ int main(int argc, char *argv[]) {
         req.body.push_back(0);
         std::cout << req.body.data() << std::endl;
         std::string content = Utils::getFieldByName(req.body.data(), "Content");
-        string username = req.cookie(USERNAMECOOKIE);
+       std::string username = req.cookie(USERNAMECOOKIE);
 
 
         commentService.createComment(content, username, postID, [&](int err) {
@@ -297,8 +302,8 @@ int main(int argc, char *argv[]) {
 
 
     legacyApp.use([&]APPLICATION(req, res) {
-        string username = req.cookie(USERNAMECOOKIE);
-        string sessionTkn = req.cookie(SESSIONTOKEN);
+       std::string username = req.cookie(USERNAMECOOKIE);
+       std::string sessionTkn = req.cookie(SESSIONTOKEN);
         userService.checkUserSession(username, sessionTkn, [&](bool b) {
             res.status(404).send(service::HTMLResponseCreationService::createNotFoundResponse(b ? username : ""));
         });
