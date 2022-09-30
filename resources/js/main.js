@@ -49,6 +49,32 @@ window.onload = () => {
         element.innerHTML = prefix + text.substring(1);
     };
 
+    /* Toggle visibility for Adding Topic */
+    if (toggle_topic !== null) {
+        toggle_topic.addEventListener('click', () => {
+            topic_form.classList.toggle('unhidden');
+            toggleTextFunc(toggle_text);
+        });
+    }
+
+    /* Toggle visibility for Adding Post */
+    if (toggle_post !== null) {
+        toggle_post.addEventListener('click', () => {
+            post_form.classList.toggle('unhidden');
+            toggleTextFunc(toggle_post);
+        });
+    }
+
+    /* Toggle visibility for Adding Comment */
+    if (toggle_comment !== null) {
+
+        toggle_comment.addEventListener('click', () => {
+            comment_form.classList.toggle('unhidden');
+            toggleTextFunc(toggle_comment);
+        })
+    }
+
+
     if (topic_form !== null) {
         topic_form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -74,7 +100,6 @@ window.onload = () => {
             })
                 .catch(err => console.log(err));
 
-            console.log('topic creation');
         });
     }
 
@@ -83,7 +108,6 @@ window.onload = () => {
             e.preventDefault();
 
             const payload = new FormData(post_form);
-            console.log(payload);
 
             const userData = 'Title=' + [...payload][0][1] + '&Content=' + [...payload][1][1];
 
@@ -97,7 +121,6 @@ window.onload = () => {
             }).then(data => {
                 if (data.status === 200) {
                     window.location.reload();
-                    console.log(window.location.href);
                 } else if (data.status === 400) {
                     data.text().then(text => listErrors(text, error_anchor));
                     submit_post.disabled = false;
@@ -107,9 +130,7 @@ window.onload = () => {
                 }
             })
                 .catch(err => console.log(err));
-            console.log(window.location.href);
 
-            console.log('Post creation');
         });
     }
 
@@ -118,7 +139,6 @@ window.onload = () => {
             e.preventDefault();
 
             const payload = new FormData(comment_form);
-            console.log(payload);
 
             const content = 'Content=' + [...payload][0][1] + '&';
 
@@ -142,7 +162,6 @@ window.onload = () => {
             })
                 .catch(err => console.log(err));
 
-            console.log('Comment creation');
         });
     }
 
@@ -152,7 +171,6 @@ window.onload = () => {
 
             const payload = [...(new FormData(login_form))];
 
-            console.log(payload);
             const userData = `Username=${login_username.value}&Password=${login_password.value}`;
 
             removeAllChildren(error_anchor);
@@ -172,7 +190,6 @@ window.onload = () => {
             })
                 .catch(err => console.log(err));
 
-            console.log('login');
         });
     }
 
@@ -183,8 +200,6 @@ window.onload = () => {
             e.preventDefault();
 
             const payload = [...(new FormData(register_form))];
-
-            console.log(payload);
 
 
             const userData = `Username=${payload[0][1]}&Password=${payload[1][1]}`;
@@ -220,17 +235,14 @@ window.onload = () => {
         });
     }
 
-
     if (logout !== null) {
         logout.addEventListener('click', () => {
             window.location = '/login/';
 
             deleteAllCookies();
-
         });
     }
 }
-
 
 function appendSpan(parent, content) {
     if (content.length !== 0) {
