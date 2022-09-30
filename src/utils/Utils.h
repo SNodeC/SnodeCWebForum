@@ -10,23 +10,31 @@
 #include <express/Request.h>
 #include <express/Response.h>
 
+using std::string;
+
 typedef std::basic_string<unsigned char> ustring;
 
 class Utils {
 public:
-    static std::string getFieldByName(unsigned char *bodyData, const std::string &fieldName);
+    static string getFieldByName(unsigned char *bodyData, const string &fieldName);
 
     static ustring createRandomSalt(size_t length);
 
     static void sendFile([[maybe_unused]] express::Request &(req), [[maybe_unused]] express::Response &(res));
 
 
-    static std::string
-    hashPassword(const std::string &password, const ustring &salt, int iterations = 4096, int hashLength = 16);
+    static string
+    hashPassword(const string &password, const ustring &salt, int iterations = 4096, int hashLength = 16);
 
-    static std::string escapeForHTML(const std::string& data);
+    static string charToHex(const unsigned char *inputString, size_t length);
 
-    static std::string escapeForSQL(const std::string& data);
+    static ustring hexToChar(const std::string& inputString);
+
+    static string escapeForHTML(const string &data);
+
+    static string escapeForSQL(const string &data);
+
+    static string hexToString(const string &inputString);
 };
 
 

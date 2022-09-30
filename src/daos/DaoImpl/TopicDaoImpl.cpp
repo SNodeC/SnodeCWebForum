@@ -38,7 +38,7 @@ void TopicDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> cal
                                    std::stoul(rows[0]),
                                    rows[1],
                                    rows[2],
-                                   rows[3],
+                                   Utils::hexToChar(rows[3]),
                                    rows[4],
                                    rows[5],
                                    rows[6]

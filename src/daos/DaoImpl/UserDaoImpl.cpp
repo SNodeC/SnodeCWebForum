@@ -8,6 +8,7 @@
 #include <sstream>
 #include <cstring>
 #include <memory>
+#include <iostream>
 
 void UserDaoImpl::getById(unsigned long id, std::function<void(User &&)> callback) {
     std::shared_ptr<size_t> counterPtr = std::make_shared<size_t>(0);
@@ -24,12 +25,13 @@ void UserDaoImpl::getById(unsigned long id, std::function<void(User &&)> callbac
 
                        if (rows != nullptr && rows[0] != nullptr) {
                            callback(User{
-                                   std::stoul(rows[0]),
-                                   rows[1],
-                                   rows[2],
-                                   rows[3],
-                                   rows[4],
-                                   rows[5]}
+                                            std::stoul(rows[0]),
+                                            rows[1],
+                                            rows[2],
+                                            Utils::hexToChar(rows[3]),
+                                            rows[4],
+                                            rows[5]
+                                    }
                            );
                            ++(*counterPtr);
                        } else if (*counterPtr == 0) {
@@ -61,9 +63,10 @@ void UserDaoImpl::getByUsername(const std::string &username, std::function<void(
                                    std::stoul(rows[0]),
                                    rows[1],
                                    rows[2],
-                                   rows[3],
+                                   Utils::hexToChar(rows[3]),
                                    rows[4],
                                    rows[5]});
+
                            ++(*counterPtr);
                        } else if (*counterPtr == 0) {
                            callback({});
@@ -71,7 +74,8 @@ void UserDaoImpl::getByUsername(const std::string &username, std::function<void(
 
                    },
                    [callback](const std::string &, int) {
-                       callback({});
+                       callback({
+                                });
                    });
 
 
@@ -107,8 +111,8 @@ void UserDaoImpl::isUserNameTaken(const std::string &username, std::function<voi
 void UserDaoImpl::createUser(const std::string &username, const std::string &passwordHash, const ustring &salt,
                              const std::string &avatarURL, std::function<void(bool)> callback) {
 
-    const char *salt_c_ptr = reinterpret_cast<const char *>(salt.c_str());
-    std::string salt_str{salt_c_ptr};
+    std::cout << passwordHash << std::endl;
+    string salt_str = Utils::charToHex(salt.c_str(), salt.length());
     std::ostringstream sql;
     sql <<
         "INSERT INTO User (username, passwordHash, salt, avatarURL) "
@@ -119,6 +123,7 @@ void UserDaoImpl::createUser(const std::string &username, const std::string &pas
     DBClient.exec(sql.str(),
                   [callback]() { callback(true); },
                   [callback](const std::string &s, int) {
+                      std::cout << s << std::endl;
                       callback(false);
                   });
 
@@ -157,7 +162,7 @@ UserDaoImpl::getPasswordHashByUsername(const std::string &username, std::functio
     sql <<
         "SELECT passwordHash "
         "FROM User "
-        "WHERE username = " << Utils::escapeForSQL(username) << ";";
+        "WHERE username = '" << Utils::escapeForSQL(username) << "';";
 
     DBClient.query(sql.str(),
                    [callback, counterPtr](const MYSQL_ROW &rows) {
@@ -210,7 +215,7 @@ void UserDaoImpl::getSaltById(unsigned long id, std::function<void(ustring &&)> 
     DBClient.query(sql.str(),
                    [callback, counterPtr](const MYSQL_ROW &rows) {
                        if (rows != nullptr && rows[0] != nullptr) {
-                           callback(reinterpret_cast<const unsigned char *>(rows[0]));
+                           callback(Utils::hexToChar(rows[0]));
                            ++(*counterPtr);
                        } else if (*counterPtr == 0) {
                            callback({});
@@ -234,7 +239,7 @@ void UserDaoImpl::getSaltByUsername(const std::string &username, std::function<v
     DBClient.query(sql.str(),
                    [callback, counterPtr](const MYSQL_ROW &rows) {
                        if (rows != nullptr && rows[0] != nullptr) {
-                           callback(reinterpret_cast<const unsigned char *>(rows[0]));
+                           callback(Utils::hexToChar(rows[0]));
                            ++(*counterPtr);
 
                        } else if (*counterPtr == 0) {
@@ -250,11 +255,12 @@ void UserDaoImpl::getSaltByUsername(const std::string &username, std::function<v
 void UserDaoImpl::setSessionTokenById(unsigned long id, const std::string &sessionToken,
                                       std::function<void(bool)> callback) {
 
+
     std::ostringstream sql;
     sql <<
         "UPDATE User "
         "SET sessionToken='" << Utils::escapeForSQL(sessionToken) << "' "
-                                                "WHERE id=" << id << ";";
+                                                                        "WHERE id=" << id << ";";
 
     DBClient.exec(sql.str(),
                   [callback]() { callback(true); },
@@ -265,11 +271,14 @@ void UserDaoImpl::setSessionTokenById(unsigned long id, const std::string &sessi
 
 void UserDaoImpl::setSessionTokenByUsername(const std::string &username, const std::string &sessionToken,
                                             std::function<void(bool)> callback) {
+
     std::ostringstream sql;
     sql <<
         "UPDATE User "
         "SET sessionToken='" << Utils::escapeForSQL(sessionToken) << "' "
-        "WHERE username='" << Utils::escapeForSQL(username) << "';";
+                                                                        "WHERE username='"
+        << Utils::escapeForSQL(username)
+        << "';";
 
     DBClient.exec(sql.str(),
                   [callback]() { callback(true); },

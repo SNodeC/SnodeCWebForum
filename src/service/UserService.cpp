@@ -2,6 +2,7 @@
 #include "../utils/Utils.h"
 
 #include <memory>
+#include <iostream>
 
 using std::shared_ptr;
 using std::make_shared;
@@ -44,7 +45,7 @@ namespace service {
 
     std::string cls::createNewSessionToken() {
         ustring sessionTokenU = Utils::createRandomSalt(SESSION_TOKEN_LEN);
-        return {reinterpret_cast<const char *>(sessionTokenU.c_str()), SESSION_TOKEN_LEN};
+        return {Utils::charToHex(sessionTokenU.c_str(), sessionTokenU.length())};
     }
 
     std::string cls::createAvatarURL(const std::string &username) {
@@ -135,6 +136,9 @@ namespace service {
             shared_ptr<string> curHashPtr = make_shared<string>(std::move(curHash));
 
             function<void(string)> hashCallback = [curHashPtr, callback](string &&hash) {
+
+                std::cout << hash << std::endl;
+                std::cout << *curHashPtr << std::endl;
                 callback((*curHashPtr) == hash);
             };
 

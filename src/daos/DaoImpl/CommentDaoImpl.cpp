@@ -80,7 +80,7 @@ void CommentDaoImpl::getCreator(unsigned long id, std::function<void(User &&)> c
                                    std::stoul(rows[0]),
                                    rows[1],
                                    rows[2],
-                                   rows[3],
+                                   Utils::hexToChar(rows[3]),
                                    rows[4],
                                    rows[5]});
                            ++(*counterPtr);

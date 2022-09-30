@@ -1,4 +1,7 @@
+const ERRORSEP = ';';
+
 window.onload = () => {
+
 
     // Home
     const toggle_topic = document.getElementById('toggle-topic');
@@ -83,21 +86,21 @@ window.onload = () => {
         topic_form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const payload = new FormData(register_form);
-            console.log(payload);
+            const payload = [...(new FormData(topic_form))];
 
-            const userData = 'Title=' + [...payload][0][1] + '&Content=' + [...payload][1][1];
+            const userData = `Title=${payload[0][1]}&Content=${payload[1][1]}`;
 
             removeAllChildren(error_anchor);
 
-            fetch('/home', {
+            fetch('/t/', {
                 method: 'Post',
+                credentials: 'include',
                 body: userData,
             }).then(data => {
                 if (data.status === 200) {
-                    window.location = '';
-                } else if (data.status === 400) {
-                    appendSpan(error_anchor, 'Topic Fuckup'); //TODO
+                    window.location.reload();
+                } else if (data.status === 500) {
+                    data.text().then(text => listErrors(text, error_anchor))
                 }
             })
                 .catch(err => console.log(err));
@@ -110,24 +113,27 @@ window.onload = () => {
         post_form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const payload = new FormData(register_form);
+            const payload = new FormData(post_form);
             console.log(payload);
 
             const userData = 'Title=' + [...payload][0][1] + '&Content=' + [...payload][1][1];
 
             removeAllChildren(error_anchor);
 
-            fetch('/t/', { //A LOT OF TODO
+            fetch('/p/' + window.location.href.split('/').pop(), {
                 method: 'Post',
+                credentials: 'include',
                 body: userData,
             }).then(data => {
                 if (data.status === 200) {
-                    window.location = '';
+                    console.log(window.location.href);
+                  return false;
                 } else if (data.status === 400) {
-                    appendSpan(error_anchor, 'Post Fuckup'); //TODO
+                    data.text().then(text => listErrors(text, error_anchor))
                 }
             })
                 .catch(err => console.log(err));
+            console.log(window.location.href);
 
             console.log('Post creation');
         });
@@ -137,21 +143,22 @@ window.onload = () => {
         comment_form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const payload = new FormData(register_form);
+            const payload = new FormData(comment_form);
             console.log(payload);
 
             const content = 'Content=' + [...payload][0][1] + '&';
 
             removeAllChildren(error_anchor);
 
-            fetch('/t/', { //A LOT OF TODO
+            fetch('/c/' + window.location.href.split('/').pop(), { //A LOT OF TODO
                 method: 'Post',
+                credentials: 'include',
                 body: content,
             }).then(data => {
                 if (data.status === 200) {
-                    window.location = '';
+                    window.location.reload();
                 } else if (data.status === 400) {
-                    appendSpan(error_anchor, 'Comment Fuckup'); //TODO
+                    data.text().then(text => listErrors(text, error_anchor))
                 }
             })
                 .catch(err => console.log(err));
@@ -164,18 +171,20 @@ window.onload = () => {
         login_form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const payload = [...(new FormData(register_form))];
+            const payload = [...(new FormData(login_form))];
 
-            const userData = 'Username=' + payload[0][1] + '&Password=' + payload[1][1];
+            console.log(payload);
+            const userData = `Username=${login_username.value}&Password=${login_password.value}`;
 
             removeAllChildren(error_anchor);
 
-            fetch('/login', {
+            fetch('/login/', {
                 method: 'Post',
+                credentials: 'include',
                 body: userData,
             }).then(data => {
                 if (data.status === 200) {
-                    window.location = '';
+                    window.location = '/';
                 } else if (data.status === 400) {
                     appendSpan(error_anchor, 'Username/password is incorrect');
                 } else if (data.status === 500) {
@@ -199,19 +208,23 @@ window.onload = () => {
             console.log(payload);
 
 
-            const userData =  'Username=' + payload[0][1] + '&Password=' + payload[1][1]L;;;;
+            const userData = `Username=${payload[0][1]}&Password=${payload[1][1]}`;
 
             removeAllChildren(error_anchor);
 
-            fetch('/register', {
+            fetch('/register/', {
                 method: 'Post',
+                credentials: 'include',
                 body: userData,
             }).then(data => {
                 if (data.status === 200) {
-                    window.location = '/login';
+                    window.location = '/login/';
                 } else if (data.status === 400) {
                     appendSpan(error_anchor, 'Username \"' + register_username.value + '\" already taken');
-                } else
+                } else if (data.status === 500) {
+                    data.text().then(text => listErrors(text, error_anchor))
+                }
+
             })
                 .catch(err => console.log(err));
         })
@@ -239,11 +252,21 @@ window.onload = () => {
 
 
 function appendSpan(parent, content) {
-    const span = document.createElement('span');
-    span.innerHTML = `${content}<br>`;
-    parent.appendChild(span);
+    if (content.length !== 0) {
+        const span = document.createElement('span');
+        span.innerHTML = `${content}<br>`;
+        parent.appendChild(span);
+    }
 }
 
 function removeAllChildren(parent) {
     parent.replaceChildren();
+}
+
+function listErrors(body, error_anchor) {
+    const errors = body.split(ERRORSEP);
+
+    for (let i = 0; i < errors.length; i++) {
+        appendSpan(error_anchor, errors[i]);
+    }
 }

@@ -9,15 +9,16 @@
 #include <express/Response.h>
 #include "Utils.h"
 
-std::string Utils::getFieldByName(unsigned char *bodyData, const std::string &fieldName) {
 
-    std::string bodyString(reinterpret_cast<char *>(bodyData));
+string Utils::getFieldByName(unsigned char *bodyData, const string &fieldName) {
+
+    string bodyString(reinterpret_cast<char *>(bodyData));
 
     int index = bodyString.find(fieldName);
     int index2 = bodyString.find('=', index) + 1;
     int index3 = bodyString.find('&', index);
 
-    std::string result = bodyString.substr(index2, index3 - (index2));
+    string result = bodyString.substr(index2, index3 - (index2));
     return result;
 }
 
@@ -27,41 +28,74 @@ ustring Utils::createRandomSalt(size_t length) {
     return ustring{salt, length};
 }
 
-std::string Utils::hashPassword(const std::string &password, const ustring &salt, int iterations, int hashLength) {
-
-    std::ostringstream resultStream;
+string Utils::hashPassword(const string &password, const ustring &salt, int iterations, int hashLength) {
 
     const char *passPtr = password.c_str();
     const unsigned char *saltPtr = salt.c_str();
-    unsigned char result[hashLength];
+
+    int binaryHashLength = hashLength % 2 ? hashLength / 2 + 1 : hashLength / 2;
+
+    unsigned char result[binaryHashLength];
     int success = PKCS5_PBKDF2_HMAC(passPtr,
                                     (int) (password.size() - 1),
                                     saltPtr, (int) salt.size() - 1,
                                     iterations,
                                     EVP_sha1(),
-                                    hashLength,
+                                    binaryHashLength,
                                     result
     );
     if (success) {
-        for (int i = 0; i < hashLength; ++i) {
-            resultStream << std::hex << (int) result[i];
-        }
-
-        return resultStream.str();
+        return charToHex(result, binaryHashLength);
     } else {
         return {};
     }
 }
 
+string Utils::charToHex(const unsigned char *inputString, size_t length) {
+    std::ostringstream resultStream;
+
+    for (size_t i = 0; i < length; ++i) {
+        if (inputString[i] < 16) {
+            resultStream << "0";
+        }
+        resultStream << std::hex << (int) inputString[i];
+    }
+
+    return resultStream.str();
+
+}
+
+ustring Utils::hexToChar(const std::string &inputString) {
+
+    std::basic_ostringstream<unsigned char> result;
+
+    for (int i = 0; i < inputString.length() / 2; ++i) {
+
+        result << (unsigned char) std::stoul(inputString.substr(i * 2, 2), nullptr, 16);
+    }
+    return result.str();
+}
+
+std::string Utils::hexToString(const std::string &inputString) {
+
+    std::ostringstream result;
+
+    for (int i = 0; i < inputString.length() / 2; ++i) {
+
+        result << (char) std::stoul(inputString.substr(i * 2, 2), nullptr, 16);
+    }
+    return result.str();
+}
+
 void Utils::sendFile([[maybe_unused]] express::Request &(req), [[maybe_unused]] express::Response &(res)) {
 
-    const std::string path = "." + req.originalUrl;
+    const string path = "." + req.originalUrl;
     res.sendFile(path, [&](int) { (res.sendStatus(400)); });
 }
 
 
-std::string Utils::escapeForHTML(const std::string &data) {
-    std::string result;
+string Utils::escapeForHTML(const string &data) {
+    string result;
     result.reserve(data.size());
     for (size_t pos = 0; pos != data.size(); ++pos) {
         switch (data[pos]) {
@@ -88,21 +122,38 @@ std::string Utils::escapeForHTML(const std::string &data) {
     return result;
 }
 
-std::string Utils::escapeForSQL(const std::string& data)
-{
-    std::string result;
+string Utils::escapeForSQL(const string &data) {
+    string result;
     result.reserve(data.size());
-    for(size_t pos = 0; pos != data.size(); ++pos) {
-        switch(data[pos]) {
-            case '\0':   result.append("\\\0"); break;
-            case '\n':   result.append("\\\n"); break;
-            case '\r':   result.append("\\\r"); break;
-            case '\'':   result.append("\\\'"); break;
-            case '\"':   result.append("\\\""); break;
-            case '\\':   result.append("\\\\"); break;
-            case '\x1A': result.append("\\\x1A"); break;
-            default:     result.append(&data[pos], 1); break;
+    for (size_t pos = 0; pos != data.size(); ++pos) {
+        switch (data[pos]) {
+            case '\0':
+                result.append("\\\0");
+                break;
+            case '\n':
+                result.append("\\\n");
+                break;
+            case '\r':
+                result.append("\\\r");
+                break;
+            case '\'':
+                result.append("\\\'");
+                break;
+            case '\"':
+                result.append("\\\"");
+                break;
+            case '\\':
+                result.append("\\\\");
+                break;
+            case '\x1A':
+                result.append("\\\x1A");
+                break;
+            default:
+                result.append(&data[pos], 1);
+                break;
         }
     }
     return result;
 }
+
+

@@ -1,7 +1,4 @@
 # SnodeCWebForum
--.-
-
-# Bitch Ass Volker Project:
 
 ## Todo Functionality
 - Register yourself with Username and Password

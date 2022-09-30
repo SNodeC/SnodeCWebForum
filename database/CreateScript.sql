@@ -4,10 +4,10 @@ CREATE OR REPLACE TABLE User
 (
     id            INT UNSIGNED AUTO_INCREMENT,
     username      VARCHAR(30)  not null unique,
-    passwordHash  VARCHAR(16)  not null,
-    salt          VARCHAR(16)  not null,
+    passwordHash  VARCHAR(32)  not null,
+    salt          VARCHAR(32)  not null,
     avatarURL     VARCHAR(150) not null,
-    sessionToken  VARCHAR(256) not null default '',
+    sessionToken  VARCHAR(512) not null default '',
     creationDate  datetime not null default NOW(),
     PRIMARY KEY (id)
 );
