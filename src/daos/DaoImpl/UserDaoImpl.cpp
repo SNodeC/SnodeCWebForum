@@ -111,7 +111,7 @@ void UserDaoImpl::createUser(const std::string &username, const std::string &pas
     std::string salt_str{salt_c_ptr};
     std::ostringstream sql;
     sql <<
-        "INSERT INTO User (username, passwordHash, salt) "
+        "INSERT INTO User (username, passwordHash, salt, avatarURL) "
         "VALUES ('" << Utils::escapeForSQL(username) << "','" << Utils::escapeForSQL(passwordHash) << "','"
         << Utils::escapeForSQL(salt_str) << "','" << Utils::escapeForSQL(avatarURL) << "');";
 

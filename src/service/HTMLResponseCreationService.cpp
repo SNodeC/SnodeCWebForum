@@ -135,10 +135,10 @@ namespace service
         static const string addTopicForm{
             "                <div class='right'><a id='toggle-topic'><h2 id='toggle-text'>+ Add new Topic</h2></a></div>\n"
             "            </div>\n"
-            "            <div id='hide_topic' class='hidden m-30'>\n"
+            "            <form id='hide-topic' class='hidden m-30' action='' method='Post'>\n"
             "                <div class='rainbow-box w-100p'>\n"
-            "                    <textarea class='title' name='topic-name' rows='1' cols='50' placeholder='Topic Name goes here.'></textarea><br>\n"
-            "                    <textarea class='content' name='topic-description' rows='4' cols='50' placeholder='Describe your Topic you want to add.'></textarea><br>\n"
+            "                    <textarea id='topic-title' class='title' name='topic-name' rows='1' cols='50' placeholder='Topic Name goes here.'></textarea><br>\n"
+            "                    <textarea id='topic-content' class='content' name='topic-description' rows='4' cols='50' placeholder='Describe your Topic you want to add.'></textarea><br>\n"
             "                </div>\n"
             "                <input  id='submit-topic' class='submit' type='submit' value='Submit Topic'>\n"
             "                <div class='w-100p m-t-10'>\n"
@@ -146,7 +146,7 @@ namespace service
             "                    <div id='warning-anchor' class='warning'></div>\n"
             "                    <div id='info-anchor' class='info'></div>\n"
             "                </div>"
-            "            </div>\n"
+            "            </form>\n"
             "            <hr class='topic-hr'>"
         };
 
@@ -230,10 +230,10 @@ namespace service
         static const string addTopicForm{
             "                <div class='add-new right'><a id='toggle-post'>+ Add new Post</a></div>\n"
             "            </div>"
-            "            <div id='hide-post' class='hidden m-30'>\n"
+            "            <form id='hide-post' class='hidden m-30' action='' method='Post'>\n"
             "                <div class='rainbow-box w-100p'>\n"
-            "                    <textarea class='title' name='post-name' rows='1' cols='50' placeholder='Post Header goes here.'></textarea><br>\n"
-            "                    <textarea class='content' name='post-description' rows='4' cols='50' placeholder='Here comes the Text of your finely crafted Post.'></textarea>\n"
+            "                    <textarea id='post-title' class='title' name='post-name' rows='1' cols='50' placeholder='Post Header goes here.'></textarea><br>\n"
+            "                    <textarea id='post-content' class='content' name='post-description' rows='4' cols='50' placeholder='Here comes the Text of your finely crafted Post.'></textarea>\n"
             "                </div>\n"
             "                <input  id='submit-post' class='submit' type='submit' value='Submit Post'>\n"
             "                <div class='w-100p m-t-10'>\n"
@@ -241,7 +241,7 @@ namespace service
             "                    <div id='warning-anchor' class='warning'></div>\n"
             "                    <div id='info-anchor' class='info'></div>\n"
             "                </div>"
-            "            </div>\n"
+            "            </form>\n"
             "            <hr class='post-hr'>\n"
         };
 
@@ -287,9 +287,9 @@ namespace service
             "        <div>\n"
             "            <h2><a id='toggle-comment'>+ Add comment</a></h2>\n"
             "        </div>\n"
-            "        <div id='hide-comment' class='hidden m-b-10 m-30'>\n"
+            "        <form id='hide-comment' class='hidden m-b-10 m-30' action='' method='Post'>\n"
             "            <div class='rainbow-box w-100p'>\n"
-            "                <textarea class='content' name='comment-description' rows='4' cols='50'\n"
+            "                <textarea id='comment-content' class='content' name='comment-description' rows='4' cols='50'\n"
             "                    placeholder='Here comes the Text of your perfectly proper worded Comment.'></textarea>\n"
             "            </div>\n"
             "            <input id='submit-comment' class='submit' type='submit' value='Reply'>\n"
@@ -298,7 +298,7 @@ namespace service
             "                <div id='warning-anchor' class='warning'></div>\n"
             "                <div id='info-anchor' class='info'></div>\n"
             "            </div>"
-            "        </div>\n"
+            "        </form>\n"
         };
 
         static const string addNoCommentForm{
@@ -381,12 +381,12 @@ namespace service
         static const string resultHead{
             "    <div id='content'>\n"
             "        <div class='unhidden'>\n"
-            "            <div class='login'>\n"
+            "            <form id='login-form' class='login' action='' method='Post'>\n"
             "                <h1 class='m-b-50'>Login</h1>\n"
             "                <div class='rainbow-box m-b-10'>\n"
-            "                    <input class='user-login' placeholder='Username'></input>\n"
+            "                    <input id='login-username' class='user-login' placeholder='Username'></input>\n"
             "                    <hr class='post-hr'>\n"
-            "                    <input  class='user-login' type='password' placeholder='Password'>\n"
+            "                    <input id='login-password' class='user-login' type='password' placeholder='Password'>\n"
             "                </div>\n"
             "                <div class='m-b-10 min-h-1'>\n"
         };
@@ -400,7 +400,7 @@ namespace service
             "                <div class='m-t-10 t-a-c w-100p'> "
             "                    &lt;&lt; <a href='javascript:history.back()'>Back</a>\n"
             "                </div>"
-            "            </div>\n"
+            "            </form>\n"
             "        </div>\n"
             "    </div>\n"
         };
@@ -453,13 +453,13 @@ namespace service
         static const string resultHead{
             "        <div id='content'>"
             "        <div class='unhidden'>\n"
-            "            <form id='registerForm' class='login' action='' method='Post'>\n"
+            "            <form id='register-form' class='login' action='' method='Post'>\n"
             "                <h1 class='m-b-50'>Register</h1>\n"
             "                <div class='rainbow-box m-b-10'>\n"
-            "                    <input id='username' class='user-login' placeholder='Username' name='username' required ></input>\n"
+            "                    <input id='register-username' class='user-login' placeholder='Username' name='username' required ></input>\n"
             "                    <hr class='post-hr'>\n"
-            "                    <input id='password1' class='user-login' type='password' placeholder='Password' name='password1' required>\n"
-            "                    <input id='password2' class='user-login' type='password' placeholder='Repeat Password' name='password2' required>\n"
+            "                    <input id='register-password1' class='user-login' type='password' placeholder='Password' name='password1' required>\n"
+            "                    <input id='register-password2' class='user-login' type='password' placeholder='Repeat Password' name='password2' required>\n"
             "                </div>\n"
             "                <div class='m-b-10 min-h-1'>\n"
         };
