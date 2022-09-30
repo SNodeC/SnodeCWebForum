@@ -150,10 +150,6 @@ int main(int argc, char *argv[]) {
 
                                              res.location("/");
                                              res.sendStatus(303);
-                                             /* htmlResponseCreationService.createHomeResponseFromDao((*usernamePtr),
-                                                                                                    [&](std::string s) {
-                                                                                                        res.send(s);
-                                                                                                    });*/
                                          } else {
                                              res.send(service::HTMLResponseCreationService::createLoginPageResponse());
                                          }
