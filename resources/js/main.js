@@ -49,39 +49,6 @@ window.onload = () => {
         element.innerHTML = prefix + text.substring(1);
     };
 
-    /* Toggle visibility for Adding Topic */
-    if (toggle_topic !== null && submit_topic !== null) {
-        const toggle_func = () => {
-            topic_form.classList.toggle('unhidden');
-            toggleTextFunc(toggle_text);
-        }
-
-        toggle_topic.addEventListener('click', toggle_func);
-        submit_topic.addEventListener('click', toggle_func);
-    }
-
-    /* Toggle visibility for Adding Post */
-    if (toggle_post !== null && submit_post !== null) {
-        const toggle_func = () => {
-            post_form.classList.toggle('unhidden');
-            toggleTextFunc(toggle_post);
-        }
-
-        toggle_post.addEventListener('click', toggle_func);
-        submit_post.addEventListener('click', toggle_func);
-    }
-
-    /* Toggle visibility for Adding Comment */
-    if (toggle_comment !== null) {
-        const toggle_func = () => {
-            comment_form.classList.toggle('unhidden');
-            toggleTextFunc(toggle_comment);
-        }
-
-        toggle_comment.addEventListener('click', toggle_func)
-        submit_comment.addEventListener('click', toggle_func);
-    }
-
     if (topic_form !== null) {
         topic_form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -92,6 +59,7 @@ window.onload = () => {
 
             removeAllChildren(error_anchor);
 
+            submit_topic.disabled = true;
             fetch('/t/', {
                 method: 'Post',
                 credentials: 'include',
@@ -100,7 +68,8 @@ window.onload = () => {
                 if (data.status === 200) {
                     window.location.reload();
                 } else if (data.status === 500) {
-                    data.text().then(text => listErrors(text, error_anchor))
+                    data.text().then(text => listErrors(text, error_anchor));
+                    submit_topic.disabled = false;
                 }
             })
                 .catch(err => console.log(err));
@@ -120,6 +89,7 @@ window.onload = () => {
 
             removeAllChildren(error_anchor);
 
+            submit_post.disabled = true;
             fetch('/p/' + window.location.href.split('/').pop(), {
                 method: 'Post',
                 credentials: 'include',
@@ -129,9 +99,11 @@ window.onload = () => {
                     window.location.reload();
                     console.log(window.location.href);
                 } else if (data.status === 400) {
-                    data.text().then(text => listErrors(text, error_anchor))
+                    data.text().then(text => listErrors(text, error_anchor));
+                    submit_post.disabled = false;
                 } else if (data.status === 500) {
-                    data.text().then(text => listErrors(text, error_anchor))
+                    data.text().then(text => listErrors(text, error_anchor));
+                    submit_post.disabled = false;
                 }
             })
                 .catch(err => console.log(err));
@@ -152,6 +124,7 @@ window.onload = () => {
 
             removeAllChildren(error_anchor);
 
+            submit_comment.disabled = true;
             fetch('/c/' + window.location.href.split('/').pop(), {
                 method: 'Post',
                 credentials: 'include',
@@ -160,9 +133,11 @@ window.onload = () => {
                 if (data.status === 200) {
                     window.location.reload();
                 } else if (data.status === 400) {
-                    data.text().then(text => listErrors(text, error_anchor))
+                    data.text().then(text => listErrors(text, error_anchor));
+                    submit_comment.disabled = false;
                 } else if (data.status === 500) {
-                    data.text().then(text => listErrors(text, error_anchor))
+                    data.text().then(text => listErrors(text, error_anchor));
+                    submit_comment.disabled = false;
                 }
             })
                 .catch(err => console.log(err));
@@ -279,12 +254,12 @@ function listErrors(body, error_anchor) {
 
 
 function deleteAllCookies() {
-    var cookies = document.cookie.split(";");
+    const cookies = document.cookie.split(";");
 
-    for (var i = 0; i < cookies.length; i++) {
-        var cookie = cookies[i];
-        var eqPos = cookie.indexOf("=");
-        var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i];
+        const eqPos = cookie.indexOf("=");
+        const name = eqPos > -1 ? cookie.substring(0, eqPos) : cookie;
         document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
     }
 }

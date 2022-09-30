@@ -171,10 +171,10 @@ namespace service {
                           "                <div class='subforum-description subforum-column'>\n"
                           "                    <h4 class='t-ov-el'><a href='/t/" << topic.id << "'>"
                           << Utils::escapeForHTML(topic.title) << "</a></h4>\n"
-                                                                  "                    <p class='t-ov-el'>"
+                          "                    <p class='t-ov-el'>"
                           << Utils::escapeForHTML(topic.description) << "</p>\n"
-                                                                        "                </div>\n"
-                                                                        "                <div class='subforum-stats subforum-column center'>\n";
+                          "                </div>\n"
+                          "                <div class='subforum-stats subforum-column center'>\n";
             if (postCounts[i] < MAX_POST_COUNT) {
                 contentBuffer << "                    <span class='t-center'>" << postCounts[i]
                               << "<br> Posts</span>\n";
@@ -183,13 +183,18 @@ namespace service {
             }
             contentBuffer <<
                           "                </div>\n"
-                          "                <div class='subforum-info subforum-column'>\n"
-                          "                    <p class='t-ov-el'>Latest by <br> <span class='username'>"
-                          << Utils::escapeForHTML(latestPost.creator.userName) << "</span><br>"
-                          << Utils::escapeForHTML(latestPost.creationDate) << "<p>\n"
-                                                                              "                </div>\n"
-                                                                              "            </div>\n"
-                                                                              "            <hr class='topic-hr'>";
+                          "                <div class='subforum-info subforum-column'>\n";
+
+            if (!latestPost.title.empty()) {
+                contentBuffer << "                    <p class='t-ov-el'>Latest by <br> <span class='username'>"
+                              << Utils::escapeForHTML(latestPost.creator.userName) << "</span><br>"
+                              << Utils::escapeForHTML(latestPost.creationDate) << "</p>\n";
+            } else {
+                contentBuffer << "                    <p class='t-ov-el'>-</p>\n";
+            }
+            contentBuffer << "                </div>\n"
+                             "            </div>\n"
+                             "            <hr class='topic-hr'>";
         }
 
         contentBuffer << resultEnd;
