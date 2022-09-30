@@ -164,10 +164,9 @@ window.onload = () => {
         login_form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const payload = new FormData(register_form);
-            console.log(payload);
+            const payload = [...(new FormData(register_form))];
 
-            const userData = 'Username=' + [...payload][0][1] + '&Password=' + [...payload][1][1];
+            const userData = 'Username=' + payload[0][1] + '&Password=' + payload[1][1];
 
             removeAllChildren(error_anchor);
 
@@ -179,6 +178,8 @@ window.onload = () => {
                     window.location = '';
                 } else if (data.status === 400) {
                     appendSpan(error_anchor, 'Username/password is incorrect');
+                } else if (data.status === 500) {
+                    appendSpan(error_anchor, "Internal server error - Try again later")
                 }
             })
                 .catch(err => console.log(err));
@@ -193,11 +194,12 @@ window.onload = () => {
         register_form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const payload = new FormData(register_form);
+            const payload = [...(new FormData(register_form))];
 
             console.log(payload);
 
-            const userData = 'Username=' + [...payload][0][1] + '&Password=' + [...payload][1][1];
+
+            const userData =  'Username=' + payload[0][1] + '&Password=' + payload[1][1]L;;;;
 
             removeAllChildren(error_anchor);
 
@@ -209,7 +211,7 @@ window.onload = () => {
                     window.location = '/login';
                 } else if (data.status === 400) {
                     appendSpan(error_anchor, 'Username \"' + register_username.value + '\" already taken');
-                }
+                } else
             })
                 .catch(err => console.log(err));
         })

@@ -9,6 +9,7 @@ using std::function;
 using std::shared_ptr;
 using std::make_shared;
 
+
 typedef service::HTMLResponseCreationService cls;
 
 namespace service
@@ -32,7 +33,7 @@ namespace service
 
     const char* cls::DEFAULT_TITLE = "Our nice Forum";
     const char* cls::EMPTY_USER_NAME = "";
-    const vector<string> cls::EMPTY_VECTOR;
+    const vector<std::string> cls::EMPTY_VECTOR;
 
 #pragma endregion
 
@@ -46,7 +47,7 @@ namespace service
 
 #pragma region Static Methods
 
-    string cls::createHead(const string& title) {
+   std::string cls::createHead(const string& title) {
         ostringstream buffer{};
         buffer << "<head>\n"
                   "    <meta charset='UTF-8'>\n"
@@ -60,13 +61,13 @@ namespace service
         return buffer.str();
     }
 
-    string cls::createHeader(const string& userName) {
+   std::string cls::createHeader(const string& userName) {
         static const string resultStart{
             "    <header>\n"
             "        <div class='navbar'>\n"
             "            <div class='brand'>\n"
             "                <a href='/'>\n"
-            "                    <h1>" + string(FORUM_NAME) + "</h1>"
+            "                    <h1>" +std::string(FORUM_NAME) + "</h1>"
             "                </a>"
             "            </div>\n"
             "            <div class='logout-align'>\n"
@@ -87,7 +88,7 @@ namespace service
             + resultEnd;
     }
 
-    string cls::createFooter() {
+   std::string cls::createFooter() {
         static const string result{
             "    <footer>\n"
             "        <span>\n"
@@ -98,7 +99,7 @@ namespace service
         return result;
     }
 
-    string cls::createAndFillResponse(const string& content, const string& userName, const string& title, bool addHeader) {
+   std::string cls::createAndFillResponse(const string& content, const string& userName, const string& title, bool addHeader) {
         ostringstream buffer{};
         buffer << HTML_START
                << createHead(title)
@@ -114,7 +115,7 @@ namespace service
         return buffer.str();
     }
 
-    string cls::createHomeResponse(const vector<Topic>& topics, const vector<int>& postCounts,
+   std::string cls::createHomeResponse(const vector<Topic>& topics, const vector<int>& postCounts,
                                    const vector<Post>& latestPostsIncCreator, const string& userName) {
         static const string resultHead{
             "    <div id='content' class='container'>\n"
@@ -137,8 +138,8 @@ namespace service
             "            </div>\n"
             "            <form id='hide-topic' class='hidden m-30' action='' method='Post'>\n"
             "                <div class='rainbow-box w-100p'>\n"
-            "                    <textarea id='topic-title' class='title' name='topic-name' rows='1' cols='50' placeholder='Topic Name goes here.'></textarea><br>\n"
-            "                    <textarea id='topic-content' class='content' name='topic-description' rows='4' cols='50' placeholder='Describe your Topic you want to add.'></textarea><br>\n"
+            "                    <textarea id='topic-title' class='title' name='topic-name' rows='1' cols='50' placeholder='Topic Name goes here.' minlength='3' maxlength='100'></textarea><br>\n"
+            "                    <textarea id='topic-content' class='content' name='topic-description' rows='4' cols='50' placeholder='Describe your Topic you want to add.' minlength='1' maxlength='500'></textarea><br>\n"
             "                </div>\n"
             "                <input  id='submit-topic' class='submit' type='submit' value='Submit Topic'>\n"
             "                <div class='w-100p m-t-10'>\n"
@@ -192,7 +193,7 @@ namespace service
         return createAndFillResponse(contentBuffer.str(), userName, DEFAULT_TITLE);
     }
 
-    string cls::createNotFoundResponse(const string& userName) {
+   std::string cls::createNotFoundResponse(const string& userName) {
         static const string content{
             "    <div id='content' class='content'>\n"
             "        <h1>404</h1>"
@@ -204,7 +205,7 @@ namespace service
         return createAndFillResponse(content, userName, title);
     }
 
-    string cls::createTopicOverviewResponse(const Topic& topic, const vector<Post>& postsIncCreator,
+   std::string cls::createTopicOverviewResponse(const Topic& topic, const vector<Post>& postsIncCreator,
                                             const vector<int>& postCommentCounts, const string& userName) {
         static const string resultHead{
             "    <div id='content' class='container m-b-100'>\n"
@@ -227,13 +228,13 @@ namespace service
             "    </div>\n"
         };
 
-        static const string addTopicForm{
+        static const string addTopicForm{ //TODO SAME NAME ?
             "                <div class='add-new right'><a id='toggle-post'>+ Add new Post</a></div>\n"
             "            </div>"
             "            <form id='hide-post' class='hidden m-30' action='' method='Post'>\n"
             "                <div class='rainbow-box w-100p'>\n"
-            "                    <textarea id='post-title' class='title' name='post-name' rows='1' cols='50' placeholder='Post Header goes here.'></textarea><br>\n"
-            "                    <textarea id='post-content' class='content' name='post-description' rows='4' cols='50' placeholder='Here comes the Text of your finely crafted Post.'></textarea>\n"
+            "                    <textarea id='post-title' class='title' name='post-name' rows='1' cols='50' placeholder='Post Header goes here.' minlength='3' maxlength='100'></textarea><br>\n"
+            "                    <textarea id='post-content' class='content' name='post-description' rows='4' cols='50' placeholder='Here comes the Text of your finely crafted Post.' minlength='1' maxlength='500'></textarea>\n"
             "                </div>\n"
             "                <input  id='submit-post' class='submit' type='submit' value='Submit Post'>\n"
             "                <div class='w-100p m-t-10'>\n"
@@ -281,7 +282,7 @@ namespace service
         return createAndFillResponse(contentBuffer.str(), userName, topic.title);
     }
 
-    string cls::createPostOverviewResponse(const Post& postIncCreatorAndTopic, const vector<Comment>& commentsIncCreator,
+   std::string cls::createPostOverviewResponse(const Post& postIncCreatorAndTopic, const vector<Comment>& commentsIncCreator,
                                            const string& userName) {
         static const string addCommentForm{
             "        <div>\n"
@@ -290,7 +291,7 @@ namespace service
             "        <form id='hide-comment' class='hidden m-b-10 m-30' action='' method='Post'>\n"
             "            <div class='rainbow-box w-100p'>\n"
             "                <textarea id='comment-content' class='content' name='comment-description' rows='4' cols='50'\n"
-            "                    placeholder='Here comes the Text of your perfectly proper worded Comment.'></textarea>\n"
+            "                    placeholder='Here comes the Text of your perfectly proper worded Comment.' minlength='1' maxlength='500'></textarea>\n"
             "            </div>\n"
             "            <input id='submit-comment' class='submit' type='submit' value='Reply'>\n"
             "            <div class='w-100p m-t-10'>\n"
@@ -376,8 +377,8 @@ namespace service
         return createAndFillResponse(contentBuffer.str(), userName, post.title);
     }
 
-    string cls::createLoginPageResponse(const vector<string>& errors, const vector<string>& warnings,
-                                        const vector<string>& infos) {
+   std::string cls::createLoginPageResponse(const vector<std::string>& errors, const vector<std::string>& warnings,
+                                        const vector<std::string>& infos) {
         static const string resultHead{
             "    <div id='content'>\n"
             "        <div class='unhidden'>\n"
@@ -448,17 +449,17 @@ namespace service
         return createAndFillResponse(contentBuffer.str(), EMPTY_USER_NAME, LOGIN_TITLE, false);
     }
 
-    string cls::createRegisterAccountResponse(const vector<string>& errors, const vector<string>& warnings,
-                                              const vector<string>& infos) {
+   std::string cls::createRegisterAccountResponse(const vector<std::string>& errors, const vector<std::string>& warnings,
+                                              const vector<std::string>& infos) {
         static const string resultHead{
             "        <div id='content'>"
             "        <div class='unhidden'>\n"
             "            <form id='register-form' class='login' action='' method='Post'>\n"
             "                <h1 class='m-b-50'>Register</h1>\n"
             "                <div class='rainbow-box m-b-10'>\n"
-            "                    <input id='register-username' class='user-login' placeholder='Username' name='username' required ></input>\n"
+            "                    <input id='register-username' class='user-login' placeholder='Username' name='username' required minlength='3' maxlength='30'></input>\n"
             "                    <hr class='post-hr'>\n"
-            "                    <input id='register-password1' class='user-login' type='password' placeholder='Password' name='password1' required>\n"
+            "                    <input id='register-password1' class='user-login' type='password' placeholder='Password' name='password1' required minlength='8'>\n"
             "                    <input id='register-password2' class='user-login' type='password' placeholder='Repeat Password' name='password2' required>\n"
             "                </div>\n"
             "                <div class='m-b-10 min-h-1'>\n"
@@ -531,20 +532,20 @@ namespace service
                 return;
             }
 
-            shared_ptr<string> userNamePtr = make_shared<string>(userName);
-            shared_ptr<vector<Topic>> topicsPtr = make_shared<vector<Topic>>(std::move(topics));
-            shared_ptr<size_t> topicCountPtr = make_shared<size_t>(topicsPtr->size());
+            std::shared_ptr<std::string> userNamePtr = std::make_shared<std::string>(userName);
+            std::shared_ptr<vector<Topic>> topicsPtr = std::make_shared<vector<Topic>>(std::move(topics));
+            std::shared_ptr<size_t> topicCountPtr = std::make_shared<size_t>(topicsPtr->size());
 
-            shared_ptr<vector<int>> postCountsPtr = make_shared<vector<int>>();
-            shared_ptr<vector<Post>> latestPostsIncCreatorPtr = make_shared<vector<Post>>();
+            std::shared_ptr<vector<int>> postCountsPtr = std::make_shared<vector<int>>();
+            std::shared_ptr<vector<Post>> latestPostsIncCreatorPtr = std::make_shared<vector<Post>>();
 
-            shared_ptr<vector<function<void(int)>>> countCallbacksPtr = make_shared<vector<function<void(int)>>>(*topicCountPtr);
-            shared_ptr<vector<function<void(vector<Post>&&)>>> postCallbacksPtr = make_shared<vector<function<void(vector<Post>&&)>>>(*topicCountPtr);
-            shared_ptr<vector<function<void(User&&)>>> userCallbacksPtr = make_shared<vector<function<void(User&&)>>>(*topicCountPtr);
+            std::shared_ptr<vector<function<void(int)>>> countCallbacksPtr = std::make_shared<vector<function<void(int)>>>(*topicCountPtr);
+            std::shared_ptr<vector<function<void(vector<Post>&&)>>> postCallbacksPtr = std::make_shared<vector<function<void(vector<Post>&&)>>>(*topicCountPtr);
+            std::shared_ptr<vector<function<void(User&&)>>> userCallbacksPtr = std::make_shared<vector<function<void(User&&)>>>(*topicCountPtr);
 
-            shared_ptr<bool> firedPtr = make_shared<bool>(false);
-            shared_ptr<size_t> countsCountPtr = make_shared<size_t>(0);
-            shared_ptr<size_t> postsCountPtr = make_shared<size_t>(0);
+            std::shared_ptr<bool> firedPtr = std::make_shared<bool>(false);
+            std::shared_ptr<size_t> countsCountPtr = std::make_shared<size_t>(0);
+            std::shared_ptr<size_t> postsCountPtr = std::make_shared<size_t>(0);
             for(size_t i = 0; i < (*topicCountPtr); ++i)
             {
                 unsigned long curTopicId = (*topicsPtr)[i].id;
@@ -573,7 +574,7 @@ namespace service
                             rCallback(createHomeResponse(*topicsPtr, *postCountsPtr, *latestPostsIncCreatorPtr, *userNamePtr));
                         }
                     } else { // most recent post found
-                        shared_ptr<Post> recentPostPtr = make_shared<Post>(std::move(recentPost[0]));
+                        std::shared_ptr<Post> recentPostPtr = std::make_shared<Post>(std::move(recentPost[0]));
                         (*userCallbacksPtr)[i] = [recentPostPtr, postsCountPtr, firedPtr, countsCountPtr, topicCountPtr, rCallback, topicsPtr, postCountsPtr, latestPostsIncCreatorPtr, userNamePtr]
                                 (User&& creator) {
                             (*recentPostPtr).creator = creator;
@@ -595,10 +596,10 @@ namespace service
     }
 
     void cls::createTopicOverviewResponseFromDao(unsigned long topicId, const string& userName, resCallback rCallback) { /* NOLINT */
-        shared_ptr<string> userNamePtr = make_shared<string>(userName);
+        std::shared_ptr<std::string> userNamePtr = std::make_shared<std::string>(userName);
 
         function<void(Topic&&)> callback = [this, rCallback, userNamePtr](Topic&& topic) {
-            shared_ptr<Topic> topicPtr = make_shared<Topic>(std::move(topic));
+            std::shared_ptr<Topic> topicPtr = std::make_shared<Topic>(std::move(topic));
 
             function<void(vector<Post>&&)> postsCallback = [this, rCallback, topicPtr, userNamePtr](vector<Post>&& posts){
                 if (posts.empty()) {
@@ -606,16 +607,16 @@ namespace service
                     return;
                 }
 
-                shared_ptr<vector<Post>> postsPtr = make_shared<vector<Post>>(std::move(posts));
-                shared_ptr<size_t> postCountPtr = make_shared<size_t>(postsPtr->size());
-                shared_ptr<vector<int>> commentCountsPtr = make_shared<vector<int>>(*postCountPtr);
+                std::shared_ptr<vector<Post>> postsPtr = std::make_shared<vector<Post>>(std::move(posts));
+                std::shared_ptr<size_t> postCountPtr = std::make_shared<size_t>(postsPtr->size());
+                std::shared_ptr<vector<int>> commentCountsPtr = std::make_shared<vector<int>>(*postCountPtr);
 
-                shared_ptr<vector<function<void(int)>>> commentCallbacksPtr = make_shared<vector<function<void(int)>>>(*postCountPtr);
-                shared_ptr<vector<function<void(User&&)>>> creatorCallbacksPtr = make_shared<vector<function<void(User&&)>>>(*postCountPtr);
+                std::shared_ptr<vector<function<void(int)>>> commentCallbacksPtr = std::make_shared<vector<function<void(int)>>>(*postCountPtr);
+                std::shared_ptr<vector<function<void(User&&)>>> creatorCallbacksPtr = std::make_shared<vector<function<void(User&&)>>>(*postCountPtr);
 
-                shared_ptr<bool> firedPtr = make_shared<bool>(false);
-                shared_ptr<size_t> countsCountPtr = make_shared<size_t>(0);
-                shared_ptr<size_t> creatorsCountPtr = make_shared<size_t>(0);
+                std::shared_ptr<bool> firedPtr = std::make_shared<bool>(false);
+                std::shared_ptr<size_t> countsCountPtr = std::make_shared<size_t>(0);
+                std::shared_ptr<size_t> creatorsCountPtr = std::make_shared<size_t>(0);
                 for(size_t i = 0; i < (*postCountPtr); ++i)
                 {
                     // get comment counts
@@ -654,8 +655,8 @@ namespace service
     void cls::createPostOverviewResponseFromDao(unsigned long postId, const string& userName, resCallback rCallback) {  /* NOLINT */
 
         function<void(Post&&)> callback = [this, rCallback, userName](Post&& post) {
-            shared_ptr<string> userNamePtr = make_shared<string>(userName);
-            shared_ptr<Post> postPtr = make_shared<Post>(std::move(post));
+            std::shared_ptr<std::string> userNamePtr = std::make_shared<std::string>(userName);
+            std::shared_ptr<Post> postPtr = std::make_shared<Post>(std::move(post));
 
             // get user for post
             function<void(User&&)> creatorCallback = [this, rCallback, userNamePtr, postPtr](User&& user) {
@@ -671,13 +672,13 @@ namespace service
                         }
 
                         // get creators for each comment
-                        shared_ptr<vector<Comment>> commentsPtr = make_shared<vector<Comment>>(std::move(comments));
-                        shared_ptr<size_t> commentsCountPtr = make_shared<size_t>(commentsPtr->size());
+                        std::shared_ptr<vector<Comment>> commentsPtr = std::make_shared<vector<Comment>>(std::move(comments));
+                        std::shared_ptr<size_t> commentsCountPtr = std::make_shared<size_t>(commentsPtr->size());
 
-                        shared_ptr<vector<function<void(User&&)>>> userCallbacksPtr = make_shared<vector<function<void(User&&)>>>(*commentsCountPtr);
+                        std::shared_ptr<vector<function<void(User&&)>>> userCallbacksPtr = std::make_shared<vector<function<void(User&&)>>>(*commentsCountPtr);
 
-                        shared_ptr<bool> firePtr = make_shared<bool>(false);
-                        shared_ptr<size_t> creatorCountPtr = make_shared<size_t>(0);
+                        std::shared_ptr<bool> firePtr = std::make_shared<bool>(false);
+                        std::shared_ptr<size_t> creatorCountPtr = std::make_shared<size_t>(0);
                         for(size_t i = 0; i < (*commentsCountPtr); ++i) {
                             (*userCallbacksPtr)[i] = [this, i, commentsPtr, firePtr, creatorCountPtr, commentsCountPtr, rCallback, postPtr, userNamePtr](User&& creator){
                                 (*commentsPtr)[i].creator = creator;

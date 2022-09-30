@@ -47,7 +47,7 @@ namespace service {
         void checkUserNameTaken(const string& username, function<void(bool)> callback);
         void checkUserPassword(const string& username, const string& password, function<void(bool)> callback);
         void checkUserSession(const string& username, const string& sessionToken, function<void(bool)> callback);
-        void createNewUserSession(const string& username, function<void(bool)> callback);
+        void createNewUserSession(const string& username, function<void(bool, string&&)> callback);
     };
 } // service
 
