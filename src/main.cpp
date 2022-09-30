@@ -217,12 +217,10 @@ int main(int argc, char *argv[]) {
                         userService.createNewUserSession((*usernamePtr), [usernamePtr, &res](bool b, string s) {
                             if (b) {
                                 res.cookie(USERNAMECOOKIE, (*usernamePtr),
-                                           {{"Max-Age",  "3600"},
-                                            {"path",     "/"},
-                                            {"SameSite", "None"}});
-                                res.cookie(SESSIONTOKEN, s, {{"Max-Age",  "3600"},
-                                                             {"path",     "/"},
-                                                             {"SameSite", "None"}});
+                                           {{"Max-Age", "3600"},
+                                            {"path",    "/"}});
+                                res.cookie(SESSIONTOKEN, s, {{"Max-Age", "3600"},
+                                                             {"path",    "/"}});
                                 res.sendStatus(200);
                             } else {
                                 res.sendStatus(500);
@@ -290,9 +288,6 @@ int main(int argc, char *argv[]) {
 
                         std::string title = Utils::getFieldByName(req.body.data(), "Title");
                         std::string content = Utils::getFieldByName(req.body.data(), "Content");
-                        shared_ptr<string> usernamePtr = make_shared<string>(
-                                req.cookie(USERNAMECOOKIE));
-
 
                         postService.createPost(title, content, *usernamePtr, topicID,
                                                [&](int err) {

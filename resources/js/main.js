@@ -126,9 +126,11 @@ window.onload = () => {
                 body: userData,
             }).then(data => {
                 if (data.status === 200) {
+                    window.location.reload();
                     console.log(window.location.href);
-                    return false;
                 } else if (data.status === 400) {
+                    data.text().then(text => listErrors(text, error_anchor))
+                } else if (data.status === 500) {
                     data.text().then(text => listErrors(text, error_anchor))
                 }
             })
@@ -150,7 +152,7 @@ window.onload = () => {
 
             removeAllChildren(error_anchor);
 
-            fetch('/c/' + window.location.href.split('/').pop(), { //A LOT OF TODO
+            fetch('/c/' + window.location.href.split('/').pop(), {
                 method: 'Post',
                 credentials: 'include',
                 body: content,
@@ -158,6 +160,8 @@ window.onload = () => {
                 if (data.status === 200) {
                     window.location.reload();
                 } else if (data.status === 400) {
+                    data.text().then(text => listErrors(text, error_anchor))
+                } else if (data.status === 500) {
                     data.text().then(text => listErrors(text, error_anchor))
                 }
             })
@@ -272,6 +276,7 @@ function listErrors(body, error_anchor) {
         appendSpan(error_anchor, errors[i]);
     }
 }
+
 
 function deleteAllCookies() {
     var cookies = document.cookie.split(";");
